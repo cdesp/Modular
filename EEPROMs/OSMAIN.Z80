@@ -1,0 +1,624 @@
+    MODULE OSMAIN
+  
+
+    CR  	 EQU 0DH
+    LF		 EQU 0AH
+    ES		 EQU 1BH    
+    BS     EQU 08H
+    ESC    EQU 1BH
+    
+    ;global vars FROM BBC BASIC
+    @ACCS   EQU 0x8000       ;STRING INPUT BUFFER
+    @ERRLIN EQU ACCS+0x2F4   ;
+    @RANDOM EQU ACCS+0x2F6   ;RANDOM SEED MUST BE NON ZERO 5 BYTES
+    @TOP    EQU ACCS+0x2DE   ;START OF BASIC PROGRAM
+    @PAGE   EQU ACCS+0x2DC   ;END OF BASIC PROGRAM 
+    @BBCBASIC EQU $4000   
+    @ESCAPE EQU BBCBASIC+0x0DC2 ;ESCAPE ROUTINE ON BBC BASIC
+    @CRLF   EQU BBCBASIC+0x086D ;CRLF ROUTINE ON BBC BASIC
+    @EXTERR EQU BBCBASIC+0x06F0  ;EXTERR ROUTINE ON BBC BASIC
+    @TELL   EQU BBCBASIC+0x0C2B ;PRINT A MESSAGE ON SCREEN THROUGH BBC BASIC
+    @XEQ    EQU BBCBASIC+0x0CE8 ;DO BASIC NEXT COMMAND
+    @EXPRI  EQU BBCBASIC+0x1E94 ;PARSE PARAMETER 
+      
+    
+    
+    ;LOCAL CONSTS
+    PORT_TAPE       EQU 0X20      ; SAVE/LOAD PORT 1 BYTE=0xDD 2ND BYTE=COMMAND 
+    COMMD_SAVE      EQU 10
+    COMMD_LOAD      EQU 20;
+       
+    
+    
+
+
+      
+      
+TEST: JP LCD_TEST    
+    
+@MYOS_CLRSCN:JP LCD_CLRSCR        ; CLRSCN: clears the screen.
+            
+@MYOS_PUTIME:        ; PUTIME: set current time to DE:HL, in centiseconds.
+		       RET
+@MYOS_GETIME:        ; GETIME: return current time in DE:HL, in centiseconds.
+       		 LD DE, 0
+ 	  		   LD HL, 0
+			     RET		       
+@MYOS_PUTCSR:		    ; PUTCSR: move to cursor to x=DE, y=HL
+           LD H,E
+           PUSH HL
+           CALL LCD_RMVCURS
+           POP HL
+           LD A,H
+           LD (CURSORX),A
+           LD A,L
+           LD (CURSORY),A
+           CALL LCD_PRNCURS                      
+           RET
+@MYOS_GETCSR:		    ; GETCSR: return cursor position in x=DE, y=HL
+           LD D,0
+           LD A,(CURSORX)
+           LD E,A
+           LD H,0
+           LD A,(CURSORY)
+			     LD L,A
+			     RET
+KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS	     
+@MYOS_OSRDCH:        ; OSRDCH: read a character in from the keyboard	
+        	 PUSH    HL
+           SBC     HL,HL           ;HL=0
+           CALL    MYOS_OSKEY
+           POP     HL
+           RET     C
+           JR      MYOS_OSRDCH           
+			     RET		
+@MYOS_OSWRCH:		    ; OSWRCH: write a character to the screen            
+			     PUSH    AF
+           PUSH    DE
+           PUSH    HL
+           LD      E,A
+           CALL    ESCTEST
+           CALL    EDPUT
+           POP     HL
+           POP     DE
+           POP     AF
+           RET
+;
+EDPUT:  LD      A,(FLAGS)
+        BIT     3,A
+        JR      Z,WRCH
+        LD      A,E
+        CP      ' '
+        RET     C
+        LD      HL,(EDPTR)
+        LD      (HL),E
+        INC     L
+        RET     Z
+        LD      (EDPTR),HL
+        RET           
+           
+@MYOS_PROMPT: 	      ; PROMPT: output the input prompt	
+           LD E,'>'			     
+WRCH:      LD A,E
+           OUT (0),A      
+           PUSH AF
+           PUSH BC
+           PUSH DE
+					 PUSH HL
+					 
+           PUSH AF
+           PUSH BC
+           PUSH DE
+					 PUSH HL
+					 CALL LCD_RMVCURS
+           POP HL
+           POP DE
+           POP BC
+           POP AF
+           CALL LCD_PRINTCHAR
+           CALL LCD_PRNCURS
+           
+           POP HL
+           POP DE
+           POP BC
+           POP AF
+			     RET 
+;
+TOGGLE: LD      A,(FLAGS)
+        XOR     00000100B
+        LD      (FLAGS),A
+        RET
+;
+;OSKEY - Read key with time-limit, test for ESCape.
+;Main function is carried out in user patch.
+;   Inputs: HL = time limit (centiseconds)
+;  Outputs: Carry reset if time-out
+;           If carry set A = character
+; Destroys: A,H,L,F
+;
+@MYOS_OSKEY:	PUSH    HL
+            LD      HL,INKEY
+            LD      A,(HL)
+            LD      (HL),0
+            POP     HL
+            OR      A
+            SCF
+            RET     NZ		
+            ;PUSH    DE
+            CALL    GETKEY
+            ;POP     DE
+            RET     NC
+            CP      ESC
+            SCF
+            RET     NZ                        
+ESCSET: 		PUSH    HL
+        		LD      HL,FLAGS
+        		BIT     6,(HL)          ; ESC DISABLED?
+        		JR      NZ,ESCDIS
+        		SET     7,(HL)          ; SET ESCAPE FLAG
+ESCDIS: 		POP     HL
+        		RET	
+ESCTEST:		CALL RS_RXNW
+		      	OR A
+		      	RET Z
+		      	CP 0x1B			; ESC	
+	      		JR Z,ESCSET
+	      		LD (INKEY),A
+	       		RET
+
+@MYOS_TRAP:			CALL ESCTEST
+@MYOS_LTRAP:			LD A,(FLAGS)
+			          OR A
+		           	RET P
+ABORT:       		LD HL,FLAGS 
+		          	RES 7,(HL)
+		          	JP ESCAPE          
+;		          	
+;OSINIT - Initialise RAM mapping etc.
+;   Outputs: DE = initial value of HIMEM (top of RAM)
+;            HL = initial value of PAGE (user program)
+;            Z-flag reset indicates AUTO-RUN.
+;  Destroys: A,D,E,H,L,F
+;
+@MYOS_OSINIT: 		
+            DI
+            LD HL,RANDOM    ; SET RANDOM SEED TO NON 0
+            LD A,0x06
+            LD (HL),A
+            LD A,0xBB
+            LD (HL),A
+            LD HL,0
+            LD (CURSORX),HL  ; CURSOR X 7 Y ZEROED            
+            LD DE,COL_WHITE   ; SET FCOLOR AND BCOLOR DEFAULT VALUES
+            LD HL,FCOLOR
+            LD (HL),E
+            INC HL
+            LD (HL),D
+            INC HL
+            LD DE,COL_BLACK
+            LD (HL),E
+            INC HL
+            LD (HL),D                                   
+            LD DE,FCOLPAL
+            CALL COPYPAL
+            LD DE,BCOLPAL            
+            CALL COPYPAL
+            JR OSFINSH;
+COPYPAL:    LD HL,COL_PALET   
+            LD BC,8*2         ;SHOULD ADD 8 MORE COLORS 
+            LDIR
+            RET
+            ;PRINT MYOS MESSAGE HERE
+OSFINSH:    CALL    TELL
+						DEFM	"CDESP Modular Computer 1.0"
+						DEFB	0AH,0DH,0AH,0DH,00H
+            XOR A
+         		LD DE,0xFFFF		;DE = HIMEM
+         		LD E,A             	;PAGE BOUNDARY
+         		LD HL,@USER         		
+         		RET	
+COL_PALET:  DW COL_BLACK
+            DW COL_RED
+            DW COL_GREEN
+            DW COL_YELLOW
+            DW COL_BLUE
+            DW COL_MAGENTA
+            DW COL_CYAN
+            DW COL_WHITE            
+      
+;
+;OSCLI - Process an "operating system" command
+;
+@MYOS_OSCLI: 
+      CALL    SKIPSP
+			CP      CR
+			RET     Z
+			CP      '|'
+			RET     Z
+			CP      '.'
+			JP      Z,DOT           ;*.
+			EX      DE,HL
+			LD      HL,COMDS
+OSCLI0:			LD      A,(DE)
+			CALL    UPPRC
+			CP      (HL)
+			JR      Z,OSCLI2
+			JR      C,HUH
+OSCLI1:			BIT     7,(HL)
+			INC     HL
+			JR      Z,OSCLI1
+			INC     HL
+			INC     HL
+			JR      OSCLI0
+;
+OSCLI2:			PUSH    DE
+OSCLI3:			INC     DE
+			INC     HL
+			LD      A,(DE)
+			CALL    UPPRC
+			CP      '.'             ;ABBREVIATED?
+			JR      Z,OSCLI4
+			XOR     (HL)
+			JR      Z,OSCLI3
+			CP      80H
+			JR      Z,OSCLI4
+			POP     DE
+			JR      OSCLI1
+;
+OSCLI4:			POP     AF
+		        INC     DE
+OSCLI5:			BIT     7,(HL)
+			INC     HL
+			JR      Z,OSCLI5
+			LD      A,(HL)
+			INC     HL
+			LD      H,(HL)
+			LD      L,A
+			PUSH    HL
+			EX      DE,HL
+			JP      SKIPSP
+
+HUH:    		LD      A,254
+        		CALL    EXTERR
+        		DEFM    'Bad command'
+        		DEFB    0			
+
+SKIPSP:			LD      A,(HL)
+        		CP      ' '
+        		RET     NZ
+        		INC     HL
+        		JR      SKIPSP	
+
+UPPRC:  		AND     7FH
+			CP      '`'
+			RET     C
+			AND     5FH             ;CONVERT TO UPPER CASE
+			RET					
+
+; OSCLI - *.
+DOT:			RET
+
+; OSCLI - *BYE
+;
+BYE:			JP 0
+
+COMDS:  		DEFM    'BY'
+			DEFB    'E'+80H
+			DEFW    BYE
+			DEFB	0FFH
+  
+@MYOS_OSSAVE:
+            ;bc = length of program
+            ;hl = ACCS =FILENAME ENDS WITH 0X0D
+            ;TOP = CONTAINS START OF BASIC PROGRAM LD HL,(TOP)
+            ;OUT SAVE COMMAND (TWO BYTES)            
+            ;OUT THE FILENAME 0X0D TERMINATED
+            ;OUT THE LENGTH (TWO BYTES)            
+            ;OUT THE BYTES
+            ;COMMAND
+            LD A,0xDD
+            OUT (PORT_TAPE),A
+            LD A,COMMD_SAVE
+            OUT (PORT_TAPE),A
+            ;FILENAME
+OSSV_NXT:   LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            CP 0x0D
+            JR NZ,OSSV_NXT
+            ;LENGTH
+            LD A,C
+            OUT (PORT_TAPE),A
+            LD A,B
+            OUT (PORT_TAPE),A
+            ;BYTES
+            LD HL,(PAGE)
+OSSV_NXT2:  LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            DEC BC
+            LD A,B
+            OR C
+            JR NZ,OSSV_NXT2                        
+            RET              
+@MYOS_OSLOAD:
+            ;OUT LOAD COMMAND (TWO BYTES)
+            ;OUT THE FILENAME 0X0D TERMINATED
+            ;IN THE LENGTH (TWO BYTES)
+            ;IN THE BYTES 
+            LD A,0xDD
+            OUT (PORT_TAPE),A
+            LD A,COMMD_LOAD
+            OUT (PORT_TAPE),A
+            ;FILENAME
+OSLD_NXT:   LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            CP 0x0D
+            JR NZ,OSLD_NXT
+            ;LENGTH READ
+            IN A,(PORT_TAPE)
+            LD C,A
+            IN A,(PORT_TAPE)
+            LD B,A
+            ;BYTES
+            LD HL,(PAGE)                        
+OSLD_NXT2:  IN A,(PORT_TAPE)
+            LD (HL),A
+            INC HL
+            DEC BC
+            LD A,B
+            OR C
+            JR NZ,OSLD_NXT2                        
+            LD B,H
+            LD C,L
+            LD HL,TOP ;SAVE TOP OF BASIC 
+            LD (HL),C
+            INC HL
+            LD (HL),B            
+            SCF       ;SET C = NO ERROR            
+            RET   
+            
+  
+  
+@MYOS_OSBPUT:
+@MYOS_OSBGET: 
+@MYOS_OSSTAT: 
+@MYOS_OSSHUT: 
+@MYOS_OSOPEN: 
+@MYOS_OSCALL:   
+@MYOS_GETPTR: 
+@MYOS_PUTPTR: 
+@MYOS_GETEXT: 
+@MYOS_RESET: 
+            RET
+     
+@MYOS_CLG: CALL LCD_CLRSCR
+          JP XEQ           ;RETURN TO BASIC    
+
+     
+@MYOS_COLOUR:  CALL LCD_COLOUR     
+              JP XEQ           ;RETURN TO BASIC    
+            
+
+
+@MYOS_DRAW:
+@MYOS_ENVEL:
+@MYOS_GCOL:
+@MYOS_MODE:
+@MYOS_MOVE:
+@MYOS_PLOT:
+@MYOS_SOUND:
+@MYOS_ADVAL:
+@MYOS_POINT:
+@MYOS_GETIMS:
+@MYOS_PUTIMS:
+			XOR     A
+			CALL    EXTERR
+			DEFM    'Sorry'
+			DEFB    0            
+      
+      
+
+; Read a character - waits for input
+; A: ASCII character
+;
+GETKEY:		  CALL GET_CHAR
+            SCF
+			      RET       
+      
+         		
+;
+;OSLINE - Read/edit a complete line, terminated by CR.
+;   Inputs: HL addresses destination buffer.
+;           (L=0)
+;  Outputs: Buffer filled, terminated by CR.
+;           A=0.
+; Destroys: A,B,C,D,E,H,L,F
+;
+@MYOS_OSLINE: 
+        LD      A,(FLAGS)
+        BIT     3,A             ;EDIT MODE?
+        JR      Z,OSLIN1
+        RES     3,A
+        LD      (FLAGS),A
+        LD      HL,(EDPTR)
+        CP      L
+OSLIN1: LD      A,CR
+        LD      (HL),A
+        CALL    NZ,MYOS_OSWRCH
+        LD      L,0
+        LD      C,L             ;REPEAT FLAG
+        JR      Z,OSWAIT        ;SUPPRESS UNWANTED SPACE
+UPDATE: LD      B,0
+UPD1:   LD      A,(HL)
+        INC     B
+        INC     HL
+        CP      CR
+        PUSH    AF
+        PUSH    HL
+        LD      E,A
+        CALL    NZ,WRCH         ;FAST WRCH
+        POP     HL
+        POP     AF
+        JR      NZ,UPD1
+        LD      A,' '
+        CALL    MYOS_OSWRCH
+        LD      E,BS
+UPD2:   PUSH    HL
+        CALL    WRCH            ;FAST WRCH
+        POP     HL
+        DEC     HL
+        DJNZ    UPD2
+OSWAIT: LD      A,C
+        DEC     B
+        JR      Z,LIMIT
+        OR      A               ;REPEAT COMMAND?
+LIMIT:  CALL    Z,KEYGET        ;READ KEYBOARD
+        LD      C,A             ;SAVE FOR REPEAT
+        LD      DE,OSWAIT       ;RETURN ADDRESS
+        PUSH    DE
+        LD      A,(FLAGS)
+        OR      A               ;TEST FOR ESCAPE
+        LD      A,C
+        JP      M,OSEXIT
+        CP      11         ;CURSOR UP     (IX-11)
+        JP      Z,LEFT
+        CP      10         ;CURSOR DOWN   (IX-10)
+        JP      Z,RIGHT
+        LD      B,0
+        CP      5          ;CLEAR LEFT    (IX-5)
+        JR      Z,BACK
+        CP      9          ;START OF LINE (IX-9)
+        JR      Z,LEFT
+        CP      7          ;CLEAR RIGHT   (IX-7)
+        JR      Z,DELETE
+        CP      8          ;END OF LINE   (IX-8)
+        JP      Z,RIGHT
+        LD      C,0             ;INHIBIT REPEAT
+        CP      'P' AND 1FH
+        JP      Z,TOGGLE
+        CP      6          ;DELETE LEFT   (IX-6)
+        JR      Z,BACK
+        CP      4          ;CURSOR LEFT   (IX-4)
+        JR      Z,LEFT
+        CP      2          ;DELETE RIGHT  (IX-2)
+        JR      Z,DELETE
+        CP      1          ;INSERT SPACE  (IX-1)
+        JR      Z,INSERT
+        CP      3          ;CURSOR RIGHT  (IX-3)
+        JR      Z,RIGHT
+        CP      ' '             ;PRINTING CHARACTER
+        JR      NC,SAVECH
+        CP      CR              ;ENTER LINE
+        RET     NZ
+OSEXIT: LD      A,(HL)
+        CALL    MYOS_OSWRCH          ;WRITE REST OF LINE
+        INC     HL
+        SUB     CR
+        JR      NZ,OSEXIT
+        POP     DE              ;DITCH RETURN ADDRESS
+        CP      C
+        JP      NZ,ABORT        ;ESCAPE
+        LD      A,LF
+        CALL    MYOS_OSWRCH
+        LD      DE,(ERRLIN)
+        XOR     A
+        LD      L,A
+        LD      (EDPTR),HL
+        CP      D
+        RET     NZ
+        CP      E
+        RET     NZ
+        LD      DE,EDITST
+        LD      B,4
+CMPARE: LD      A,(DE)
+        CP      (HL)
+        LD      A,0
+        RET     NZ
+        INC     HL
+        INC     DE
+        LD      A,(HL)
+        CP      '.'
+        JR      Z,ABBR
+        DJNZ    CMPARE
+ABBR:   XOR     A
+        LD      B,A
+        LD      C,L
+        LD      L,A
+        LD      DE,LISTST
+        EX      DE,HL
+        LDIR
+        LD      HL,FLAGS
+        SET     3,(HL)
+        RET
+;
+BACK:   SCF                     ;DELETE LEFT
+LEFT:   INC     L               ;CURSOR LEFT
+        DEC     L
+        JR      Z,STOP
+        LD      A,BS
+        CALL    MYOS_OSWRCH
+        DEC     L
+        RET     NC
+DELETE: LD      A,(HL)          ;DELETE RIGHT
+        CP      CR
+        JR      Z,STOP
+        LD      D,H
+        LD      E,L
+DEL1:   INC     DE
+        LD      A,(DE)
+        DEC     DE
+        LD      (DE),A
+        INC     DE
+        CP      CR
+        JR      NZ,DEL1
+DEL2:   POP     DE              ;DITCH
+        JP      UPDATE
+;
+INSERT: LD      A,CR            ;INSERT SPACE
+        CP      (HL)
+        RET     Z
+        LD      D,H
+        LD      E,254
+INS1:   INC     DE
+        LD      (DE),A
+        DEC     DE
+        LD      A,E
+        CP      L
+        DEC     DE
+        LD      A,(DE)
+        JR      NZ,INS1
+        LD      (HL),' '
+        JR      DEL2
+;
+RIGHT:  LD      A,(HL)          ;CURSOR RIGHT
+        CP      CR
+        JR      Z,STOP
+SAVECH: LD      D,(HL)          ;PRINTING CHARACTER
+        LD      (HL),A
+        INC     L
+        JR      Z,WONTGO        ;LINE TOO LONG
+        CALL    MYOS_OSWRCH
+        LD      A,CR
+        CP      D
+        RET     NZ
+        LD      (HL),A
+        RET
+;
+WONTGO: DEC     L
+        LD      (HL),CR
+       ; LD      A,BEL
+       ; CALL    MYOS_OSWRCH          ;BEEP!
+STOP:   LD      C,0             ;STOP REPEAT
+        RET
+;
+;
+EDITST: DEFM    'EDIT'
+LISTST: DEFM    'LIST'
+
+
+
+
+    
+    ENDMODULE

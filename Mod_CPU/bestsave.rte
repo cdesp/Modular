@@ -1,0 +1,717 @@
+ (routes 
+  (resolution mm 100000)
+  (parser
+  )
+  (parser
+  )
+  (structure_out
+   (layer TOP (type signal)
+   )
+   (layer I1 (type signal)
+   )
+   (layer I2 (type signal)
+   )
+   (layer I3 (type signal)
+   )
+   (layer I4 (type signal)
+   )
+   (layer I5 (type signal)
+   )
+   (layer I6 (type signal)
+   )
+   (layer I7 (type signal)
+   )
+   (layer I8 (type signal)
+   )
+   (layer I9 (type signal)
+   )
+   (layer I10 (type signal)
+   )
+   (layer I11 (type signal)
+   )
+   (layer I12 (type signal)
+   )
+   (layer I13 (type signal)
+   )
+   (layer I14 (type signal)
+   )
+   (layer BOT (type signal)
+   )
+  )
+  (library_out
+  (padstack $VIA#0_SIGNAL
+   (shape (circ TOP 76200 0 0))
+   (shape (circ I1 76200 0 0))
+   (shape (circ I2 76200 0 0))
+   (shape (circ I3 76200 0 0))
+   (shape (circ I4 76200 0 0))
+   (shape (circ I5 76200 0 0))
+   (shape (circ I6 76200 0 0))
+   (shape (circ I7 76200 0 0))
+   (shape (circ I8 76200 0 0))
+   (shape (circ I9 76200 0 0))
+   (shape (circ I10 76200 0 0))
+   (shape (circ I11 76200 0 0))
+   (shape (circ I12 76200 0 0))
+   (shape (circ I13 76200 0 0))
+   (shape (circ I14 76200 0 0))
+   (shape (circ BOT 76200 0 0))
+  )
+  (padstack $VIA#0_POWER
+   (shape (circ TOP 76200 0 0))
+   (shape (circ I1 76200 0 0))
+   (shape (circ I2 76200 0 0))
+   (shape (circ I3 76200 0 0))
+   (shape (circ I4 76200 0 0))
+   (shape (circ I5 76200 0 0))
+   (shape (circ I6 76200 0 0))
+   (shape (circ I7 76200 0 0))
+   (shape (circ I8 76200 0 0))
+   (shape (circ I9 76200 0 0))
+   (shape (circ I10 76200 0 0))
+   (shape (circ I11 76200 0 0))
+   (shape (circ I12 76200 0 0))
+   (shape (circ I13 76200 0 0))
+   (shape (circ I14 76200 0 0))
+   (shape (circ BOT 76200 0 0))
+  )
+  (padstack PS7
+   (shape (circ TOP 152400 0 0))
+   (shape (circ I1 152400 0 0))
+   (shape (circ I2 152400 0 0))
+   (shape (circ I3 152400 0 0))
+   (shape (circ I4 152400 0 0))
+   (shape (circ I5 152400 0 0))
+   (shape (circ I6 152400 0 0))
+   (shape (circ I7 152400 0 0))
+   (shape (circ I8 152400 0 0))
+   (shape (circ I9 152400 0 0))
+   (shape (circ I10 152400 0 0))
+   (shape (circ I11 152400 0 0))
+   (shape (circ I12 152400 0 0))
+   (shape (circ I13 152400 0 0))
+   (shape (circ I14 152400 0 0))
+   (shape (circ BOT 152400 0 0))
+  )
+  (padstack PS8
+   (shape (circ TOP 76200 0 0))
+   (shape (circ I1 76200 0 0))
+   (shape (circ I2 76200 0 0))
+   (shape (circ I3 76200 0 0))
+   (shape (circ I4 76200 0 0))
+   (shape (circ I5 76200 0 0))
+   (shape (circ I6 76200 0 0))
+   (shape (circ I7 76200 0 0))
+   (shape (circ I8 76200 0 0))
+   (shape (circ I9 76200 0 0))
+   (shape (circ I10 76200 0 0))
+   (shape (circ I11 76200 0 0))
+   (shape (circ I12 76200 0 0))
+   (shape (circ I13 76200 0 0))
+   (shape (circ I14 76200 0 0))
+   (shape (circ BOT 76200 0 0))
+  )
+  )
+  (network_out
+   (Net #00101 
+   (rule
+   )
+   (wire (path TOP 50800  -10406380 723900 -10406380 1270000 -10325100 1270000
+     -10325100 1538540)
+    (connect (terminal pin R5_HALT-1) (terminal pin D1_HALT-0))
+   )
+   )
+   (Net #00103 
+   (rule
+   )
+   (wire (path BOT 50800  -9446260 -299720 -9446260 193040 -9964420 193040)
+    (connect (terminal pin R7_HALT-1) (terminal pin TR1_HALT-1))
+   )
+   )
+   (Net $BUSACK 
+   (rule
+   )
+   (wire (path TOP 50800  -13017500 3619500 -12763500 3619500 -12763500 10500360
+     -13246100 10500360)
+    (connect (terminal via) (terminal pin J2_SIGS-0))
+   )
+   (wire (path BOT 50800  -9613900 3375660 -9461500 3375660 -9461500 3746500
+     -12128500 3746500 -12128500 3619500 -13017500 3619500)
+    (connect (terminal pin Z80_CPU-22) (terminal via))
+   )
+   (wire (path TOP 50800  -13017500 3619500 -13017500 -66040 -13462000 -66040
+     -13462000 -574040 -12890500 -574040 -12890500 -955040 -13251180 -955040)
+    (connect (terminal via) (terminal pin J4_SIGS-0))
+   )
+   (via $VIA#0_SIGNAL -13017500 3619500)
+   )
+   (Net $BUSREQ 
+   (rule
+   )
+   (wire (path BOT 50800  -13246100 10246360 -13246100 10246359 -12763500 10246359
+     -12763500 10246360 -12491720 10246360)
+    (connect (terminal pin J2_SIGS-1) (terminal pin R8-1))
+   )
+   (wire (path TOP 38100  -13246100 10246360 -13462000 10246360 -13555980 10152380
+     -13555980 4097020 -13568680 4084320 -13568680 -655320 -13522960 -701040
+     -13251180 -701040)
+    (connect (terminal pin J2_SIGS-1) (terminal pin J4_SIGS-1))
+    (type protect)
+   )
+   )
+   (Net $BUSRQ 
+   (rule
+   )
+   )
+   (Net $HALT 
+   (rule
+   )
+   (wire (path BOT 50800  -11137900 3375660 -9948918 3375660 -9948918 3238500
+     -9461500 3238500 -9461500 1270000 -9446260 1270000 -9446260 716280)
+    (connect (terminal pin Z80_CPU-17) (terminal pin R7_HALT-0))
+   )
+   )
+   (Net $INT 
+   (rule
+   )
+   (wire (path TOP 50800  -13462000 3746500 -13462000 60960 -13251180 60960)
+    (connect (terminal via) (terminal pin J4_SIGS-4))
+   )
+   (wire (path BOT 50800  -13462000 3746500 -13462000 3883660 -11137900 3883660)
+    (connect (terminal via) (terminal pin Z80_CPU-15))
+   )
+   (wire (path BOT 50800  -14247800 3627200 -13462000 3627200 -13462000 3746500)
+    (connect (terminal pin J1-21) (terminal via))
+   )
+   (wire (path BOT 50800  -13246100 9484360 -12844433 9484360 -12844433 9489440
+     -12494260 9489440)
+    (connect (terminal pin J2_SIGS-4) (terminal pin R11-1))
+   )
+   (wire (path TOP 38100  -13462000 3746500 -13439140 3746500 -13439140 9484360
+     -13246100 9484360)
+    (connect (terminal via) (terminal pin J2_SIGS-4))
+    (type protect)
+   )
+   (via PS8 -13462000 3746500)
+   )
+   (Net $IORQ 
+   (rule
+   )
+   (wire (path BOT 50800  -14247800 2611200 -11557000 2611200 -11557000 2867660
+     -11137900 2867660)
+    (connect (terminal pin J1-25) (terminal pin Z80_CPU-19))
+   )
+   )
+   (Net $M1 
+   (rule
+   )
+   (wire (path BOT 50800  -12890500 4254500 -10033000 4254500 -10033000 4391660
+     -9613900 4391660)
+    (connect (terminal via) (terminal pin Z80_CPU-26))
+   )
+   (wire (path TOP 50800  -12890500 4635500 -12890500 4254500)
+    (connect (terminal via) (terminal via))
+   )
+   (wire (path BOT 50800  -14250340 4391740 -14033500 4391740 -14033500 4635500
+     -12890500 4635500)
+    (connect (terminal pin J1-18) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -12890500 4254500)
+   (via $VIA#0_SIGNAL -12890500 4635500)
+   )
+   (Net $MREQ 
+   (rule
+   )
+   (wire (path BOT 50800  -14247800 3373200 -14033500 3373200 -14033500 3121660
+     -11137900 3121660)
+    (connect (terminal pin J1-22) (terminal pin Z80_CPU-18))
+   )
+   )
+   (Net $NMI 
+   (rule
+   )
+   (wire (path TOP 50800  -11874500 3619500 -11874500 -447040 -13251180 -447040)
+    (connect (terminal via) (terminal pin J4_SIGS-2))
+   )
+   (wire (path BOT 50800  -11137900 3629660 -11137900 3619500 -11874500 3619500)
+    (connect (terminal pin Z80_CPU-16) (terminal via))
+   )
+   (wire (path BOT 50800  -12494260 9992360 -13246100 9992360)
+    (connect (terminal pin R9-1) (terminal pin J2_SIGS-2))
+   )
+   (wire (path TOP 38100  -11874500 3619500 -11874500 9626600 -12240260 9992360
+     -12494260 9992360)
+    (connect (terminal via) (terminal pin R9-1))
+    (type protect)
+   )
+   (via PS8 -11874500 3619500)
+   )
+   (Net $RD 
+   (rule
+   )
+   (wire (path BOT 50800  -14247800 2865200 -13590460 2865200 -13590460 2984500
+     -10033000 2984500 -10033000 2867660 -9613900 2867660)
+    (connect (terminal pin J1-24) (terminal pin Z80_CPU-20))
+   )
+   )
+   (Net $RESET 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 4137740 -13589000 4137740 -13589000 4000500
+     -10033000 4000500 -10033000 4137660 -9613900 4137660)
+    (connect (terminal pin J1-19) (terminal pin Z80_CPU-25))
+   )
+   )
+   (Net $WAIT 
+   (rule
+   )
+   (wire (path TOP 50800  -12636500 3365500 -12636500 -193040 -13251180 -193040)
+    (connect (terminal via) (terminal pin J4_SIGS-3))
+   )
+   (wire (path TOP 50800  -12494260 9743440 -12636500 9743440 -12636500 3365500)
+    (connect (terminal pin R10-1) (terminal via))
+   )
+   (wire (path BOT 50800  -9613900 3629660 -10033000 3629660 -10033000 3492500
+     -11938000 3492500 -11938000 3365500 -12636500 3365500)
+    (connect (terminal pin Z80_CPU-23) (terminal via))
+   )
+   (wire (path BOT 50800  -12494260 9743440 -12890500 9743440 -12890500 9738360
+     -13246100 9738360)
+    (connect (terminal pin R10-1) (terminal pin J2_SIGS-3))
+   )
+   (via $VIA#0_SIGNAL -12636500 3365500)
+   )
+   (Net $WR 
+   (rule
+   )
+   (wire (path BOT 50800  -14247800 3119200 -14445450 3119200 -14445450 3500200
+     -13852736 3500200 -13852736 3492500 -13017500 3492500 -13017500 3238500
+     -10298708 3238500 -10298708 3121660 -9613900 3121660)
+    (connect (terminal pin J1-23) (terminal pin Z80_CPU-21))
+   )
+   )
+   (Net A0 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 5153740 -12389483 5153740 -12389483 5016500
+     -10033000 5016500 -10033000 5153660 -9613900 5153660)
+    (connect (terminal pin J1-15) (terminal pin Z80_CPU-29))
+   )
+   )
+   (Net A1 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 5407740 -11366500 5407740 -11366500 5270500
+     -10033000 5270500 -10033000 5407660 -9613900 5407660)
+    (connect (terminal pin J1-14) (terminal pin Z80_CPU-30))
+   )
+   )
+   (Net A10 
+   (rule
+   )
+   (wire (path BOT 50800  -13335000 8318500 -9779000 8318500 -9779000 8064500
+     -9613900 8064500 -9613900 7693660)
+    (connect (terminal via) (terminal pin Z80_CPU-39))
+   )
+   (wire (path TOP 50800  -13335000 7683500 -13335000 8318500)
+    (connect (terminal via) (terminal via))
+   )
+   (wire (path BOT 50800  -14252880 7693740 -13335000 7693740 -13335000 7683500)
+    (connect (terminal pin J1-5) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -13335000 8318500)
+   (via $VIA#0_SIGNAL -13335000 7683500)
+   )
+   (Net A11 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 7947740 -11557000 7947740 -11557000 7693660
+     -11137900 7693660)
+    (connect (terminal pin J1-4) (terminal pin Z80_CPU-0))
+   )
+   )
+   (Net A12 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 8201740 -10160000 8201740 -10160000 7556500
+     -9334500 7556500 -9334500 7302500 -10688270 7302500 -10688270 7439660
+     -11137900 7439660)
+    (connect (terminal pin J1-3) (terminal pin Z80_CPU-1))
+   )
+   )
+   (Net A13 
+   (rule
+   )
+   (wire (path TOP 50800  -11366500 8445500 -11366500 7185660 -11137900 7185660)
+    (connect (terminal via) (terminal pin Z80_CPU-2))
+   )
+   (wire (path BOT 50800  -14252880 8455740 -11366500 8455740 -11366500 8445500)
+    (connect (terminal pin J1-2) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -11366500 8445500)
+   )
+   (Net A14 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 8709740 -14478000 8709740 -14478000 6804740
+     -13777522 6804740 -13777522 6794500 -11557000 6794500 -11557000 6931660
+     -11137900 6931660)
+    (connect (terminal pin J1-1) (terminal pin Z80_CPU-3))
+   )
+   )
+   (Net A15 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 8963740 -14605000 8963740 -14605000 6550740
+     -14033500 6550740 -14033500 6540500 -13652500 6540500 -13652500 6677660
+     -11137900 6677660)
+    (connect (terminal pin J1-0) (terminal pin Z80_CPU-4))
+   )
+   )
+   (Net A2 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 5661740 -11874500 5661740 -11874500 5524500
+     -10033000 5524500 -10033000 5661660 -9613900 5661660)
+    (connect (terminal pin J1-13) (terminal pin Z80_CPU-31))
+   )
+   )
+   (Net A3 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 5915740 -11366500 5915740 -11366500 5778500
+     -10033000 5778500 -10033000 5915660 -9613900 5915660)
+    (connect (terminal pin J1-12) (terminal pin Z80_CPU-32))
+   )
+   )
+   (Net A4 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 6169740 -12322985 6169740 -12322985 6286500
+     -10223500 6286500 -10223500 6169660 -9613900 6169660)
+    (connect (terminal pin J1-11) (terminal pin Z80_CPU-33))
+   )
+   )
+   (Net A5 
+   (rule
+   )
+   (wire (path BOT 50800  -14250340 6423740 -13208000 6423740 -13208000 6540500
+     -10477500 6540500 -10477500 6794500 -9461500 6794500 -9461500 6423660
+     -9613900 6423660)
+    (connect (terminal pin J1-10) (terminal pin Z80_CPU-34))
+   )
+   )
+   (Net A6 
+   (rule
+   )
+   (wire (path BOT 50800  -13779500 4508500 -9334500 4508500 -9334500 6286500
+     -9779000 6286500 -9779000 6677661 -9613900 6677661)
+    (connect (terminal via) (terminal pin Z80_CPU-35))
+   )
+   (wire (path TOP 50800  -13779500 6667500 -13779500 4508500)
+    (connect (terminal via) (terminal via))
+   )
+   (wire (path BOT 50800  -14252880 6677740 -14252880 6667500 -13779500 6667500)
+    (connect (terminal pin J1-9) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -13779500 4508500)
+   (via $VIA#0_SIGNAL -13779500 6667500)
+   )
+   (Net A7 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 6931740 -11910426 6931740 -11910426 7048500
+     -10033000 7048500 -10033000 6931661 -9613900 6931661)
+    (connect (terminal pin J1-8) (terminal pin Z80_CPU-36))
+   )
+   )
+   (Net A8 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 7185740 -12128500 7185740 -12128500 7302500
+     -10985500 7302500 -10985500 7185661 -9613900 7185661)
+    (connect (terminal pin J1-7) (terminal pin Z80_CPU-37))
+   )
+   )
+   (Net A9 
+   (rule
+   )
+   (wire (path BOT 50800  -14252880 7439740 -12382500 7439740 -12382500 7556500
+     -10268813 7556500 -10268813 7439661 -9613900 7439661)
+    (connect (terminal pin J1-6) (terminal pin Z80_CPU-38))
+   )
+   )
+   (Net CLOCK 
+   (rule
+   )
+   (wire (path BOT 50800  -14033500 6286500 -12573000 6286500 -12573000 6423660
+     -11137900 6423660)
+    (connect (terminal via) (terminal pin Z80_CPU-5))
+   )
+   (wire (path TOP 50800  -14033500 3873500 -14033500 6286500)
+    (connect (terminal via) (terminal via))
+   )
+   (wire (path BOT 50800  -14247800 3881200 -14033500 3881200 -14033500 3873500)
+    (connect (terminal pin J1-20) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -14033500 6286500)
+   (via $VIA#0_SIGNAL -14033500 3873500)
+   )
+   (Net D0 
+   (rule
+   )
+   (wire (path BOT 50800  -14247800 2357200 -14541500 2357200 -14541500 4264740
+     -14033500 4264740 -14033500 4254500 -13906500 4254500 -13906500 4391660
+     -11137900 4391660)
+    (connect (terminal pin J1-26) (terminal pin Z80_CPU-13))
+   )
+   )
+   (Net D1 
+   (rule
+   )
+   (wire (path BOT 38100  -14247800 2103200 -11374200 2103200 -11366500 2095500)
+    (connect (terminal pin J1-27) (terminal via))
+    (type protect)
+   )
+   (wire (path TOP 38100  -11366500 2095500 -11366500 4005580 -11234420 4137660
+     -11137900 4137660)
+    (connect (terminal via) (terminal pin Z80_CPU-14))
+    (type protect)
+   )
+   (via PS8 -11366500 2095500)
+   )
+   (Net D2 
+   (rule
+   )
+   (wire (path BOT 38100  -14247800 1849200 -11501200 1849200 -11493500 1841500)
+    (connect (terminal pin J1-28) (terminal via))
+    (type protect)
+   )
+   (wire (path TOP 38100  -11493500 1841500 -11493500 4645660 -11239500 4899660
+     -11137900 4899660)
+    (connect (terminal via) (terminal pin Z80_CPU-11))
+    (type protect)
+   )
+   (via PS8 -11493500 1841500)
+   )
+   (Net D3 
+   (rule
+   )
+   (wire (path BOT 50800  -14247800 1595200 -14633850 1595200 -14633850 5701694
+     -14605000 5701694 -14605000 6042740 -12701474 6042740 -12701474 6032500
+     -11137900 6032500 -11137900 5915660)
+    (connect (terminal pin J1-29) (terminal pin Z80_CPU-7))
+   )
+   )
+   (Net D4 
+   (rule
+   )
+   (wire (path TOP 50800  -10668000 1333500 -10668000 6169660 -11137900 6169660)
+    (connect (terminal via) (terminal pin Z80_CPU-6))
+   )
+   (wire (path BOT 50800  -14245260 1341200 -10668000 1341200 -10668000 1333500)
+    (connect (terminal pin J1-30) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -10668000 1333500)
+   )
+   (Net D5 
+   (rule
+   )
+   (wire (path TOP 50800  -10795000 1079500 -10795000 5661660 -11137900 5661660)
+    (connect (terminal via) (terminal pin Z80_CPU-8))
+   )
+   (wire (path BOT 50800  -14245260 1087200 -10795000 1087200 -10795000 1079500)
+    (connect (terminal pin J1-31) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -10795000 1079500)
+   )
+   (Net D6 
+   (rule
+   )
+   (wire (path BOT 50800  -11620500 889000 -11676300 833200 -14245260 833200)
+    (connect (terminal via) (terminal pin J1-32))
+    (type protect)
+   )
+   (wire (path BOT 50800  -10949117 5403590 -11127740 5397500 -11137900 5407660)
+    (connect (terminal via) (terminal pin Z80_CPU-9))
+    (type protect)
+   )
+   (wire (path TOP 50800  -11620500 889000 -11620500 4871720 -11221720 5270500
+     -10949940 5270500 -10949117 5403590)
+    (connect (terminal via) (terminal via))
+    (type protect)
+   )
+   (via PS8 -11620500 889000)
+   (via PS8 -10949117 5403590)
+   )
+   (Net D7 
+   (rule
+   )
+   (wire (path TOP 50800  -11239500 889000 -10985500 889000 -10985500 4645660
+     -11137900 4645660)
+    (connect (terminal via) (terminal pin Z80_CPU-12))
+   )
+   (wire (path BOT 50800  -14245260 579200 -14033500 579200 -14033500 635000
+     -11239500 635000 -11239500 889000)
+    (connect (terminal pin J1-33) (terminal via))
+   )
+   (via $VIA#0_SIGNAL -11239500 889000)
+   )
+   (Net EXT1 
+   (rule
+   )
+   (wire (path BOT 50800  -13741400 10500360 -13741400 10492740 -14249400 10492740)
+    (connect (terminal pin EX2-0) (terminal pin EX1-0))
+   )
+   )
+   (Net EXT2 
+   (rule
+   )
+   (wire (path BOT 50800  -13741400 10246360 -13741400 10238740 -14249400 10238740)
+    (connect (terminal pin EX2-1) (terminal pin EX1-1))
+   )
+   )
+   (Net EXT3 
+   (rule
+   )
+   (wire (path BOT 50800  -13741400 9992360 -13741400 9984740 -14249400 9984740)
+    (connect (terminal pin EX2-2) (terminal pin EX1-2))
+   )
+   )
+   (Net EXT4 
+   (rule
+   )
+   (wire (path BOT 50800  -13741400 9738360 -13741400 9730740 -14249400 9730740)
+    (connect (terminal pin EX2-3) (terminal pin EX1-3))
+   )
+   )
+   (Net EXT5 
+   (rule
+   )
+   (wire (path BOT 50800  -13741400 9484360 -13741400 9476740 -14249400 9476740)
+    (connect (terminal pin EX2-4) (terminal pin EX1-4))
+   )
+   )
+   (Net EXT6 
+   (rule
+   )
+   (wire (path BOT 50800  -13741400 9230360 -13741400 9222740 -14249400 9222740)
+    (connect (terminal pin EX2-5) (terminal pin EX1-5))
+   )
+   )
+   (Net GND 
+   (rule
+   )
+   (wire (path BOT 63499  -9964420 396240 -10985500 396240 -10985500 508000
+     -13764260 508000 -13764260 325120)
+    (connect (terminal pin TR1_HALT-0) (terminal pin J3-0))
+   )
+   (wire (path TOP 63499  -11554460 5681980 -11747500 5681980 -11747500 4889500)
+    (connect (terminal pin C1_CPU-1) (terminal via))
+   )
+   (wire (path TOP 63499  -10071100 1538540 -10071100 1397000 -9964420 1397000
+     -9964420 396240)
+    (connect (terminal pin D1_HALT-1) (terminal pin TR1_HALT-0))
+   )
+   (wire (path BOT 63499  -11747500 4889500 -13906500 4889500 -13906500 4899740
+     -14250340 4899740)
+    (connect (terminal via) (terminal pin J1-16))
+   )
+   (wire (path BOT 63499  -11747500 4889500 -11747500 4772660 -10107603 4772660
+     -10107603 4899660 -9613900 4899660)
+    (connect (terminal via) (terminal pin Z80_CPU-28))
+   )
+   (wire (path BOT 63499  -13764260 325120 -14033500 325120 -14033500 325200
+     -14245260 325200)
+    (connect (terminal pin J3-0) (terminal pin J1-34))
+   )
+   (wire (path TOP 50800  -9613900 4899660 -9801860 4899660 -10071100 4630420
+     -10071100 1538540)
+    (connect (terminal pin Z80_CPU-28) (terminal pin D1_HALT-1))
+    (type protect)
+   )
+   (via PS8 -11747500 4889500)
+   )
+   (Net HALT 
+   (rule
+   )
+   (wire (path BOT 50800  -10406380 -292100 -9964420 -292100 -9964420 -10160)
+    (connect (terminal pin R5_HALT-0) (terminal pin TR1_HALT-2))
+   )
+   (wire (path BOT 50800  -10406380 -292100 -10406380 -299720 -10899140 -299720)
+    (connect (terminal pin R5_HALT-0) (terminal pin R6_HALT-1))
+   )
+   )
+   (Net SP2 
+   (rule
+   )
+   (wire (path BOT 50800  -14245260 -182800 -14245260 -182880 -13764260 -182880)
+    (connect (terminal pin J1-36) (terminal pin J3-2))
+   )
+   )
+   (Net SP3 
+   (rule
+   )
+   (wire (path BOT 50800  -14245260 -436800 -14245260 -436880 -13764260 -436880)
+    (connect (terminal pin J1-37) (terminal pin J3-3))
+   )
+   )
+   (Net SP4 
+   (rule
+   )
+   (wire (path BOT 50800  -14245260 -690800 -14245260 -690880 -13764260 -690880)
+    (connect (terminal pin J1-38) (terminal pin J3-4))
+   )
+   )
+   (Net SP5 
+   (rule
+   )
+   (wire (path BOT 50800  -14245260 -944800 -14245260 -944880 -13764260 -944880)
+    (connect (terminal pin J1-39) (terminal pin J3-5))
+   )
+   )
+   (Net VCC/VDD 
+   (rule
+   )
+   (wire (path TOP 63499  -11137900 5153660 -10899140 5153660 -10899140 716280)
+    (connect (terminal pin Z80_CPU-10) (terminal pin R6_HALT-0))
+   )
+   (wire (path TOP 63499  -11554460 5173980 -11554460 5397500 -11366500 5397500
+     -11366500 6858000 -11478260 6858000 -11478260 9489440)
+    (connect (terminal pin C1_CPU-0) (terminal pin R11-0))
+   )
+   (wire (path BOT 63499  -11554460 5173980 -11554460 5153660 -11137900 5153660)
+    (connect (terminal pin C1_CPU-0) (terminal pin Z80_CPU-10))
+   )
+   (wire (path TOP 63499  -11478260 9992360 -11475720 9992360 -11475720 10246360)
+    (connect (terminal pin R9-0) (terminal pin R8-0))
+   )
+   (wire (path TOP 63499  -11478260 9489440 -11478260 9743440)
+    (connect (terminal pin R11-0) (terminal pin R10-0))
+   )
+   (wire (path TOP 63499  -11478260 9743440 -11478260 9992360)
+    (connect (terminal pin R10-0) (terminal pin R9-0))
+   )
+   (wire (path BOT 50800  -14434020 4645740 -14250340 4645740)
+    (connect (terminal wire) (terminal pin J1-17))
+    (type protect)
+   )
+   (wire (path BOT 50800  -11554460 5173980 -11938000 5173980 -12044760 5280740
+     -14393613 5280740 -14541500 5132853 -14541500 4753220 -14434020 4645740)
+    (connect (terminal pin C1_CPU-0) (terminal wire))
+    (type protect)
+   )
+   )
+   (Net VCC_3V 
+   (rule
+   )
+   (wire (path BOT 50800  -14245260 71200 -14245260 71120 -13764260 71120)
+    (connect (terminal pin J1-35) (terminal pin J3-1))
+   )
+   )
+   (Net {NC-1} 
+   (via PS7 -13192760 7665720 (net {NC-1} )
+    (type protect))
+   )
+  )
+ )
