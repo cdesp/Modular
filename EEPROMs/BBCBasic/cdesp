@@ -1,0 +1,8 @@
+include build_Cdesp.z80			
+include bbcbasic\main.z80
+include bbcbasic\exec.z80
+include bbcbasic\eval.z80
+include bbcbasic\fpp.z80
+include bbcbasic\sorry.z80
+include bbcbasic\patch.z80
+include bbcbasic\ram.z80

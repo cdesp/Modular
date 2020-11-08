@@ -1,0 +1,27 @@
+(1) PASS 2:Expression [AUTO] is invalid. OPIDX=3		 at line:33   [exec.z80]
+(2) PASS 2:Expression [DELETE] is invalid. OPIDX=3		 at line:34   [exec.z80]
+(3) PASS 2:Expression [LOAD] is invalid. OPIDX=3		 at line:35   [exec.z80]
+(4) PASS 2:Expression [LIST] is invalid. OPIDX=3		 at line:36   [exec.z80]
+(5) PASS 2:Expression [NEW] is invalid. OPIDX=3		 at line:37   [exec.z80]
+(6) PASS 2:Expression [OLD] is invalid. OPIDX=3		 at line:38   [exec.z80]
+(7) PASS 2:Expression [RENUM] is invalid. OPIDX=3		 at line:39   [exec.z80]
+(8) PASS 2:Expression [SAVE] is invalid. OPIDX=3		 at line:40   [exec.z80]
+(9) PASS 2:Expression [SOUND] is invalid. OPIDX=3		 at line:47   [exec.z80]
+(10) PASS 2:Expression [CLG] is invalid. OPIDX=3		 at line:53   [exec.z80]
+(11) PASS 2:Expression [DRAW] is invalid. OPIDX=3		 at line:58   [exec.z80]
+(12) PASS 2:Expression [ENVEL] is invalid. OPIDX=3		 at line:61   [exec.z80]
+(13) PASS 2:Expression [GCOL] is invalid. OPIDX=3		 at line:65   [exec.z80]
+(14) PASS 2:Expression [MODE] is invalid. OPIDX=3		 at line:70   [exec.z80]
+(15) PASS 2:Expression [MOVE] is invalid. OPIDX=3		 at line:71   [exec.z80]
+(16) PASS 2:Expression [PLOT] is invalid. OPIDX=3		 at line:75   [exec.z80]
+(17) PASS 2:Expression [COLOUR] is invalid. OPIDX=3		 at line:86   [exec.z80]
+(1) PASS 2:Expression [ADVAL] is invalid. OPIDX=3		 at line:38   [eval.z80]
+(2) PASS 2:Expression [FN] is invalid. OPIDX=3		 at line:52   [eval.z80]
+(3) PASS 2:Expression [POINT] is invalid. OPIDX=3		 at line:64   [eval.z80]
+(4) PASS 2:Expression [USR] is invalid. OPIDX=3		 at line:74   [eval.z80]
+
+
+--------------------------
+PASS 3 WARNINGS - LINKING
+--------------------------
+

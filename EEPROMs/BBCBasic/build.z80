@@ -1,0 +1,26 @@
+;
+; Title:	BBC Basic for BSX - Main build file
+; Author:	Dean Belfield
+; Created:	16/05/2020
+; Last Updated:	20/05/2020
+;
+; Modinfo:
+;
+			ORG 0x0000
+
+			MODULE BUILD
+
+			CALL    TELL
+			DEFM	"BSX Breadboard Computer 0.1\n\r"
+			DEFM	"\n\r"
+			DEFB    0
+
+			include bbcbasic\main.z80
+			include bbcbasic\exec.z80
+			include bbcbasic\eval.z80
+			include bbcbasic\fpp.z80
+			include bbcbasic\sorry.z80
+			include bbcbasic\patch.z80
+			include bbcbasic\ram.z80
+
+@USER:  		ENDMODULE
