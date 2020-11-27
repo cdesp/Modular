@@ -1,0 +1,69 @@
+ORG $9000
+
+JP AGN
+
+INCLUDE MYOS_2_0000.SYM
+
+
+AGN:    LD HL,MS3
+    CALL RS_TXT
+ CALL GET_CHAR	;TAKE A CHAR FROM RS232 OR PS2 KEYB
+CP 'M'
+JP Z,MENU
+CP 'T'
+CALL Z,CHAR_TEST
+JR AGN
+
+MS3 DEFS 'T:TEST; M:MENU '
+    DEFB 10,13,0
+
+CHAR_TEST:
+      	LD B,10
+NXT:	PUSH BC
+	CALL READCH
+	POP BC
+	DJNZ NXT
+	RET
+         
+        
+
+
+READCH:
+       CALL GTKEY
+       CALL PS2LOK2
+       RET
+
+
+
+
+
+
+PS2LOK2	LD HL,PS2TAB2
+	LD B,0
+	LD C,A
+	ADD HL,BC
+	LD A,(HL)
+	LD HL,KEYCTR
+	LD B,(HL)
+	BIT 6,B			;BIT 6 IS SHIFT
+	RET Z
+	ADD A,32
+	RET
+
+PS2TAB2	DB 0,0,0,0,0,0,0,0,0,0
+	DB 0,0,0,0,'`',0,0,0,0,0
+	DB 0,'Q','1',0,0,0,'Z','S','A','W'
+	DB '2',0,0,'C','X','D','E','4','3',0
+	DB 0,' ','V','F','T','R','5',0,0,'N'
+	DB 'B','H','G','Y','6',0,0,0,'M','J'
+	DB 'U','7','8',0,0,',','K','I','O','0'
+	DB '9',0,0,'.','/','L',59,'P','-',0       ;70-79
+	DB 0,0,39,0,'[','=',0,0,0,0               ;80-89
+	DB 13,']',0,0,0,0,0,0,0,0                 ;90-99
+	DB 0,0,6,0,0,8,0,4,9,0                    ;100-109   
+	DB 0,0,1,7,10,0,3,11,0,0                  ;110-119 
+	DB 0,0,'3',0,'*','9',0,0,0,0              ;120-129
+	DB 0,0,0,0,0,0,0,0,0,0			              ;130-139
+	DB 0,0,0,0,0,0,0,0,0,0                    ;140-149
+  DB 0,0,0,0,0,0,0,0,0,0			              ;150-159
+	DB 0,0,0,0,0,0,0,0,0,0                    ;160-169

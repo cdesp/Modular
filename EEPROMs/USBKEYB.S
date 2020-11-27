@@ -164,6 +164,8 @@ READCHAR:CALL GTKEY
 	CALL Z,CTRTOG	
 	CP 17		;LEFT ALT
 	CALL Z,ALTTOG
+	CP $58  ;CAPS LOCK
+	CALL Z,CAPSTOG
 ;	CP 0
 ;	JR Z,GTKEY ;INVALID KEY (RELEASED,ETC)
 	RET
@@ -202,6 +204,8 @@ GTEXT:	CALL PS2KEY	; THIS IS THE EXTENDED KEY
 	CP $11	;RIGHT ALT
 	RET Z
 	CP $14	;LEFT ALT
+	RET Z
+	CP $4A  ;NUMLOCK /
 	RET Z
 	CP $F0
 	JP NZ, 	EXGTEX	;GTREL ;EXTENDED KEY RELEASED $E0 $F0 $KEY
@@ -255,33 +259,75 @@ ALTTOG:	LD HL,KEYCTR	;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
 	LD (HL),A	; SAVE
 	XOR A		; NO KEY
 	RET
-			
-@PS2LOK	LD HL,PS2TAB
-	LD B,0
-	LD C,A
-	ADD HL,BC
-	LD A,(HL)
-	LD HL,KEYCTR
-	LD B,(HL)
-	BIT 6,B			;BIT 6 IS SHIFT
-	RET Z
-	ADD A,32
+
+CAPSTOG:	LD HL,KEYCTR	;KEYBOARD FLAGS SHFT,CONTROL,GRAPH,CAPS
+	LD A,$10
+	XOR (HL)	; BIT 4 IS CAPS $10=16 
+	LD (HL),A	; SAVE
+	XOR A		; NO KEY
 	RET
 
-PS2TAB	DB 0,0,0,0,0,0,0,0,0,0
-	DB 0,0,0,0,'`',0,0,0,0,0
-	DB 0,'Q','1',0,0,0,'Z','S','A','W'
-	DB '2',0,0,'C','X','D','E','4','3',0
-	DB 0,' ','V','F','T','R','5',0,0,'N'
-	DB 'B','H','G','Y','6',0,0,0,'M','J'
-	DB 'U','7','8',0,0,',','K','I','O','0'
-	DB '9',0,0,'.','/','L',59,'P','-',0       ;70-79
-	DB 0,0,39,0,'[','=',0,0,0,0               ;80-89
-	DB 13,']',0,0,0,0,0,0,0,0                 ;90-99
-	DB 0,0,6,0,0,8,0,4,9,0                    ;100-109   
-	DB 0,0,1,7,10,0,3,11,0,0                  ;110-119 
-	DB 0,0,'3',0,'*','9',0,0,0,0              ;120-129
-	DB 0,0,0,0,0,0,0,0,0,0			              ;130-139
-	DB 0,0,0,0,0,0,0,0,0,0                    ;140-149
-  DB 0,0,0,0,0,0,0,0,0,0			              ;150-159
-	DB 0,0,0,0,0,0,0,0,0,0                    ;160-169
+			
+@PS2LOK	
+	LD HL,KEYCTR
+	LD B,A   ; SAVE A
+	LD A,(HL); GET KEYBFLAGS ON A SHIFT
+	LD C,A   ;CAPS ON C
+	RR A
+	RR A     ;2 ROTATIONS RIGHT SHIFT BECOMES BIT 4 FROM 6
+	XOR C    ;XOR SHIFT WITH CAPS
+	BIT 4,A  ;CHECK IF BIT 4 IS 0 = UNSHIFTED
+	LD A,B   ;RESTORE A
+	
+;	LD B,(HL)
+;  BIT 6,B			;BIT 6 IS SHIFT
+
+  LD HL,PS2TAB1	;UNSHIFTED
+	JR Z,PLK1
+	LD HL,PS2TAB2	;SHIFTED
+PLK1:   LD B,0
+	LD C,A
+	ADD HL,BC        
+	LD A,(HL)	;GET THE CHAR
+	RET
+
+ESC EQU $1B
+																									;SCAN CODES
+PS2TAB1	DB 0,0,0,0,0,0,0,0,0,0
+	      DB 0,0,0,0,'`',0,0,0,0,0
+	      DB 0,'q','1',0,0,0,'z','s','a','w'
+	      DB '2',0,0,'c','x','d','e','4','3',0
+	      DB 0,' ','v','f','t','r','5',0,0,'n'	    ;40-49
+	      DB 'b','h','g','m','6',0,0,44,'m','j'	    ;50-59
+	      DB 'u','7','8',0,0,',','k','i','o','0'	  ;60-69
+	      DB '9',0,0,'.','/','l',59,'p','-',0       ;70-79
+	      DB 0,0,39,0,'[','=',0,0,0,0               ;80-89
+	      DB 13,']',0,'\',0,0,0,0,0,0               ;90-99
+	      DB 0,0,6,0,0,8,0,4,9,0                    ;100-109   
+	      DB 0,0,1,7,10,0,3,11,ESC,0                ;110-119 
+	      DB 0,0,'+','-','*','9',0,0,0,0            ;120-129
+	      DB 0,0,0,0,0,0,0,0,0,0			              ;130-139
+	      DB 0,0,0,0,0,0,0,0,0,0                    ;140-149
+        DB 0,0,0,0,0,0,0,0,0,0		                ;150-159
+	      DB 0,0,0,0,0,0,0,0,0,0                    ;160-169
+
+
+PS2TAB2	DB 0,0,0,0,0,0,0,0,0,0
+	      DB 0,0,0,0,'~',0,0,0,0,0
+	      DB 0,'Q','!',0,0,0,'Z','S','A','W'
+	      DB '@',0,0,'C','X','D','E','$','#',0
+	      DB 0,' ','V','F','T','R','%',0,0,'N'	    ;40-49
+	      DB 'B','H','G','Y','^',0,0,'"','M','J'	  ;50-59
+	      DB 'U','^','*',0,0,'<','K','I','O',')'	  ;60-69
+	      DB '(',0,0,'>','?','L',':','P','_',0      ;70-79
+	      DB 0,0,34,0,'{','+',0,0,0,0               ;80-89
+	      DB 13,'}',0,'|',0,0,0,0,0,0               ;90-99
+	      DB 0,0,6,0,0,8,0,4,9,0                    ;100-109   
+	      DB 0,0,1,7,10,0,3,11,ESC,0                ;110-119 
+	      DB 0,0,'+','-','*','9',0,0,0,0            ;120-129
+	      DB 0,0,0,0,0,0,0,0,0,0			              ;130-139
+	      DB 0,0,0,0,0,0,0,0,0,0                    ;140-149
+	      DB 0,0,0,0,0,0,0,0,0,0		                ;150-159
+	      DB 0,0,0,0,0,0,0,0,0,0                    ;160-169
+
+

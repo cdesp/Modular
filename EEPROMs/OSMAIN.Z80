@@ -24,7 +24,7 @@
     
     
     ;LOCAL CONSTS
-    PORT_TAPE       EQU 0X20      ; SAVE/LOAD PORT 1 BYTE=0xDD 2ND BYTE=COMMAND 
+    PORT_TAPE       EQU DEVTAP      ; SAVE/LOAD PORT 1 BYTE=0xDD 2ND BYTE=COMMAND 
     COMMD_SAVE      EQU 10
     COMMD_LOAD      EQU 20;
        
@@ -34,7 +34,7 @@
 
       
       
-TEST: JP LCD_TEST    
+;TEST: JP LCD_TEST    
     
 @MYOS_CLRSCN:JP LCD_CLRSCR        ; CLRSCN: clears the screen.
             
@@ -76,9 +76,14 @@ KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS
 			     PUSH    AF
            PUSH    DE
            PUSH    HL
+           PUSH    IX
+           PUSH    IY
+           
            LD      E,A
            CALL    ESCTEST
            CALL    EDPUT
+           POP     IY
+           POP     IX
            POP     HL
            POP     DE
            POP     AF
@@ -100,11 +105,13 @@ EDPUT:  LD      A,(FLAGS)
 @MYOS_PROMPT: 	      ; PROMPT: output the input prompt	
            LD E,'>'			     
 WRCH:      LD A,E
-           OUT (0),A      
+           ;OUT (0),A      
            PUSH AF
            PUSH BC
            PUSH DE
 					 PUSH HL
+					 PUSH IX
+					 PUSH IY
 					 
            PUSH AF
            PUSH BC
@@ -117,7 +124,9 @@ WRCH:      LD A,E
            POP AF
            CALL LCD_PRINTCHAR
            CALL LCD_PRNCURS
-           
+
+           POP IY
+           POP IX
            POP HL
            POP DE
            POP BC
@@ -198,7 +207,11 @@ ABORT:       		LD HL,FLAGS
             LD DE,COL_BLACK
             LD (HL),E
             INC HL
-            LD (HL),D                                   
+            LD (HL),D     
+            LD BC,4					; COPY SAME COLORS TO GRAPHICS
+            LD DE,FGRCOL
+            LD HL,FCOLOR
+            LDIR                                          
             LD DE,FCOLPAL
             CALL COPYPAL
             LD DE,BCOLPAL            
@@ -394,23 +407,47 @@ OSLD_NXT2:  IN A,(PORT_TAPE)
             RET
      
 @MYOS_CLG: CALL LCD_CLRSCR
-          JP XEQ           ;RETURN TO BASIC    
+           JP XEQ           ;RETURN TO BASIC    
 
-     
-@MYOS_COLOUR:  CALL LCD_COLOUR     
+
+@MYOS_GCOL:   PUSH IX
+              LD A,1
+              CALL BAS_COLOUR     
+              POP IX
               JP XEQ           ;RETURN TO BASIC    
+              
+@MYOS_COLOUR: PUSH IX
+              XOR A   
+              CALL BAS_COLOUR     
+              POP IX
+              JP XEQ           ;RETURN TO BASIC              
+
+@MYOS_DRAW: PUSH IX 
+            CALL BAS_DRAW
+            POP IX
+            JP XEQ           ;RETURN TO BASIC    
+
+@MYOS_MOVE:PUSH IX
+           CALL BAS_MOVE
+           POP IX
+           JP XEQ           ;RETURN TO BASIC    
+
+@MYOS_PLOT:PUSH IX
+           CALL BAS_PLOT
+           POP IX
+           JP XEQ           ;RETURN TO BASIC    
+
+@MYOS_POINT:PUSH IX
+           CALL BAS_POINT ;RETURNS A VALUE TO BASIC
+           POP IX
+           RET
             
 
 
-@MYOS_DRAW:
 @MYOS_ENVEL:
-@MYOS_GCOL:
 @MYOS_MODE:
-@MYOS_MOVE:
-@MYOS_PLOT:
 @MYOS_SOUND:
 @MYOS_ADVAL:
-@MYOS_POINT:
 @MYOS_GETIMS:
 @MYOS_PUTIMS:
 			XOR     A

@@ -1,0 +1,41 @@
+ORG $9000
+
+
+INCLUDE MYOS_2_0000.SYM
+
+@BAS_DRAW:
+     CALL EXPRI    ;GET 1ST PARAM
+     EXX
+     LD A,(IY)
+     CP 0x0D       ;FINISHED COMD LINE
+     JP Z,GRPHERR 
+     CP ','        ;CHECK FOR ','
+     JP NZ,GRPHERR     
+     LD (GR_PARAM1),HL
+     INC IY        ;NEXT PARAM
+     CALL EXPRI    ;GET 2ND PARAM
+     EXX
+     LD (GR_PARAM2),HL
+     PUSH IY
+     PUSH IX
+     ;DRAW A LINE FROM LASTX,LASTY TO GR_PARAM1,GR_PARAM2
+     LD HL,(GR_LASTX)
+     PUSH HL
+     LD HL,(GR_LASTY)
+     PUSH HL
+     LD HL,(GR_PARAM1)
+     LD (GR_LASTX),HL
+     PUSH HL
+     LD HL,(GR_PARAM2)
+     LD (GR_LASTY),HL
+     PUSH HL 
+     CALL LCD_DRAWLINE 
+     LD HL,8       ;REMOVE PARAMS FROM STACK
+     ADD HL,SP
+     LD SP,HL     
+     POP IX
+     POP IY
+     JP XEQ           ;RETURN TO BASIC  
+
+    
+

@@ -1,0 +1,124 @@
+ORG $9000
+
+
+INCLUDE MYOS_2_0000.SYM
+
+AGN:
+LD HL,MS3
+    CALL RS_TXT
+ CALL GET_CHAR	;TAKE A CHAR FROM RS232 OR PS2 KEYB
+CP 'M'
+JP Z,MENU
+CP 'L'
+CALL Z,LCD_TEST
+CP 'K'
+CALL Z,LCD_TEST_LETTERS
+CP 'P'
+CALL Z,LCD_TEST_LINES
+CP 'Q'
+CALL Z,LCD_TEST_LINES2
+CP 'R'
+RET Z
+JR AGN
+
+MS3 DEFM 'L:TEST; K:LETTERS; P:LINES; M:MENU '
+    DEFB 10,13,0
+    
+    
+    
+
+@LCD_TEST:  ; TEST LCD
+     LD HL,COL_BLUE
+     LD (BCOLOR),HL
+     LD HL,COL_YELLOW
+     LD (FCOLOR),HL
+@LCD_TEST_CLS:
+     CALL LCD_CLRSCR
+     
+    ; JP LCD_TEST_LINES 
+    
+    
+      
+  
+
+@LCD_TEST_LETTERS:  
+    LD A,0
+    LD (CURSORX),A
+    LD A,20
+    LD (CURSORY),A
+    LD B,26
+    LD C,65
+RP1: LD A,C
+     PUSH BC
+    CALL LCD_PRINTCHAR
+    POP BC    
+    INC C 
+    DJNZ RP1
+    
+@LCD_TEST_LINES:
+    LD HL,10
+    LD BC,610
+    PUSH BC
+    PUSH HL
+    PUSH HL
+    PUSH BC
+    CALL LCD_DRAWLINE 
+    LD HL,8       ;REMOVE PARAMS FROM STACK
+    ADD HL,SP
+    LD SP,HL    
+   
+  
+  
+  
+  
+    LD HL,10
+    LD BC,610
+    PUSH HL
+    PUSH HL
+    PUSH BC
+    PUSH BC
+    CALL LCD_DRAWLINE 
+    LD HL,8       ;REMOVE PARAMS FROM STACK
+    ADD HL,SP
+    LD SP,HL    
+    
+
+
+    LD HL,10
+    LD BC,610
+    PUSH HL
+    PUSH HL
+    PUSH BC
+    PUSH HL
+    CALL LCD_DRAWLINE 
+    LD HL,8       ;REMOVE PARAMS FROM STACK
+    ADD HL,SP
+    LD SP,HL
+    LD HL,10
+    LD BC,610
+    PUSH HL
+    PUSH HL
+    PUSH HL
+    PUSH BC
+    CALL LCD_DRAWLINE 
+    LD HL,8       ;REMOVE PARAMS FROM STACK
+    ADD HL,SP
+    LD SP,HL    
+
+
+    RET
+
+@LCD_TEST_LINES2:
+
+    LD HL,10
+    LD BC,610
+    LD DE,0
+    PUSH DE
+    PUSH DE
+    PUSH BC
+    PUSH HL
+    CALL LCD_DRAWLINE 
+    LD HL,8       ;REMOVE PARAMS FROM STACK
+    ADD HL,SP
+    LD SP,HL
+RET

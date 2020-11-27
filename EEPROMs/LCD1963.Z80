@@ -32,6 +32,13 @@ LCD_WR_DAT16:;TWO PARAMS
              ;D=VL E=VH
     LD A,E
     OUT (LCD_CS),A
+
+LCD_RD_DAT:        
+LCD_RD_BUS: 
+             ;DESTROYS A            
+    IN A,(LCD_CS)
+    RET
+
      
 LCD_WR_DAT:        
 LCD_WR_BUS:  ;ONE PARAM VL
@@ -275,6 +282,39 @@ LCD_WR_COM2:;ONE PARAM VL
     LD D,L
     CALL LCD_WR_DAT 
     RET
+    
+@LCD_GETPIXEL: ;GET A 16 BIT VALUE FOR COLOR
+              ;COLOR VALUE ON HL  VH & VL
+              ;DESTROYS D,A
+    LD D,0x2E         ;READ DATA
+    CALL LCD_WR_COM           
+    CALL LCD_RD_DAT 
+    LD H,A
+    CALL LCD_RD_DAT 
+    LD L,A
+    RET    
+
+@LCD_READPIXEL: ; 2 PARAMS ON STACK TOTAL 4 BYTES
+    LD IX,2     ;setXY(x, y, x, y);
+    ADD IX,SP
+    LD H,(IX+3)   ;X
+    LD L,(IX+2)   ;X
+    LD D,(IX+1) ;Y
+    LD E,(IX) ;Y
+    PUSH HL
+    PUSH DE
+    PUSH HL
+    PUSH DE
+    CALL LCD_SETXY
+    LD HL,8       ;REMOVE PARAMS FROM STACK
+    ADD HL,SP
+    LD SP,HL
+    CALL LCD_GETPIXEL
+    PUSH HL    
+    CALL LCD_CLRXY
+    POP HL
+    RET
+
 
 @LCD_DRAWPIXEL: ; 2 PARAMS ON STACK TOTAL 4 BYTES
     LD IX,2     ;setXY(x, y, x, y);
@@ -356,7 +396,7 @@ NXTH1: CALL LCD_SETPIXEL
       RET
 
 
-@LCD_DRAWVLINE: ;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
+LCD_DRAWVLINE: ;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
               ;X , Y , LENGTH
       LD IX,2
       ADD IX,SP
@@ -399,7 +439,7 @@ NXTV1: CALL LCD_SETPIXEL
       CALL LCD_CLRXY
       RET
 
-LCD_DRAWLINE: ;4 PARAMS 2-BYTES EACH TOTAL 8 BYTES
+@LCD_DRAWLINE: ;4 PARAMS 2-BYTES EACH TOTAL 8 BYTES
               ;X1 , Y1 , X2, Y2
       LD IX,2
       ADD IX,SP
@@ -488,8 +528,7 @@ DLXMINUS1:LD C,A
       LD E,(IX)     ;Y2      
       OR A
       SBC HL,DE
-      JR C,Y2GTY1
-      ;HL=Y1-Y2
+      JR C,Y2GTY1  ;HL=Y1-Y2
       XOR A
       DEC A         ;YSTEP=-1
       JR DLNXT2
@@ -500,8 +539,7 @@ Y2GTY1:
       LD D,(IX+5)   ;Y1
       LD E,(IX+4)   ;Y1  
       OR A
-      SBC HL,DE  
-      ;HL=Y2-Y1    HL=DY
+      SBC HL,DE  ;HL=Y2-Y1    HL=DY      
       LD B,0
       LD A,1        ;YSTEP=1
 DLNXT2:
@@ -582,9 +620,9 @@ DLAGN1:
       LD (IY+9),H   ;t += dx;
       LD (IY+8),L
       EX DE,HL
-      LD HL,0
-      SBC HL,DE
-      JR NC,DLAGN1      
+      LD HL,$8000
+      SBC HL,DE     ;CHECK IF T<0
+      JR C,DLAGN1   ; CARRY SET IF NEGATIVE
       LD B,(IY+5)   ;XSTEP HI
       LD C,(IY+4)   ;XSTEP LO
       LD H,(IX+7)   ;COL HI
@@ -608,7 +646,7 @@ DXGTDY:
       SRL B
       RR C           ;(dX >> 1)
       LD HL,0
-      SBC HL,BC      ;t = - (dy >> 1);
+      SBC HL,BC      ;t = - (dX >> 1);
       LD (IY+9),H    ;SAVE T
       LD (IY+8),L    ;SAVE T
 DLAGN2:
@@ -648,9 +686,9 @@ DLAGN2:
       LD (IY+9),H   ;t += dY;
       LD (IY+8),L
       EX DE,HL      ;T=DE
-      LD HL,0
-      SBC HL,DE
-      JR NC,DLAGN2      
+      LD HL,$8000  
+      SBC HL,DE    ;CHECK IF T<0
+      JR C,DLAGN2  ;CARRY SET IF NEGATIVE    
       LD B,(IY+1)   ;YSTEP HI
       LD C,(IY)     ;YSTEP LO
       LD H,(IX+5)   ;ROW HI
@@ -887,6 +925,26 @@ SCUR_AGN3:
 @LCD_CLRSCR:
      CALL LCD_CLRXY;
      LD HL,(BCOLOR)     
+    ; JP METH2
+     LD BC,LCD_HEIGHT
+CS_AGNA2: PUSH BC
+     LD BC,LCD_WIDTH
+CS_AGNA1:  CALL LCD_SETPIXEL         ;DESTROYS D,A, HL HAS COLOR INFO
+     DEC BC
+     LD A,B
+     OR C
+     JR NZ,CS_AGNA1
+     POP BC
+     DEC BC
+     LD A,B
+     OR C     
+     JR NZ,CS_AGNA2
+     LD HL,0                   ;RESET CURSOR AT 0,0
+     LD (CURSORX),HL       
+		 RET
+    
+     
+METH2:     
      ;OUTER LOOP HEIGHT TIMESS
      LD B,LCD_HEIGHT.AND.0xFF   ;lsb
      LD C,LCD_HEIGHT.SHR.8+1      ;MSB+1
@@ -907,6 +965,8 @@ CS_AGN1:
      LD HL,0                   ;RESET CURSOR AT 0,0
      LD (CURSORX),HL       
      RET
+     
+     
 ;PRINT A MESSAGE AT CURSOR     
 @LCD_MSG:
      ;HL HAS THE TEXT BUFFER
@@ -919,20 +979,36 @@ CS_AGN1:
      INC HL
      JR LCD_MSG
      
-;
+     
+;========================
+;  BBC BASIC COMMANDS
+;========================     
+     
+; WORKS WITH BBC BASIC
 ; SET LOGICAL COLOR 1 OF 15 POSITIONS
-@LCD_COLOUR:
-     CALL EXPRI
+@BAS_COLOUR:
+     CP 1          ;IS IT FOR GRAPHICS?
+     JR Z,GRCOLS
+     LD HL,BCOLOR
+     LD (GR_PARAM4),HL
+     LD HL,FCOLOR
+     LD (GR_PARAM3),HL
+     JR BS_DOCOL
+GRCOLS: LD HL,BGRCOL
+     LD (GR_PARAM4),HL
+     LD HL,FGRCOL
+     LD (GR_PARAM3),HL         
+BS_DOCOL: CALL EXPRI    ;GET 1ST PARAM
      EXX
      LD A,(IY)
-     CP 0x0D
+     CP 0x0D       ;FINISHED COMD LINE
      JR Z,COLSEL
-     CP ','
-     JR NZ,COLERR
+     CP ','        ;CHECK FOR ','
+     JP NZ,GRPHERR
      ;SET A NEW COLOR ON FCOLOR PALLETE
      PUSH HL       ;SAVE 1ST PARAM
      INC IY        ;NEXT PARAM
-     CALL EXPRI
+     CALL EXPRI    ;GET 2ND PARAM
      EXX
      POP DE        ;RESTORE 1ST PARAM ON DE HL HAS THE 2ND
      LD A,E
@@ -945,7 +1021,7 @@ COLFC: LD IX,FCOLPAL
 DOPALCOL:
      LD A,E
      CP 15			  ;MAX 16 COLORS
-     JR NC,COLERR
+     JP NC,GRPHERR
      ADD IX,DE     
      ADD IX,DE     ;2*DE CAUSE ITS A 2 BYTE ARRAY
      LD (IX),L    ;SAVE THE NEW COLOR 
@@ -959,14 +1035,18 @@ COLSEL:
      SUB 128        ;CHECK MSB
      JR C,CFC
      LD E,A
+     LD IX,GR_PARAM4
+     LD L,(IX)
+     LD H,(IX+1)     
      LD IX,BCOLPAL  ;BACKCOLOR
-     LD HL,BCOLOR
      JR SFC
-CFC: LD IX,FCOLPAL  ;FRONTCOLOR
-     LD HL,FCOLOR
+CFC: LD IX,GR_PARAM3
+     LD L,(IX)
+     LD H,(IX+1)     
+     LD IX,FCOLPAL  ;FRONTCOLOR
 SFC: LD A,E
-     CP 15			  ;MAX 16 COLORS
-     JR NC,COLERR
+     CP 16			  ;MAX 16 COLORS
+     JP NC,GRPHERR
      ADD IX,DE
      ADD IX,DE
      LD D,(IX)
@@ -974,93 +1054,409 @@ SFC: LD A,E
      LD (HL),D  ;SAVE AGAIN 
      INC HL     
      LD (HL),E       
+     RET          
+
+
+;GETS ALL AVAILABLE PARAMS
+;RETURNS IN A HOW MANY 1-4
+GETBASICPARAMS:
+     XOR A
+     LD HL,GR_PARAM1
+GBP_NXT:
+     PUSH AF
+     PUSH HL
+     CALL EXPRI    ;GET 1ST PARAM
+     EXX           ;HL HAS THE PARAM     
+     POP DE        ;GET PARAM ADDRESS
+     EX DE,HL
+     LD (HL),E
+     INC HL
+     LD (HL),D
+     INC HL        ;PARAM SAVED     
+     POP AF
+     INC A          
+     CP 4
+     RET Z     
+     PUSH AF
+     LD A,(IY)     
+     CP 0x0D       ;FINISHED COMD LINE
+     JR Z,NOMORE 
+     CP ','        ;CHECK FOR ','
+     JR NZ,NOMORE
+     INC IY        ;NEXT PARAM
+     POP AF    
+     JR GBP_NXT     
+NOMORE:POP AF     
      RET
+     
+
+;SAVE GR_PARAM1 AND GR_PARAM2 TO GR_LASTX,GR_LASTY
+@GRPH_SAVELASTPOS:
+     LD BC,8					;8 BYTES SHIFT UP KEEPS 2 LAST POSITIONS NEEDED IN PLOT COMMD
+     LD DE,GR_LASTX3
+     LD HL,GR_LASTX2
+     LDIR     
+     LD HL,(GR_PARAM1)
+     LD (GR_LASTX),HL  ;SAVE TO LAST		     		     
+     LD HL,(GR_PARAM2)
+     LD (GR_LASTY),HL  ;SAVE TO LAST     
+		 RET
+
+;TWO PARAMS DRAW A LINE TO X,Y
+@BAS_DRAW:
+     CALL GETBASICPARAMS
+     CP 2
+     JP NZ,GRPHERR          
+BAS_DODRAW: CALL GRPH_SAVECOLORS
+     PUSH IY
+     ;PUSH IX
+     ;DRAW A LINE FROM LASTX,LASTY TO GR_PARAM1,GR_PARAM2
+     LD HL,(GR_LASTX)
+     PUSH HL
+     LD HL,(GR_LASTY)
+     PUSH HL
+     CALL GRPH_SAVELASTPOS
+     LD HL,(GR_PARAM1)
+     PUSH HL
+     LD HL,(GR_PARAM2)
+     PUSH HL 
+     CALL LCD_DRAWLINE 
+     LD HL,8       ;REMOVE PARAMS FROM STACK
+     ADD HL,SP
+     LD SP,HL     
+     ;POP IX
+     POP IY
+     CALL GRPH_RESTORECOLORS
+     RET           ;RETURN TO BASIC  
+
+
+;TWO PARAMS MOVE THE GRAPHICS CURSOR TO X,Y
+@BAS_MOVE:  CALL GETBASICPARAMS
+          CP 2
+          JP NZ,GRPHERR   
+         ; LD A,(IY)  
+          CALL GRPH_SAVELASTPOS
+          RET
           
-COLERR:
+
+;POINT GETS A LOGICAL COLOR(FROM THE PALLETE) FROM THE SCREEN
+;WE MUST TAKE A PIXEL(2BYTES) FROM THE SCREEN AND SEE WHICH LOGICAL COLOR IT IS TO RETURN IT
+;TWO PARAMS, RETURNS THE COLOR FROM PALLETE CURSOR TO X,Y
+@BAS_POINT:CALL GETBASICPARAMS
+           CP 2
+           JP NZ,GRPHERR   
+          ; PUSH IY   
+          ; PUSH IX    
+           LD HL,(GR_PARAM1)
+           PUSH HL
+           LD HL,(GR_PARAM2)
+           PUSH HL           
+           CALL LCD_READPIXEL
+           EX DE,HL
+           LD HL,4       ;REMOVE 2 PARAMS FROM STACK
+           ADD HL,SP
+           LD SP,HL     
+           EX DE,HL
+           ;HL HAS THE COLOR
+          ; POP IX
+          ; POP IY
+           LD A,(IY)  
+           CP ')'
+           JP NZ,GRPHERR 
+           INC IY 
+           ;RETURNS A NUMBER IN BCHLHL'
+           ; SO FOR 16 BIT NUMBER WE CLEAR BC,HL AND SET HL'
+           LD BC,0
+           DI
+           PUSH HL
+           EXX
+           POP HL
+           EXX           
+           LD HL,0
+           EI
+           RET
+
+
+;A HAS THE GROUP
+;HL HAS THE GROUP TABLE ADDRESS ON RETURN
+;HL=0 NOT FOUND GROUP NOT IMPLEMENTED
+GRPH_GETGROUP: CP 0
+					;GROUP00
+					LD HL,PLOT00
+					RET Z
+          CP 80.SHR.3
+					LD HL,PLOT80
+					RET Z
+          CP 96.SHR.3
+					LD HL,PLOT96
+					RET Z       
+          CP 128.SHR.3
+					LD HL,PLOT128
+					RET Z                   
+	        CP 144.SHR.3
+					LD HL,PLOT144
+					RET Z                   
+          CP 152.SHR.3
+					LD HL,PLOT152
+					RET Z                   
+          CP 160.SHR.3
+					LD HL,PLOT160
+					RET Z                   
+          CP 192.SHR.3
+					LD HL,PLOT192
+					RET Z                   
+          CP 200.SHR.3
+          LD HL,PLOT200
+          RET Z 
+					LD HL,0
+					RET                    		            
+					                       
+;PLOT MODE,X,Y MODE DOES MANY THINGS
+@BAS_PLOT:CALL GETBASICPARAMS
+          CP 3
+          JP NZ,GRPHERR   
+          LD A,(GR_PARAM1)
+          ;SHIFT UP PARAM2 AND PARAM3 PRESERVE A
+          LD BC,4
+          LD HL,GR_PARAM2
+          LD DE,GR_PARAM1
+          LDIR                    
+          LD B,A  ;COMMAND GROUP 5 BITS
+          SRL B
+          SRL B
+          SRL B          
+          AND 7		
+          LD C,A  ;SPECIFIC COMMAND IN GROUP
+          LD A,B
+          CALL GRPH_GETGROUP
+          LD A,H
+          CP 0
+          RET Z ;RET IF HL=0 GROUP NOT IMPLEMENTED
+          LD B,0
+          SLA C      ;C=C*2 2BYTE ADDRESSES
+          ADD HL,BC  ;C IS 0-7 SPECIFIC COMMD
+          LD E,(HL)
+          INC HL
+          LD D,(HL)
+          EX DE,HL
+          JP (HL)
+
+GRPH_NOTIMPL:RET
+
+;CONVERTS THE RELATIVE POSITION TO ABSOLUTE LASTX+GRPARAM1,LASTY+GRPARAM1
+GRPH_CALCREL: LD HL,(GR_PARAM1)
+         LD DE,(GR_LASTX)
+         ADD HL,DE
+         LD (GR_PARAM1),HL
+         LD HL,(GR_PARAM2)
+         LD DE,(GR_LASTY)
+         ADD HL,DE
+         LD (GR_PARAM2),HL
+				 RET
+
+GRPH_MOVEREL:
+         CALL GRPH_CALCREL
+         CALL GRPH_SAVELASTPOS         
+         RET
+         
+GRPH_LINEREL:         
+         CALL GRPH_CALCREL
+         CALL BAS_DODRAW
+         RET
+         
+GRPH_SWAPCOLORS:
+         LD HL,(FCOLOR)
+         PUSH HL
+         LD HL,(BCOLOR)
+         LD (FCOLOR),HL
+         POP HL
+         LD (BCOLOR),HL
+         RET
+
+GRPH_SWAPGRCOLS:
+         LD HL,(FGRCOL)
+         PUSH HL
+         LD HL,(BGRCOL)
+         LD (FGRCOL),HL
+         POP HL
+         LD (BGRCOL),HL
+         RET
+         
+;SAVE THE CURRENT FCOLOR AND BCOLOR AND SETS THE GRAPHICS ONES    
+@GRPH_SAVECOLORS:
+         LD BC,4 ;2 FCOLOR + 2 BCOLOR
+         LD HL,FCOLOR
+         LD DE,FCOLTM 
+         LDIR
+         LD BC,4 ;2 FGRCOL + 2 BGRCOL
+         LD HL,FGRCOL
+         LD DE,FCOLOR
+         LDIR         
+				 RET
+				        
+;RESTORES LAST SAVED FCOLOR AND BCOLOR         
+@GRPH_RESTORECOLORS:	
+         LD BC,4 ;2 FCOLOR + 2 BCOLOR
+         LD HL,FCOLTM
+         LD DE,FCOLOR 
+         LDIR
+				 RET
+			          
+         
+GRPH_LINERELBC:         
+         CALL GRPH_SWAPGRCOLS
+         CALL GRPH_CALCREL
+         CALL BAS_DODRAW
+         CALL GRPH_SWAPGRCOLS
+         RET
+
+GRPH_DRAWBC:         
+         CALL GRPH_SWAPGRCOLS
+         CALL BAS_DODRAW
+         CALL GRPH_SWAPGRCOLS
+         RET
+
+GRPH_TRIANGLE:                  
+         CALL BAS_DODRAW  ;FROM LASTX=2ND PT TO GR_PARAM1=3RD PT
+         LD HL,(GR_LASTX3)
+         LD (GR_PARAM1),HL
+         LD HL,(GR_LASTY3)
+         LD (GR_PARAM2),HL
+         CALL BAS_DODRAW  ;FROM LASTX=3RD PT TO GR_PARAM1=1ST PT
+         LD HL,(GR_LASTX3)
+         LD (GR_PARAM1),HL
+         LD HL,(GR_LASTY3)
+         LD (GR_PARAM2),HL
+         CALL BAS_DODRAW  ;FROM LASTX=1ST PT TO GR_PARAM1=2ND PT
+         LD BC,4
+         LD HL,GR_LASTX3
+         LD DE,GR_LASTX
+         LDIR               ;SET LASTX,LASTY         
+				 RET
+				 
+GRPH_TRIANGLEBC:CALL GRPH_SWAPGRCOLS
+         CALL GRPH_TRIANGLE
+         CALL GRPH_SWAPGRCOLS
+				 RET
+				 
+				 ;PT1=LASTX PT2=PARAM1
+GRPH_RECT:LD HL,GR_PARAM1
+         LD DE,GR_PARAM3
+         LD BC,4
+         LDIR               ;COPY PARAM1,2 TO 3,4         
+         LD HL,(GR_LASTY)
+         PUSH HL            ;PT1_Y
+         LD HL,(GR_LASTX)
+         PUSH HL            ;PT1_X         
+         LD HL,(GR_LASTY)         
+         LD (GR_PARAM2),HL         
+         CALL BAS_DODRAW    ;PT1_X,PT1_Y TO PT2_X,PT1_Y
+         LD HL,(GR_PARAM4)
+         LD (GR_PARAM2),HL
+         CALL BAS_DODRAW    ;PT2_X,PT1_Y TO PT2_X,PT2_Y
+         POP HL             ;PT1_X
+         LD (GR_PARAM1),HL         
+         CALL BAS_DODRAW    ;PT2_X,PT2_Y TO PT1_X,PT2_Y
+         POP HL             ;PT1_Y
+         LD (GR_PARAM2),HL
+         CALL BAS_DODRAW    ;PT1_X,PT2_Y TO PT1_X,PT1_Y
+         LD BC,4
+         LD HL,GR_PARAM3
+         LD DE,GR_LASTX
+         LDIR               ;SET LASTX,LASTY
+         RET
+
+GRPH_RECTBC:CALL GRPH_SWAPGRCOLS
+         CALL GRPH_RECT
+         CALL GRPH_SWAPGRCOLS
+				 RET
+         
+
+PLOT00:  DW GRPH_MOVEREL
+				 DW GRPH_LINEREL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_LINERELBC
+				 DW GRPH_SAVELASTPOS
+				 DW BAS_DODRAW
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_DRAWBC
+
+PLOT80:  DW GRPH_NOTIMPL
+				 DW GRPH_TRIANGLE
+				 DW GRPH_NOTIMPL
+				 DW GRPH_TRIANGLEBC
+				 DW GRPH_NOTIMPL
+				 DW GRPH_TRIANGLE
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_TRIANGLEBC
+
+PLOT96:  DW GRPH_NOTIMPL
+				 DW GRPH_RECT
+				 DW GRPH_NOTIMPL
+				 DW GRPH_RECTBC
+				 DW GRPH_NOTIMPL
+				 DW GRPH_RECT
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_RECTBC
+
+PLOT128: DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_NOTIMPL
+				 
+PLOT144: DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_NOTIMPL
+
+PLOT152: DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_NOTIMPL
+
+PLOT160: DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_NOTIMPL
+				
+PLOT192: DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_NOTIMPL
+				 
+PLOT200: DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL
+				 DW GRPH_NOTIMPL				 
+				 DW GRPH_NOTIMPL
+				 
+@GRPHERR:
 		 XOR     A
 		 CALL    EXTERR
 		 DEFM    'param error'
 		 DEFB    0     
 
-
 ;=============================
-
-
-@LCD_TEST:  ; TEST LCD
-     LD HL,COL_BLUE
-     LD (BCOLOR),HL
-     LD HL,COL_YELLOW
-     LD (FCOLOR),HL
-@LCD_TEST_CLS:
-     CALL LCD_CLRSCR
-     
-    ; JP LCD_TEST_LINES 
-    
-    
-      
-  
-
-@LCD_TEST_LETTERS:  
-    LD A,0
-    LD (CURSORX),A
-    LD A,20
-    LD (CURSORY),A
-    LD B,26
-    LD C,65
-RP1: LD A,C
-     PUSH BC
-    CALL LCD_PRINTCHAR
-    POP BC    
-    INC C 
-    DJNZ RP1
-    
-@LCD_TEST_LINES:
-    LD HL,10
-    LD BC,210
-    PUSH BC
-    PUSH HL
-    PUSH HL
-    PUSH BC
-    CALL LCD_DRAWLINE 
-    LD HL,8       ;REMOVE PARAMS FROM STACK
-    ADD HL,SP
-    LD SP,HL    
-   
-  
-  
-  
-  
-    LD HL,10
-    LD BC,210
-    PUSH HL
-    PUSH HL
-    PUSH BC
-    PUSH BC
-    CALL LCD_DRAWLINE 
-    LD HL,8       ;REMOVE PARAMS FROM STACK
-    ADD HL,SP
-    LD SP,HL    
-    
-
-
-    LD HL,10
-    LD BC,210
-    PUSH HL
-    PUSH HL
-    PUSH BC
-    PUSH HL
-    CALL LCD_DRAWLINE 
-    LD HL,8       ;REMOVE PARAMS FROM STACK
-    ADD HL,SP
-    LD SP,HL
-    LD HL,10
-    LD BC,210
-    PUSH HL
-    PUSH HL
-    PUSH HL
-    PUSH BC
-    CALL LCD_DRAWLINE 
-    LD HL,8       ;REMOVE PARAMS FROM STACK
-    ADD HL,SP
-    LD SP,HL    
-    RET
