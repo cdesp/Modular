@@ -156,14 +156,15 @@ FL_LP1:  LD A,H
 FL_NXT1:
       ;if (x>=x1) goto skip;
       LD HL,(FILL_X)
+      LD DE,(FILL_X1)
       LD A,H
       CP 80H
-      JR NC,FL_NXT1A   ;IF NEGATIVE DON'T SKIP
-      LD DE,(FILL_X1)
+      JR NC,FL_NXT1A   ;IF NEGATIVE DON'T SKIP      
       AND A
       SBC HL,DE       ;CHK X-X1<0 THEN CONTINUE ELSE SKIP
       JP NC,FL_SKIP      
-FL_NXT1A:  ADD HL,DE
+      ADD HL,DE
+FL_NXT1A:  
 	    ;l = x+1;
 	    INC HL
 	    LD (FILL_L),HL
