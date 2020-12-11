@@ -22,15 +22,6 @@
     @EXPRI  EQU BBCBASIC+0x1E94 ;PARSE PARAMETER 
       
     
-    
-    ;LOCAL CONSTS
-    PORT_TAPE       EQU DEVTAP      ; SAVE/LOAD PORT 1 BYTE=0xDD 2ND BYTE=COMMAND 
-    COMMD_SAVE      EQU 10
-    COMMD_LOAD      EQU 20;
-       
-    
-    
-
 
       
       
@@ -76,18 +67,221 @@ KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS
 			     PUSH    AF
            PUSH    DE
            PUSH    HL
-           PUSH    IX
-           PUSH    IY
-           
+           PUSH    IX                      
            LD      E,A
            CALL    ESCTEST
-           CALL    EDPUT
-           POP     IY
-           POP     IX
+           ;TODO CHECK CHAR FOR CONTROL COMMANDS
+           ;0-31 & 127
+           LD A,E
+           CP 32
+           JR C,CTRCODE
+           CP 127   ;BACKSPACE 
+           JP NZ,PRINTIT
+           LD A,8            ;DO A BACKSPACE
+           CALL LCD_PRINTCHAR
+           JP OSWREXIT
+CTRCODE:   CP 4 ;WRITE TEXT AT TEXT POS
+           JR NZ,CC1
+           LD (VDUMODE),A           
+           JP OSWREXIT
+CC1:       CP 5 ;WRITE TEXT AT GRAPH POS    
+           JR NZ,CC2
+           LD (VDUMODE),A
+           JP OSWREXIT
+CC2:       CP 6 ;ENABLE OUTPUT TO SCREEN
+           JR NZ,CC3
+           JP OSWREXIT
+CC3:       CP 7 ;BEEP
+           JR NZ,CC4
+           JP OSWREXIT
+CC4:       CP 8 ;MOVE TEXT CURSOR BACK A CHAR
+           JR NZ,CC5
+           JP PRINTIT
+           ;LD A,(CURSORX)
+           ;DEC A
+           ;CP 0XFF
+           ;JP Z,OSWREXIT ;EXIT IF NEGATIVE
+           ;LD (CURSORX),A           
+           ;JP OSWREXIT
+CC5:       CP 9 ;MOVE TEXT CURSOR FORWARD A CHAR
+           JR NZ,CC6
+           LD A,(CURSORX)
+           INC A
+           CP 80
+           JP NC,OSWREXIT
+           LD (CURSORX),A         
+           JP OSWREXIT   
+CC6:       CP 10 ;MOVE TEXT DOWN LF
+           JP Z,PRINTIT
+CC7:       CP 11 ;MOVE TEXT UP
+           JR NZ,CC8
+           LD A,(CURSORY)
+           DEC A
+           CP 0XFF
+           JP Z,OSWREXIT
+           LD (CURSORY),A           
+           JP OSWREXIT   
+CC8:       CP 12 ; CLS
+           JR NZ,CC9
+           CALL LCD_CLRSCR
+           JP OSWREXIT   
+CC9:       CP 13 ;GOTO START OF LINE CR
+           JP Z,PRINTIT
+CC10:      CP 14 ;ENABLE THE AUTOPAGING MODE
+           JR NZ,CC11
+           JP OSWREXIT   
+CC11:      CP 15 ;DISABLE THE AUTOPAGING MODE
+           JR NZ,CC12
+           JP OSWREXIT   
+CC12:      CP 16 ;CLG
+           JR NZ,CC13
+           CALL MYOS_CLG       
+           JP OSWREXIT   
+CC13:      CP 17 ; SAME AS COLOUR
+           JR NZ,CC14
+           ;TODO:TAKE NEXT PARAM AND SET THE COLOR  
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param  color
+           JP OSWREXIT   
+CC14:      CP 18 ;SAME AS GCOL
+           JR NZ,CC15
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param  mode
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param  color                                        
+           ;TODO:TAKE NEXT PARAM AND SET THE GRAPHICS COLOR                      
+           JP OSWREXIT   
+CC15:      CP 19 ;SELECT A COLOR PALLETTE???
+           JR NZ,CC16
+           ;5 params
+           LD B,5
+CC15AGN:   PUSH BC
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param
+           POP BC
+           DJNZ CC15AGN           
+           JP OSWREXIT   
+CC16:      CP 20 ;RESTORE THE DEFAULT LOGICAL COLORS
+           JR NZ,CC17           
+           ;TODO:COPY THE COLORS LIKE OSINIT           
+           JP OSWREXIT   
+CC17:      CP 21 ;NO OUTPUT TO SCREEN
+           JR NZ,CC18
+           ;TODO:SET A FLAG FOR LCD
+           JP OSWREXIT   
+CC18:      CP 22 ;LIKE MODE
+           JR NZ,CC19
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param           
+           JP OSWREXIT   
+CC19:      CP 23 ;Program characters and control the cursor.???
+           JR NZ,CC20
+           LD B,9   ;9 PARAMS CHAR_NO +8 ROWS OF A CHAR
+           LD A,(IY)
+           INC IY ;SKIP ',' OR ';'
+           CP ';'
+           JR NZ,CC19AGN
+           DEC B ; IF ; THE DELIMETER THEN 2 BYTES AT START   
+CC19AGN:   PUSH BC
+           CALL    EXPRI
+           EXX ;l has the param           
+					 LD A,(IY)
+           INC IY ;SKIP ','
+           CP ';'           
+           JR NZ,CC19NXT
+           POP BC
+           DEC B
+           PUSH BC
+CC19NXT:   POP BC
+           DJNZ CC19AGN                     
+           JP OSWREXIT   
+CC20:      CP 24 ;Define a graphics window
+           JR NZ,CC21
+           INC IY ;SKIP ','
+           LD B,4   ;4 PARAMS TWO CORNERS OF A RECT
+CC20AGN:   PUSH BC           
+           CALL    EXPRI
+           EXX ;HL has the param
+           INC IY ;SKIP ';'
+           POP BC
+           DJNZ CC20AGN                                
+           JP OSWREXIT   
+CC21:      CP 25 ;Identical to PLOT.
+           JR NZ,CC22
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;L has the param PLOTMODE
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;HL has the param X
+           INC IY ;SKIP ';'
+           CALL    EXPRI
+           EXX ;HL has the param Y
+           INC IY ;SKIP ';'
+           ;TODO PUT PARAMS ON GRPARAM1,2
+           ;CALL PLOT COMMAND
+           JP OSWREXIT   
+CC22:      CP 26 ;Restore the default text and graphics windows.
+           JR NZ,CC23
+           JR OSWREXIT   
+CC23:      CP 27 ;Send the next character to the screen.
+           JR NZ,CC24
+           CALL    EXPRI
+           EXX ;
+           LD A,L
+           JR PRINTIT           
+CC24:      CP 28 ;Define a text window.
+           JR NZ,CC25
+           LD B,4   ;4 PARAMS UPPERLEFT AND LOWERRIGHT
+CC24AGN:   PUSH BC
+					 INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param
+           POP BC           
+           DJNZ CC24AGN                                
+           JR OSWREXIT   
+CC25:      CP 29 ;Set the graphics origin.
+           JR NZ,CC26
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;HL has the param X
+           INC IY ;SKIP ';'
+           CALL    EXPRI
+           EXX ;HL has the param Y
+           INC IY ;SKIP ';'
+           ;SET THE LASTMOVE
+           JR OSWREXIT   
+CC26:      CP 30 ;Home the text cursor to the top left of the screen.
+           JR NZ,CC27
+           LD HL,0
+           LD (CURSORX),HL
+           JR OSWREXIT   
+CC27:      CP 31 ;Move the text cursor - identical to TAB(x,y).
+           JR NZ,OSWREXIT   
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param X
+           INC IY ;SKIP ','
+           CALL    EXPRI
+           EXX ;l has the param Y
+           ;SET TEXT X,Y
+           JR OSWREXIT   
+           
+           
+PRINTIT:   CALL    EDPUT
+OSWREXIT:  POP     IX
            POP     HL
            POP     DE
            POP     AF
            RET
+
+
+
 ;
 EDPUT:  LD      A,(FLAGS)
         BIT     3,A
@@ -154,7 +348,7 @@ TOGGLE: LD      A,(FLAGS)
             SCF
             RET     NZ		
             ;PUSH    DE
-            CALL    GETKEY
+            CALL    GETKEYNW
             ;POP     DE
             RET     NC
             CP      ESC
@@ -218,19 +412,31 @@ ABORT:       		LD HL,FLAGS
             CALL COPYPAL
             JR OSFINSH;
 COPYPAL:    LD HL,COL_PALET   
-            LD BC,8*2         ;SHOULD ADD 8 MORE COLORS 
+            LD BC,16*2         ;SHOULD ADD 8 MORE COLORS 
             LDIR
             RET
             ;PRINT MYOS MESSAGE HERE
-OSFINSH:    CALL    TELL
-						DEFM	"CDESP Modular Computer 1.0"
-						DEFB	0AH,0DH,0AH,0DH,00H
+OSFINSH:    CALL LCD_CLRSCR
+            CALL    TELL
+						DEFM	"  CDesp Modular Z80 Computer 2020  "
+						DEFB	0AH,0DH
+						DEFM	"ATLAS operating system version 2.02"						
+						DEFB 0AH,0DH,0AH,0DH						
+						DEFB 00H
             XOR A
          		LD DE,0xFFFF		;DE = HIMEM
          		LD E,A             	;PAGE BOUNDARY
          		LD HL,@USER         		
          		RET	
 COL_PALET:  DW COL_BLACK
+            DW COL_RED
+            DW COL_GREEN
+            DW COL_YELLOW
+            DW COL_BLUE
+            DW COL_MAGENTA
+            DW COL_CYAN
+            DW COL_WHITE            
+           DW COL_BLACK ;TODO PICK 8 MORE COLORS
             DW COL_RED
             DW COL_GREEN
             DW COL_YELLOW
@@ -308,89 +514,44 @@ UPPRC:  		AND     7FH
 			AND     5FH             ;CONVERT TO UPPER CASE
 			RET					
 
+
+;ALPHABETICALLY
+COMDS:DEFM    'BY'
+			DEFB    'E'+80H
+			DEFW    BYE
+      DEFM    'C'
+			DEFB    'D'+80H
+			DEFW    NIMP			
+      DEFM    'DI'
+			DEFB    'R'+80H
+			DEFW    NIMP			
+      DEFM    'F'
+			DEFB    'X'+80H
+			DEFW    FX			
+      DEFM    'PW'
+			DEFB    'D'+80H
+			DEFW    NIMP			
+      DEFM    'TYP'
+			DEFB    'E'+80H
+			DEFW    NIMP						
+			
+			DEFB	0FFH
+
 ; OSCLI - *.
 DOT:			RET
+
 
 ; OSCLI - *BYE
 ;
 BYE:			JP 0
 
-COMDS:  		DEFM    'BY'
-			DEFB    'E'+80H
-			DEFW    BYE
-			DEFB	0FFH
+; OSCLI - *FX
+FX: RET			
   
-@MYOS_OSSAVE:
-            ;bc = length of program
-            ;hl = ACCS =FILENAME ENDS WITH 0X0D
-            ;TOP = CONTAINS START OF BASIC PROGRAM LD HL,(TOP)
-            ;OUT SAVE COMMAND (TWO BYTES)            
-            ;OUT THE FILENAME 0X0D TERMINATED
-            ;OUT THE LENGTH (TWO BYTES)            
-            ;OUT THE BYTES
-            ;COMMAND
-            LD A,0xDD
-            OUT (PORT_TAPE),A
-            LD A,COMMD_SAVE
-            OUT (PORT_TAPE),A
-            ;FILENAME
-OSSV_NXT:   LD A,(HL)
-            OUT (PORT_TAPE),A
-            INC HL
-            CP 0x0D
-            JR NZ,OSSV_NXT
-            ;LENGTH
-            LD A,C
-            OUT (PORT_TAPE),A
-            LD A,B
-            OUT (PORT_TAPE),A
-            ;BYTES
-            LD HL,(PAGE)
-OSSV_NXT2:  LD A,(HL)
-            OUT (PORT_TAPE),A
-            INC HL
-            DEC BC
-            LD A,B
-            OR C
-            JR NZ,OSSV_NXT2                        
-            RET              
-@MYOS_OSLOAD:
-            ;OUT LOAD COMMAND (TWO BYTES)
-            ;OUT THE FILENAME 0X0D TERMINATED
-            ;IN THE LENGTH (TWO BYTES)
-            ;IN THE BYTES 
-            LD A,0xDD
-            OUT (PORT_TAPE),A
-            LD A,COMMD_LOAD
-            OUT (PORT_TAPE),A
-            ;FILENAME
-OSLD_NXT:   LD A,(HL)
-            OUT (PORT_TAPE),A
-            INC HL
-            CP 0x0D
-            JR NZ,OSLD_NXT
-            ;LENGTH READ
-            IN A,(PORT_TAPE)
-            LD C,A
-            IN A,(PORT_TAPE)
-            LD B,A
-            ;BYTES
-            LD HL,(PAGE)                        
-OSLD_NXT2:  IN A,(PORT_TAPE)
-            LD (HL),A
-            INC HL
-            DEC BC
-            LD A,B
-            OR C
-            JR NZ,OSLD_NXT2                        
-            LD B,H
-            LD C,L
-            LD HL,TOP ;SAVE TOP OF BASIC 
-            LD (HL),C
-            INC HL
-            LD (HL),B            
-            SCF       ;SET C = NO ERROR            
-            RET   
+; OSCLI - *VARIOUS
+NIMP: RET			;NOT IMPLEMENTED YET
+
+
             
   
   
@@ -402,11 +563,18 @@ OSLD_NXT2:  IN A,(PORT_TAPE)
 @MYOS_OSCALL:   
 @MYOS_GETPTR: 
 @MYOS_PUTPTR: 
-@MYOS_GETEXT: 
-@MYOS_RESET: 
-            RET
+@MYOS_GETEXT: LD A,1
+              RET 
+
+@MYOS_RESET: RET
+
+@MYOS_MODE:CALL EXPRI    ;GET PARAM
+           EXX           ;HL HAS THE PARAM      
+           JP XEQ
      
-@MYOS_CLG: CALL LCD_CLRSCR
+@MYOS_CLG: CALL GRPH_SAVECOLORS
+           CALL LCD_CLRSCR
+           CALL GRPH_RESTORECOLORS
            JP XEQ           ;RETURN TO BASIC    
 
 
@@ -444,13 +612,15 @@ OSLD_NXT2:  IN A,(PORT_TAPE)
             
 
 
+
+
 @MYOS_ENVEL:
-@MYOS_MODE:
-@MYOS_SOUND:
+@MYOS_SOUND: 
 @MYOS_ADVAL:
 @MYOS_GETIMS:
-@MYOS_PUTIMS:
-			XOR     A
+@MYOS_PUTIMS:CALL GETBASICPARAMS;             
+             JP XEQ
+             
 			CALL    EXTERR
 			DEFM    'Sorry'
 			DEFB    0            
@@ -464,6 +634,17 @@ GETKEY:		  CALL GET_CHAR
             SCF
 			      RET       
       
+; Read a character - DOES NOT wait for input
+; A: ASCII character
+;
+GETKEYNW:		CALL GET_CHARNW
+            CCF
+            CP 0
+            RET Z
+            SCF
+			      RET       
+      
+
          		
 ;
 ;OSLINE - Read/edit a complete line, terminated by CR.

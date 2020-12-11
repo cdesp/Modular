@@ -1,0 +1,71 @@
+@MYOS_OSSAVE:
+            ;bc = length of program
+            ;hl = ACCS =FILENAME ENDS WITH 0X0D
+            ;TOP = CONTAINS START OF BASIC PROGRAM LD HL,(TOP)
+            ;OUT SAVE COMMAND (TWO BYTES)            
+            ;OUT THE FILENAME 0X0D TERMINATED
+            ;OUT THE LENGTH (TWO BYTES)            
+            ;OUT THE BYTES
+            ;COMMAND
+            LD A,0xDD
+            OUT (PORT_TAPE),A
+            LD A,COMMD_SAVE
+            OUT (PORT_TAPE),A
+            ;FILENAME
+OSSV_NXT:   LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            CP 0x0D
+            JR NZ,OSSV_NXT
+            ;LENGTH
+            LD A,C
+            OUT (PORT_TAPE),A
+            LD A,B
+            OUT (PORT_TAPE),A
+            ;BYTES
+            LD HL,(PAGE)
+OSSV_NXT2:  LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            DEC BC
+            LD A,B
+            OR C
+            JR NZ,OSSV_NXT2                        
+            RET              
+@MYOS_OSLOAD:
+            ;OUT LOAD COMMAND (TWO BYTES)
+            ;OUT THE FILENAME 0X0D TERMINATED
+            ;IN THE LENGTH (TWO BYTES)
+            ;IN THE BYTES 
+            LD A,0xDD
+            OUT (PORT_TAPE),A
+            LD A,COMMD_LOAD
+            OUT (PORT_TAPE),A
+            ;FILENAME
+OSLD_NXT:   LD A,(HL)
+            OUT (PORT_TAPE),A
+            INC HL
+            CP 0x0D
+            JR NZ,OSLD_NXT
+            ;LENGTH READ
+            IN A,(PORT_TAPE)
+            LD C,A
+            IN A,(PORT_TAPE)
+            LD B,A
+            ;BYTES
+            LD HL,(PAGE)                        
+OSLD_NXT2:  IN A,(PORT_TAPE)
+            LD (HL),A
+            INC HL
+            DEC BC
+            LD A,B
+            OR C
+            JR NZ,OSLD_NXT2                        
+            LD B,H
+            LD C,L
+            LD HL,TOP ;SAVE TOP OF BASIC 
+            LD (HL),C
+            INC HL
+            LD (HL),B            
+            SCF       ;SET C = NO ERROR            
+            RET   

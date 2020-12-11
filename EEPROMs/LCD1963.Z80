@@ -19,6 +19,7 @@
        @LCD_HEIGHT EQU 479
        FONT_WIDTH EQU 8
        FONT_HEIGHT EQU 10
+       TOTLINES EQU (LCD_HEIGHT+1)/FONT_HEIGHT ;TOTAL CHAR LINES
        
 
 
@@ -1066,7 +1067,26 @@ PRCH_SKIP1:
 PRCH_DOPRN:
       PUSH AF  ;SAVE CHAR TO STACK
       LD (LASTCHAR),A ;SAVE LAST PRINTED CHAR
-      LD A,(CURSORX)
+      ;TODO:CHECK IF VDU 4 TEXT OR 5 GRAPH
+      ;SET WINDOW TO PRINT CHAR ON GRAPH
+      ; JP PRCHDO TO PRINT IT
+      LD A,(VDUMODE)
+      CP 5
+      JR NZ,VDU4
+      LD HL,(GR_LASTX)
+      PUSH HL
+      LD DE,(GR_LASTY)
+      PUSH DE
+      LD BC,FONT_WIDTH-1
+      ADD HL,BC
+      PUSH HL
+      LD BC,FONT_HEIGHT-1
+      EX DE,HL
+      ADD HL,BC
+      PUSH HL
+      CALL LCD_SETXY
+      JR PRCHDO
+VDU4: LD A,(CURSORX)
       LD B,FONT_WIDTH
       LD D,0
       LD E,A
@@ -1080,7 +1100,8 @@ PRCH_AGN1:
       ADC HL,DE      
       DEC HL
       PUSH HL       ;SAVE 3RD PARAM X2
-      LD A,(CURSORY)
+      ;LD A,(CURSORY)
+      CALL LCD_CALCLINE ;SCROLL CALC
       LD B,FONT_HEIGHT 
       LD D,0
       LD E,A
@@ -1096,7 +1117,7 @@ PRCH_AGN2:
       DEC HL        ;4TH PARAM -1  
       PUSH HL				;4TH PARAM Y2
       CALL LCD_SETXY
-      POP AF        ;CHAR TO PRINT FROM STACK
+PRCHDO: POP AF        ;CHAR TO PRINT FROM STACK
       LD HL,FONT_ADDR
       LD D,0
       LD E,A
@@ -1132,6 +1153,63 @@ PRCH_CONT:
       JR Z,PRCH_NEWLN  ;NEW LINE
       LD (HL),A
       RET
+
+;CALULATE LINE NO AFTER SCROLL
+@LCD_CALCLINE:  LD A,(SCRLN)
+                LD D,A 
+                LD A,(CURSORY)  ;480/10 MAKES 48 LINES                
+                ADD A,D
+                CP TOTLINES
+                RET C
+                ;WE ARE OVER 48 LINES
+                SUB TOTLINES
+                RET             
+  
+
+
+;SETS HORIZONTAL SCROLL (LANDSCAPE MODE) 480 LINES TO SCROLL
+LCD_SETSCROLL:  LD D,0x33
+                CALL LCD_WR_COM
+		LD D,0X00 ;TOP FIXED NO OF LINES 2 BYTES HIGH (0)
+                CALL LCD_WR_DAT
+		LD D,0X00 ;TOP FIXED NO OF LINES 2 BYTES LOW
+                CALL LCD_WR_DAT
+		LD D,0X01 ;SCROLL LINES NO OF LINES 2 BYTES HIGH (480)
+                CALL LCD_WR_DAT
+		LD D,0XE0 ;SCROLL LINES NO OF LINES 2 BYTES LOW
+                CALL LCD_WR_DAT
+		LD D,0X00 ;BOTTOM FIXED NO OF LINES 2 BYTES HIGH (0)
+                CALL LCD_WR_DAT
+		LD D,0X00 ;BOTTOM FIXED NO OF LINES 2 BYTES LOW
+                CALL LCD_WR_DAT
+                XOR A
+                LD (SCRLN),A
+		RET
+
+;SCROLLS SCRLN*10 LINES 
+@LCD_DOSCROLL:   LD A,(SCRLN)
+                INC A
+                CP TOTLINES
+                JR C, DS_NXT
+                SUB TOTLINES
+DS_NXT:         LD (SCRLN),A
+                LD L,A
+                LD H,0
+                ADD HL,HL ;*10=FONT_HEIGHT
+                ADD HL,HL
+                ADD HL,HL  
+                LD E,A
+                LD D,0
+                ADD HL,DE
+                ADD HL,DE
+                LD D,0x37
+                CALL LCD_WR_COM
+		LD D,H ;NEW TOP SCROLL LINE BYTES HIGH (1-480) 
+                CALL LCD_WR_DAT
+		LD D,L ;NEW TOP SCROLL LINE BYTES LOW
+                CALL LCD_WR_DAT
+                RET
+
          
 PRCH_NEWLN:
       XOR A  
@@ -1142,6 +1220,10 @@ PRCH_NEWLN:
       ;CHECK FOR END OF SCREEN
       CP 47         ;47 LINES MAX THEN WRAP OR BETTER SCROLL THE SCREEN!!!
       JR NZ,PRCH_NOTYET
+      ;SCROLL
+      PUSH HL
+      CALL LCD_DOSCROLL
+      POP HL
       XOR A
 PRCH_NOTYET:
       LD (HL),A                             
@@ -1222,9 +1304,9 @@ SCUR_AGN3:
      CALL LCD_CLRXY;
      LD HL,(BCOLOR)     
     ; JP METH2
-     LD BC,LCD_HEIGHT
+     LD BC,LCD_HEIGHT+1
 CS_AGNA2: PUSH BC
-     LD BC,LCD_WIDTH
+     LD BC,LCD_WIDTH+1
 CS_AGNA1:  CALL LCD_SETPIXEL         ;DESTROYS D,A, HL HAS COLOR INFO
      DEC BC
      LD A,B
