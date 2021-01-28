@@ -1,22 +1,47 @@
-ORG $A000
-
-DEVEPR  EQU $08 ;Y1 EPROM WR SIGNAL ON/OFF 1/0 BIT 0
-DEVKBD  EQU $08 ;Y1 USB KEYB ON/OFF ON/OFF 2/0 BIT 1
-DEVKBI  EQU $18 ;00;Y0 INPUT FROM DEVICES: DEV1=USB KEYB ON BITS 7=DATA & 6=CLOCK,DEV2=XXX
-            ;TEMP
 
 
+@INTSER:   DI
+           PUSH HL
+           PUSH AF
+           
+           ;TEST INTERRUPT MODULE
+           ;AND ACT ON WHAT DEVICE CAUSED THE INTERRUPT
+           IN A,(DEVINP)
+           CPL
+           AND 0X07 ;BITS 0-2           
+           CP 1
+           CALL Z,INT_TIMER
+           
+IS_EX:     POP AF
+           POP HL
+           EI
+           RET           
 
-INTCNT EQU $9003
-
-
-INTSER: DI
-  PUSH HL
-  LD HL, INTCNT
-  INC (HL)
-  POP HL
-  OUT ($30),A ;Y6 TO CLEAR INTERRUPT
-  EI
-  RETI
-
+INT_TIMER: DEC A
+           OUT (DEVINT),A
+           LD HL,TIMECTR
+           INC (HL)  
+           LD A,(HL)
+           CP 0
+           RET NZ
+           INC HL
+           INC (HL)  
+           LD A,(HL)
+           CP 0
+           RET NZ
+           INC HL
+           INC (HL)  
+           LD A,(HL)
+           CP 0
+           RET NZ
+           INC HL
+           INC (HL)  
+           LD A,(HL)
+           CP 0
+           RET NZ  
+           ;ZERO ALL 4 BYTES
+           LD HL,0
+           LD (TIMECTR),HL
+           LD (TIMECTR+2),HL
+           RET
 

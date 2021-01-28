@@ -1,3 +1,5 @@
 *.ZIP
 *.BMP
 *.jpg
+*.bak
+*.log

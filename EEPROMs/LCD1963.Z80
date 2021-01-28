@@ -1118,6 +1118,7 @@ PRCH_AGN2:
       PUSH HL				;4TH PARAM Y2
       CALL LCD_SETXY
 PRCHDO: POP AF        ;CHAR TO PRINT FROM STACK
+      OR A
       LD HL,FONT_ADDR
       LD D,0
       LD E,A
@@ -1150,7 +1151,7 @@ PRCH_CONT:
       LD A,(HL)
       INC A
       CP 80
-      JR Z,PRCH_NEWLN  ;NEW LINE
+      JP Z,PRCH_NEWLN  ;NEW LINE
       LD (HL),A
       RET
 
@@ -1210,6 +1211,40 @@ DS_NXT:         LD (SCRLN),A
                 CALL LCD_WR_DAT
                 RET
 
+;CLEAR A LINE FOR TEXT A IS THE LINE 0-47
+@LCD_CLRTXTLN:  LD DE,0
+                ;PARAM1
+                PUSH DE
+                LD L,A
+                LD H,0
+                ADD HL,HL ;*10=FONT_HEIGHT
+                ADD HL,HL
+                ADD HL,HL  
+                LD E,A
+                LD D,0
+                ADD HL,DE
+                ADD HL,DE
+                ;PARAM2
+                PUSH HL  
+                LD DE,FONT_HEIGHT
+                ADD HL,DE
+                ;PARAM4
+                EX DE,HL                
+                LD HL,LCD_WIDTH
+                ;PARAM3
+                PUSH HL
+                PUSH DE ;PARAM4
+                CALL LCD_SETXY
+                LD BC, 8000; LCD_WIDTH * FONT_HEIGHT ;8000 BYTES 800*10
+                LD HL,(BCOLOR)     
+CTL_AGN:        CALL LCD_SETPIXEL ;DESTROYS D,A
+                DEC BC
+                LD A,B
+                OR C
+                JR NZ,CTL_AGN
+								CALL LCD_CLRXY 
+								RET                
+
          
 PRCH_NEWLN:
       XOR A  
@@ -1218,16 +1253,28 @@ PRCH_NEWLN:
       LD A,(HL)
       INC A       
       ;CHECK FOR END OF SCREEN
-      CP 47         ;47 LINES MAX THEN WRAP OR BETTER SCROLL THE SCREEN!!!
-      JR NZ,PRCH_NOTYET
-      ;SCROLL
-      PUSH HL
-      CALL LCD_DOSCROLL
-      POP HL
-      XOR A
-PRCH_NOTYET:
+      CP 48         ;47 LINES MAX THEN WRAP OR BETTER SCROLL THE SCREEN!!!
+      JR Z,PRCH_SCROLL
       LD (HL),A                             
       RET
+      ;SCROLL
+PRCH_SCROLL: PUSH AF
+      PUSH HL
+      ;CLEAR NEW LINE
+      LD A,(SCRLN)
+      CALL LCD_CLRTXTLN
+
+      CALL LCD_DOSCROLL
+      POP HL
+      POP AF
+      ;XOR A
+      DEC A
+      LD (HL),A ;CURSORY                            
+      XOR A
+      LD (CURSORX),A
+      RET
+
+      
 ;
 @LCD_RMVCURS:
       ;REMOVES THE CURSOR FROM PREVIOUS POSITION
@@ -1270,7 +1317,8 @@ SCUR_AGN1:
       ADC HL,BC           ;NEXT CHAR
       DEC HL              ;MINUS 1
       PUSH HL             ;SAVE 3RD PARAM X2      
-      LD A,(CURSORY)      
+      ;LD A,(CURSORY)      
+      CALL LCD_CALCLINE
       LD B,FONT_HEIGHT 
       LD D,0
       LD E,A

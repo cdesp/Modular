@@ -1,5 +1,5 @@
     MODULE OSMAIN
-  
+  ;MAIN INTERFACE IMPLEMENTATION WITH BASIC
 
     CR  	 EQU 0DH
     LF		 EQU 0AH
@@ -30,10 +30,26 @@
 @MYOS_CLRSCN:JP LCD_CLRSCR        ; CLRSCN: clears the screen.
             
 @MYOS_PUTIME:        ; PUTIME: set current time to DE:HL, in centiseconds.
+       		 LD A,L
+       		 LD (TIMECTR),A
+					 LD A,H
+ 	  		   LD (TIMECTR+1),A
+ 	  		   LD A,E
+ 	  		   LD (TIMECTR+2),A
+ 	  		   LD A,D
+ 	  		   LD (TIMECTR+3),A 	  		   
 		       RET
 @MYOS_GETIME:        ; GETIME: return current time in DE:HL, in centiseconds.
-       		 LD DE, 0
- 	  		   LD HL, 0
+           ;1 CENTIS IS 10MS
+           ;TIMECTR HAS THE TIME IN CENTISECS
+       		 LD A,(TIMECTR)
+       		 LD L,A
+ 	  		   LD A,(TIMECTR+1)
+ 	  		   LD H,A
+ 	  		   LD A,(TIMECTR+2)
+ 	  		   LD E,A
+ 	  		   LD A,(TIMECTR+3)
+ 	  		   LD D,A
 			     RET		       
 @MYOS_PUTCSR:		    ; PUTCSR: move to cursor to x=DE, y=HL
            LD H,E
@@ -51,7 +67,8 @@
            LD A,(CURSORX)
            LD E,A
            LD H,0
-           LD A,(CURSORY)
+          ; LD A,(CURSORY)
+           CALL LCD_CALCLINE ;GETS CURSORY WITH SCROLL
 			     LD L,A
 			     RET
 KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS	     
@@ -70,7 +87,7 @@ KEYGET:		LD      B,80 ;SCREEN WIDTH IN CHARS
            PUSH    IX                      
            LD      E,A
            CALL    ESCTEST
-           ;TODO CHECK CHAR FOR CONTROL COMMANDS
+           ;CHECK CHAR FOR CONTROL COMMANDS
            ;0-31 & 127
            LD A,E
            CP 32
@@ -191,12 +208,14 @@ CC19AGN:   PUSH BC
            CALL    EXPRI
            EXX ;l has the param           
 					 LD A,(IY)
-           INC IY ;SKIP ','
+					 CP ','
+					 JR Z,CC19NXT0					         
            CP ';'           
            JR NZ,CC19NXT
            POP BC
            DEC B
            PUSH BC
+CC19NXT0:  INC IY ;SKIP ','           
 CC19NXT:   POP BC
            DJNZ CC19AGN                     
            JP OSWREXIT   
@@ -370,7 +389,7 @@ ESCTEST:		CALL RS_RXNW
 	       		RET
 
 @MYOS_TRAP:			CALL ESCTEST
-@MYOS_LTRAP:			LD A,(FLAGS)
+@MYOS_LTRAP:		LD A,(FLAGS)
 			          OR A
 		           	RET P
 ABORT:       		LD HL,FLAGS 
@@ -414,19 +433,25 @@ ABORT:       		LD HL,FLAGS
 COPYPAL:    LD HL,COL_PALET   
             LD BC,16*2         ;SHOULD ADD 8 MORE COLORS 
             LDIR
+            XOR A
+            LD (SCRLN),A
+            LD HL,0
+            LD (TIMECTR),HL
+            LD (TIMECTR+2),HL            
             RET
             ;PRINT MYOS MESSAGE HERE
 OSFINSH:    CALL LCD_CLRSCR
             CALL    TELL
 						DEFM	"  CDesp Modular Z80 Computer 2020  "
 						DEFB	0AH,0DH
-						DEFM	"ATLAS operating system version 2.02"						
+						DEFM	"ATLAS operating system version 2.03"						
 						DEFB 0AH,0DH,0AH,0DH						
 						DEFB 00H
             XOR A
          		LD DE,0xFFFF		;DE = HIMEM
          		LD E,A             	;PAGE BOUNDARY
-         		LD HL,@USER         		
+         		LD HL,@USER      
+         		EI   		
          		RET	
 COL_PALET:  DW COL_BLACK
             DW COL_RED
