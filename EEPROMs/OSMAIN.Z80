@@ -662,14 +662,34 @@ GETKEY:		  CALL GET_CHAR
 ; Read a character - DOES NOT wait for input
 ; A: ASCII character
 ;
-GETKEYNW:		CALL GET_CHARNW
+GETKEYNW:		CALL CHKCURS
+            CALL GET_CHARNW
             CCF
             CP 0
             RET Z
             SCF
 			      RET       
       
-
+@CHKCURS:    PUSH AF
+            LD A,(TIMECTR)
+            BIT 4,A
+            JR Z,CCSHOW      ;IF SET SHOW       
+CCHIDE:     LD A,(CURSSTAT)
+            BIT 1,A
+            JR NZ,CCEX      ;IF NOT SET ALREADY HIDDEN
+            SET 1,A
+            LD (CURSSTAT),A
+            CALL LCD_RMVCURS
+            JR CCEX                                               
+CCSHOW:     LD A,(CURSSTAT)
+            BIT 1,A
+            JR Z,CCEX      ;IF SET ALREADY VISIBLE
+            RES 1,A
+            LD (CURSSTAT),A
+            CALL LCD_PRNCURS
+            
+CCEX:       POP AF
+						RET          
          		
 ;
 ;OSLINE - Read/edit a complete line, terminated by CR.
