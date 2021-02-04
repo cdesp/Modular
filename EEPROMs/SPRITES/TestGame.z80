@@ -1,0 +1,86 @@
+ORG $9000
+
+MENU EQU 237
+
+INCLUDE \..\MYOS_2_0000.SYM
+
+
+
+DI
+LD A,40
+LD (CURSORX),A
+LD A,20
+LD (CURSORY),A
+LD HL,MYMSG1
+CALL LCD_MSG
+
+AGN:   
+ CALL GET_CHAR	;TAKE A CHAR FROM RS232 OR PS2 KEYB
+ CP 'S'
+ CALL Z,MAIN
+ CP 'P'
+ CALL Z,PRINTSPR
+
+CP 'M'
+JP Z,MENU
+JR AGN
+
+MYMSG1 DEFM "S:CREATE SPRITE P:PRINT SPRITE | M=MENU"
+    DB 10,13,0
+
+
+PRINTSPR:  		LD A,0
+			CALL getScreenBG
+			LD A,0
+			CALL blendSprite
+			LD A,0
+			CALL setScreenSPR
+			RET
+			 
+
+MAIN:			CALL createSprite
+			RLC A
+			JR C,GENERROR
+			RRA
+			CALL getSpriteStruct
+			LD HL,100  ; POSX=100
+			LD (IX),H
+			LD (IX+1),L
+			LD (IX+4),H ;NEWPOS
+			LD (IX+5),L			
+			LD HL,100  ;POSY=100
+			LD (IX+2),H
+			LD (IX+3),L
+			LD (IX+6),H ;NEWPOS
+			LD (IX+7),L
+			LD H,SPW     ;WIDTH
+  		        LD (IX+8),H
+  		        LD H,SPH     ;HEIGHT
+			LD (IX+9),H
+  		        LD H,1     ;CURPIC
+			LD (IX+10),H
+  		        LD H,1     ;NO OF PICS
+			LD (IX+11),H
+  		        LD HL,PIRAV     ;GRADDR
+			LD (IX+12),H
+			LD (IX+13),L
+  		        LD HL,PIRAVSCR     ;scraddr
+			LD (IX+14),H
+			LD (IX+15),L
+			RET
+
+
+GENERROR		;TODO:PRINT ERROR
+			RET
+
+
+
+
+
+INCLUDE SPRITE.Z80
+PIRAV EQU $
+SPW EQU 18
+SPH EQU 20
+INCLUDE PIRAVLOS3.Z80
+PIRAVSCR DEFS SPW*SPH*2
+

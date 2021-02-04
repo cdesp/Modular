@@ -5,7 +5,7 @@
 ; In: Multiply BC with DE
 ; Out: HL = result
 ;
-@Mult16:
+@Mult16:ld hl,0
     ld a,b
     ld b,16
 Mult16_Loop:

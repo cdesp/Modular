@@ -1,0 +1,164 @@
+;struct Sprites
+;nosprites byte 1
+;blendaddr: word ;maxwid maxhei 64x64x2 bytes
+
+
+;struct sprite
+;PosX word    2  0 position X in Screen
+;PosY word    2  2 position Y in Screen
+;NewX word    2  4 new position X in Screen
+;NewY word    2  6 new position Y in Screen
+;wid:byte     1  8 width of sprite
+;hei:byte     1  9 height of sprite
+;curpic:byte  1  10 current picture no
+;npics:byte   1  11 number of sprite pics
+;graddr:word  2  12 address in memory graphics are stored
+;scraddr:word 2  14 address in memory screen background is stored
+;
+;
+;total bytes needed in struct 16
+;bytes needed for graphics (wid*hei)*npics*2
+;
+;routines
+;getScreenBG sprno  puts data from screen to memory
+;setScreenBG sprno  puts data from memory to screenBG
+;setScreenSPR sprno,memaddr  puts data from blend memory to screen
+;blendSprite sprno
+;createSprite returns sprno IN A
+;getSpriteStruct sprno returns addr of start of struct
+
+MAXSPR  EQU 20
+SPRSTRCSIZE EQU 16
+LCD_CS EQU $11
+LCD_RS EQU $10
+LCD_WR_COM EQU $0625
+MULT16 EQU 6373
+LCD_SETXY EQU 1940 
+
+
+;creates a new sprite
+@createSprite:    	LD A,(NOSPRITES)
+			CP MAXSPR
+			JR NC,CSERROR
+			INC A
+                	LD (NOSPRITES),A
+			DEC A
+			RET
+CSERROR:		LD A,255
+			RET
+
+@getSpriteStruct:	LD HL,0
+			LD DE,SPRSTRCSIZE 
+			LD B,A
+			CP 0
+			JR Z,GSSEXIT			
+GSSAGN:			ADD HL,DE 
+			DJNZ GSSAGN			
+GSSEXIT:       		EX DE,HL
+			LD HL,SPRT 
+			ADD HL,DE
+			PUSH HL
+			POP IX			
+			RET
+			
+
+setSprScrBox:		NOP
+			CALL getSpriteStruct			
+			PUSH IX
+			LD D,(IX)  ;POSX
+			LD E,(IX+1)			
+			PUSH DE    ;X1    			
+			LD H,(IX+2);POSY						
+			LD L,(IX+3);			
+			PUSH HL     ;Y1			
+    			LD B,0    			
+			LD C,(IX+8) ;WID
+			DEC BC
+			EX DE,HL
+			ADD HL,BC			
+			PUSH HL     ;X2	
+			LD C,(IX+9) ;HEI
+			DEC BC
+			EX DE,HL    			
+			ADD HL,BC
+    			PUSH HL    ;Y2
+    			CALL LCD_SETXY
+    			POP IX
+    			RET
+    			
+getSprSize:	    	LD B,0
+    			LD A,(IX+8) ;WID
+    			SLA A	    ;DOUBLE WIDTH CAUSE EACH PIXEL HAS 2 BYTES
+    			LD C,A
+    			LD D,0
+    			LD E,(IX+9) ;HEI
+    			LD HL,0     ;SHOULD BE REMOVED WHEN ROM COMPILED
+    			CALL Mult16 ;RESULT ON HL = TOTAL BYTES TO READ    			
+    			PUSH HL
+    			POP BC     			
+			RET
+    			
+			
+
+@getScreenBG		CALL setSprScrBox  ;IX ON STRUCT
+    			LD D,0x2E         ;READ DATA FROM LCD
+    			CALL LCD_WR_COM      
+    			;START LOOP AND READ THE PIXELS
+    			CALL getSprSize ;BC SIZE IN BYTES OF SPRITE
+    			LD D,(IX+14) ;SCRADDRESS    			   			    			
+    			LD E,(IX+15)
+GSBGAGN:		;CALL LCD_GTPXL  ;HL HAS THE PIXEL
+			IN A,(LCD_CS)
+    			;LD A,H
+    			LD (DE),A
+    			INC DE
+    			IN A,(LCD_CS)
+    			;LD A,L    			
+    			LD (DE),A
+    			INC DE
+    			DEC BC
+    			DEC BC ;TWO BYTES EACH PIXEL
+    			LD A,B
+    			OR C
+    			JR NZ,GSBGAGN
+    			RET
+    			
+@setScreenSPR		CALL setSprScrBox  ;IX ON STRUCT
+    			CALL getSprSize ;BC SIZE IN BYTES OF SPRITE
+			LD HL,(BLENDADDR)
+			;CALL LCD_SETPIXEL ;HL PXL D DESTROYED
+SSSPRAGN:		LD A,(HL);
+			OUT (LCD_CS),A
+			INC HL
+			LD A,(HL)
+			OUT (LCD_CS),A
+			INC HL
+			DEC BC
+			DEC BC ;2 BYTES SENT FOR EACH PIXEL
+			LD A,B
+			OR C
+			JR NZ,SSSPRAGN
+			RET
+			
+@blendSprite:		CALL getSpriteStruct			
+			;; JUST COPY FOR NOW
+			;COPY FROM graddr TO BLENDADDR
+			CALL getSprSize ;BC SIZE IN BYTES OF SPRITE
+			LD H,(IX+12)  ;GRADDR TODO GRADDR*curpic			
+			LD L,(IX+13)
+			LD DE,(BLENDADDR)
+			LDIR 
+			RET
+
+
+SPRITES EQU $
+NOSPRITES DEFS 1
+BLENDADDR DEFW BLENDAREA
+
+
+SPRT EQU $    ;STRUCT SPRITE ARRAY
+     DEFS MAXSPR*SPRSTRCSIZE
+     
+BLENDAREA DEFS 20*20*2 ;2 BYTES PER PIXEL     
+     
+
