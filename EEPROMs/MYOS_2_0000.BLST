@@ -65,45 +65,45 @@
  15)   00F7 00 00 00 00 		 ALIGN 256	;
  15)   00FB 00 00 00 00 		 ALIGN 256	;
  15)   00FF 00          		 ALIGN 256	;
- 18)   0100 C3 2D 19    		     JP MYOS_CLRSCN	;
- 19)   0103 C3 30 19    		     JP MYOS_PUTIME	;
- 20)   0106 C3 41 19    		     JP MYOS_GETIME	;
- 21)   0109 C3 52 19    		     JP MYOS_PUTCSR	;
- 22)   010C C3 64 19    		     JP MYOS_GETCSR	;
- 23)   010F C3 73 19    		     JP MYOS_OSRDCH	;
- 24)   0112 C3 30 1B    		     JP MYOS_PROMPT	;
- 25)   0115 C3 7E 19    		     JP MYOS_OSWRCH	;
- 26)   0118 C3 5E 1B    		     JP MYOS_OSKEY	;
- 27)   011B C3 9A 1B    		     JP MYOS_OSINIT	;
- 28)   011E C3 91 1D    		     JP MYOS_OSLINE	;
- 29)   0121 C3 66 1C    		     JP MYOS_OSCLI	;
- 30)   0124 C3 F3 1C    		     JP MYOS_OSBPUT 	;
- 31)   0127 C3 F3 1C    		     JP MYOS_OSBGET 	;
- 32)   012A C3 F3 1C    		     JP MYOS_OSSTAT 	;
- 33)   012D C3 F3 1C    		     JP MYOS_OSSHUT 	;
- 34)   0130 C3 F3 1C    		     JP MYOS_OSOPEN 	;
- 35)   0133 C3 F3 1C    		     JP MYOS_OSCALL 	;
+ 18)   0100 C3 30 19    		     JP MYOS_CLRSCN	;
+ 19)   0103 C3 33 19    		     JP MYOS_PUTIME	;
+ 20)   0106 C3 44 19    		     JP MYOS_GETIME	;
+ 21)   0109 C3 55 19    		     JP MYOS_PUTCSR	;
+ 22)   010C C3 67 19    		     JP MYOS_GETCSR	;
+ 23)   010F C3 76 19    		     JP MYOS_OSRDCH	;
+ 24)   0112 C3 33 1B    		     JP MYOS_PROMPT	;
+ 25)   0115 C3 81 19    		     JP MYOS_OSWRCH	;
+ 26)   0118 C3 61 1B    		     JP MYOS_OSKEY	;
+ 27)   011B C3 9D 1B    		     JP MYOS_OSINIT	;
+ 28)   011E C3 94 1D    		     JP MYOS_OSLINE	;
+ 29)   0121 C3 69 1C    		     JP MYOS_OSCLI	;
+ 30)   0124 C3 F6 1C    		     JP MYOS_OSBPUT 	;
+ 31)   0127 C3 F6 1C    		     JP MYOS_OSBGET 	;
+ 32)   012A C3 F6 1C    		     JP MYOS_OSSTAT 	;
+ 33)   012D C3 F6 1C    		     JP MYOS_OSSHUT 	;
+ 34)   0130 C3 F6 1C    		     JP MYOS_OSOPEN 	;
+ 35)   0133 C3 F6 1C    		     JP MYOS_OSCALL 	;
  36)   0136 C3 DA 17    		     JP MYOS_OSSAVE 	;
  37)   0139 C3 03 18    		     JP MYOS_OSLOAD 	;
- 38)   013C C3 F3 1C    		     JP MYOS_GETPTR 	;
- 39)   013F C3 F3 1C    		     JP MYOS_PUTPTR 	;
- 40)   0142 C3 F3 1C    		     JP MYOS_GETEXT 	;
- 41)   0145 C3 F6 1C    		     JP MYOS_RESET 	;
- 42)   0148 C3 8A 1B    		     JP MYOS_TRAP	;
- 43)   014B C3 8D 1B    		     JP MYOS_LTRAP  	;
- 44)   014E C3 FE 1C    		     JP MYOS_CLG	;
- 45)   0151 C3 16 1D    		     JP MYOS_COLOUR	;
- 46)   0154 C3 21 1D    		     JP MYOS_DRAW	;
- 47)   0157 C3 47 1D    		     JP MYOS_ENVEL	;
- 48)   015A C3 0A 1D    		     JP MYOS_GCOL	;
- 49)   015D C3 F7 1C    		     JP MYOS_MODE	;
- 50)   0160 C3 2B 1D    		     JP MYOS_MOVE	;
- 51)   0163 C3 35 1D    		     JP MYOS_PLOT	;
- 52)   0166 C3 47 1D    		     JP MYOS_SOUND	;
- 53)   0169 C3 47 1D    		     JP MYOS_ADVAL	;
- 54)   016C C3 3F 1D    		     JP MYOS_POINT	;
- 55)   016F C3 47 1D    		     JP MYOS_GETIMS	;
- 56)   0172 C3 47 1D    		     JP MYOS_PUTIMS    	;
+ 38)   013C C3 F6 1C    		     JP MYOS_GETPTR 	;
+ 39)   013F C3 F6 1C    		     JP MYOS_PUTPTR 	;
+ 40)   0142 C3 F6 1C    		     JP MYOS_GETEXT 	;
+ 41)   0145 C3 F9 1C    		     JP MYOS_RESET 	;
+ 42)   0148 C3 8D 1B    		     JP MYOS_TRAP	;
+ 43)   014B C3 90 1B    		     JP MYOS_LTRAP  	;
+ 44)   014E C3 01 1D    		     JP MYOS_CLG	;
+ 45)   0151 C3 19 1D    		     JP MYOS_COLOUR	;
+ 46)   0154 C3 24 1D    		     JP MYOS_DRAW	;
+ 47)   0157 C3 4A 1D    		     JP MYOS_ENVEL	;
+ 48)   015A C3 0D 1D    		     JP MYOS_GCOL	;
+ 49)   015D C3 FA 1C    		     JP MYOS_MODE	;
+ 50)   0160 C3 2E 1D    		     JP MYOS_MOVE	;
+ 51)   0163 C3 38 1D    		     JP MYOS_PLOT	;
+ 52)   0166 C3 4A 1D    		     JP MYOS_SOUND	;
+ 53)   0169 C3 4A 1D    		     JP MYOS_ADVAL	;
+ 54)   016C C3 42 1D    		     JP MYOS_POINT	;
+ 55)   016F C3 4A 1D    		     JP MYOS_GETIMS	;
+ 56)   0172 C3 4A 1D    		     JP MYOS_PUTIMS    	;
  58)   0175 00 00 00 00 		 ALIGN 256     	;
  58)   0179 00 00 00 00 		 ALIGN 256     	;
  58)   017D 00 00 00 00 		 ALIGN 256     	;
@@ -235,7 +235,7 @@
 187)   02D9 FE 42       		 CP 'B'	;
 188)   02DB CA 00 40    		 JP Z,BBCBASIC	;
 190)   02DE C3 89 02    		 JP MENU	;
-197)   02E1 CD 67 1D    		@GET_CHARNW: CALL CHKCURS	;
+197)   02E1 CD 6A 1D    		@GET_CHARNW: CALL CHKCURS	;
 198)   02E4 AF          		 XOR A 	;
 200)   02E5 CD AC 05    		 CALL RS_KEYRD ;CHAR IN RS232?	;CHAR IN RS232?
 201)   02E8 28 04       		 JR Z,CNW_TST2 	;
@@ -860,7 +860,7 @@
 284)   07E9 C9          		   RET	;
 289)   07EA 16 2E       		   LD D,0x2E         ;READ DATA	;READ DATA
 290)   07EC CD 25 06    		   CALL LCD_WR_COM           	;
-291)   07EF CD 1E 06    		   CALL LCD_RD_DAT 	;
+291)   07EF CD 1E 06    		@LCD_GTPXL:   CALL LCD_RD_DAT 	;
 292)   07F2 67          		   LD H,A	;
 293)   07F3 CD 1E 06    		   CALL LCD_RD_DAT 	;
 294)   07F6 6F          		   LD L,A	;
@@ -2701,7 +2701,7 @@
 433)   16F8 ED 4B 67 83 		        LD BC,(GR_PARAM3)	;
 434)   16FC C5          		        PUSH BC	;
 435)   16FD D1          		        POP DE	;
-436)   16FE CD F2 18    		        CALL MULT32   ;BCHL RESULT	;BCHL RESULT
+436)   16FE CD F5 18    		        CALL MULT32   ;BCHL RESULT	;BCHL RESULT
 437)   1701 D9          		        EXX	;
 438)   1702 C5          		        PUSH BC	;
 439)   1703 D1          		        POP DE	;
@@ -2710,13 +2710,13 @@
 442)   1706 ED 4B 69 83 		        LD BC,(GR_PARAM4)	;
 443)   170A C5          		        PUSH BC	;
 444)   170B D1          		        POP DE	;
-445)   170C CD F2 18    		        CALL MULT32   ;BCHL RESULT	;BCHL RESULT
+445)   170C CD F5 18    		        CALL MULT32   ;BCHL RESULT	;BCHL RESULT
 446)   170F D9          		        EXX         	;
 447)   1710 C5          		        PUSH BC	;
 448)   1711 E1          		        POP HL	;
 449)   1712 D9          		        EXX	;
 450)   1713 D1          		        POP DE	;
-452)   1714 CD 0D 19    		        CALL ADD32	;
+452)   1714 CD 10 19    		        CALL ADD32	;
 456)   1717 C9          		        RET	;
 458)   1718 CD E8 15    		GRPH_CIRCLEBC:CALL GRPH_SWAPGRCOLS	;
 459)   171B CD DD 16    		        CALL GRPH_CIRCLE	;
@@ -2968,780 +2968,781 @@
 138)   18E2 12          		LD (DE), A	;
 139)   18E3 13          		INC DE	;
 140)   18E4 C9          		RET	;
-  9)   18E5 78          		   ld a,b	;
- 10)   18E6 06 10       		   ld b,16	;
- 12)   18E8 29          		   add hl,hl	;
- 13)   18E9 CB 21       		   sla c	;
- 14)   18EB 17          		   rla	;
- 15)   18EC 30 01       		   jr nc,Mult16_NoAdd	;
- 16)   18EE 19          		   add hl,de	;
- 18)   18EF 10 F7       		   djnz Mult16_Loop	;
- 19)   18F1 C9          		   ret	;
- 25)   18F2 D5          		@Mult32:PUSH DE	;
- 26)   18F3 79          		   ld a,c	;
- 27)   18F4 48          		   ld c,b	;
- 28)   18F5 21 00 00    		   ld hl,0	;
- 29)   18F8 06 10       		   ld b,16	;
- 31)   18FA 29          		   add hl,hl	;
- 32)   18FB 17          		   rla	;
- 33)   18FC CB 11       		   rl c	;
- 34)   18FE 30 07       		   jr nc,Mult32_NoAdd	;
- 35)   1900 19          		   add hl,de	;
- 36)   1901 CE 00       		   adc a,0	;
- 37)   1903 D2 07 19    		   jp nc,Mult32_NoAdd	;
- 38)   1906 0C          		   inc c	;
- 40)   1907 10 F1       		   djnz Mult32_Loop	;
- 41)   1909 41          		   ld b,c	;
- 42)   190A 4F          		   ld c,a	;
- 43)   190B D1          		   POP DE	;
- 44)   190C C9          		   ret	;
- 52)   190D 19          		       ADD     HL,DE   ; 16-BIT ADD OF HL AND DE	; 16-BIT ADD OF HL AND DE
- 53)   190E D9          		       EXX	;
- 54)   190F ED 5A       		       ADC     HL,DE   ; 16-BIT ADD OF HL AND DE WITH CARRY	; 16-BIT ADD OF HL AND DE WITH CARRY
- 55)   1911 D9          		       EXX	;
- 58)   1912 C9          		       RET	;
- 68)   1913 11 40 00    		   ld de,$0040	;
- 69)   1916 7D          		   ld a,l	;
- 70)   1917 6C          		   ld l,h	;
- 71)   1918 62          		   ld h,d	;
- 72)   1919 B7          		   or a	;
- 73)   191A 06 08       		   ld b,8	;
- 75)   191C ED 52       		   sbc hl,de	;
- 76)   191E 30 01       		   jr nc,Sqr16_Skip	;
- 77)   1920 19          		   add hl,de	;
- 79)   1921 3F          		   ccf	;
- 80)   1922 CB 12       		   rl d	;
- 81)   1924 87          		   add a,a	;
- 82)   1925 ED 6A       		   adc hl,hl	;
- 83)   1927 87          		   add a,a	;
- 84)   1928 ED 6A       		   adc hl,hl	;
- 85)   192A 10 F0       		   djnz Sqr16_Loop	;
- 86)   192C C9          		   ret        	;
- 30)   192D C3 38 0E    		@MYOS_CLRSCN:JP LCD_CLRSCR       ; CLRSCN: clears the screen.	; CLRSCN: clears the screen.
- 33)   1930 7D          		         LD A,L	;
- 34)   1931 32 91 83    		         LD (TIMECTR),A	;
- 35)   1934 7C          		     LD A,H	;
- 36)   1935 32 92 83    		        LD (TIMECTR+1),A	;
- 37)   1938 7B          		        LD A,E	;
- 38)   1939 32 93 83    		        LD (TIMECTR+2),A	;
- 39)   193C 7A          		        LD A,D	;
- 40)   193D 32 94 83    		        LD (TIMECTR+3),A         	;
- 41)   1940 C9          		        RET	;
- 45)   1941 3A 91 83    		         LD A,(TIMECTR)	;
- 46)   1944 6F          		         LD L,A	;
- 47)   1945 3A 92 83    		        LD A,(TIMECTR+1)	;
- 48)   1948 67          		        LD H,A	;
- 49)   1949 3A 93 83    		        LD A,(TIMECTR+2)	;
- 50)   194C 5F          		        LD E,A	;
- 51)   194D 3A 94 83    		        LD A,(TIMECTR+3)	;
- 52)   1950 57          		        LD D,A	;
- 53)   1951 C9          		       RET         	;
- 55)   1952 63          		          LD H,E	;
- 56)   1953 E5          		          PUSH HL	;
- 57)   1954 CD F1 0D    		          CALL LCD_RMVCURS	;
- 58)   1957 E1          		          POP HL	;
- 59)   1958 7C          		          LD A,H	;
- 60)   1959 32 0D 83    		          LD (CURSORX),A	;
- 61)   195C 7D          		          LD A,L	;
- 62)   195D 32 0E 83    		          LD (CURSORY),A	;
- 63)   1960 CD F6 0D    		          CALL LCD_PRNCURS                      	;
- 64)   1963 C9          		          RET	;
- 66)   1964 16 00       		          LD D,0	;
- 67)   1966 3A 0D 83    		          LD A,(CURSORX)	;
- 68)   1969 5F          		          LD E,A	;
- 69)   196A 26 00       		          LD H,0	;
- 71)   196C CD 47 0D    		          CALL LCD_CALCLINE ;GETS CURSORY WITH SCROLL	;GETS CURSORY WITH SCROLL
- 72)   196F 6F          		       LD L,A	;
- 73)   1970 C9          		       RET	;
- 74)   1971 06 50       		KEYGET: LD      B,80 ;SCREEN WIDTH IN CHARS      	;SCREEN WIDTH IN CHARS
- 76)   1973 E5          		         PUSH    HL	;
- 77)   1974 ED 62       		          SBC     HL,HL           ;HL=0	;HL=0
- 78)   1976 CD 5E 1B    		          CALL    MYOS_OSKEY	;
- 79)   1979 E1          		          POP     HL	;
- 80)   197A D8          		          RET     C	;
- 81)   197B 18 F6       		          JR      MYOS_OSRDCH           	;
- 82)   197D C9          		       RET  	;
- 84)   197E F5          		       PUSH    AF	;
- 85)   197F D5          		          PUSH    DE	;
- 86)   1980 E5          		          PUSH    HL	;
- 87)   1981 DD E5       		          PUSH    IX                      	;
- 88)   1983 5F          		          LD      E,A	;
- 89)   1984 CD 7D 1B    		          CALL    ESCTEST	;
- 92)   1987 7B          		          LD A,E	;
- 93)   1988 FE 20       		          CP 32	;
- 94)   198A 38 0D       		          JR C,CTRCODE	;
- 95)   198C FE 7F       		          CP 127   ;BACKSPACE 	;BACKSPACE
- 96)   198E C2 12 1B    		          JP NZ,PRINTIT	;
- 97)   1991 3E 08       		          LD A,8            ;DO A BACKSPACE	;DO A BACKSPACE
- 98)   1993 CD 73 0C    		          CALL LCD_PRINTCHAR	;
- 99)   1996 C3 15 1B    		          JP OSWREXIT	;
-100)   1999 FE 04       		CTRCODE:  CP 4 ;WRITE TEXT AT TEXT POS	;WRITE TEXT AT TEXT POS
-101)   199B 20 06       		          JR NZ,CC1	;
-102)   199D 32 16 83    		          LD (VDUMODE),A           	;
-103)   19A0 C3 15 1B    		          JP OSWREXIT	;
-104)   19A3 FE 05       		CC1:      CP 5 ;WRITE TEXT AT GRAPH POS    	;WRITE TEXT AT GRAPH POS
-105)   19A5 20 06       		          JR NZ,CC2	;
-106)   19A7 32 16 83    		          LD (VDUMODE),A	;
-107)   19AA C3 15 1B    		          JP OSWREXIT	;
-108)   19AD FE 06       		CC2:      CP 6 ;ENABLE OUTPUT TO SCREEN	;ENABLE OUTPUT TO SCREEN
-109)   19AF 20 03       		          JR NZ,CC3	;
-110)   19B1 C3 15 1B    		          JP OSWREXIT	;
-111)   19B4 FE 07       		CC3:      CP 7 ;BEEP	;BEEP
-112)   19B6 20 03       		          JR NZ,CC4	;
-113)   19B8 C3 15 1B    		          JP OSWREXIT	;
-114)   19BB FE 08       		CC4:      CP 8 ;MOVE TEXT CURSOR BACK A CHAR	;MOVE TEXT CURSOR BACK A CHAR
-115)   19BD 20 03       		          JR NZ,CC5	;
-116)   19BF C3 12 1B    		          JP PRINTIT	;
-123)   19C2 FE 09       		CC5:      CP 9 ;MOVE TEXT CURSOR FORWARD A CHAR	;MOVE TEXT CURSOR FORWARD A CHAR
-124)   19C4 20 0F       		          JR NZ,CC6	;
-125)   19C6 3A 0D 83    		          LD A,(CURSORX)	;
-126)   19C9 3C          		          INC A	;
-127)   19CA FE 50       		          CP 80	;
-128)   19CC D2 15 1B    		          JP NC,OSWREXIT	;
-129)   19CF 32 0D 83    		          LD (CURSORX),A         	;
-130)   19D2 C3 15 1B    		          JP OSWREXIT   	;
-131)   19D5 FE 0A       		CC6:      CP 10 ;MOVE TEXT DOWN LF	;MOVE TEXT DOWN LF
-132)   19D7 CA 12 1B    		          JP Z,PRINTIT	;
-133)   19DA FE 0B       		CC7:      CP 11 ;MOVE TEXT UP	;MOVE TEXT UP
-134)   19DC 20 0F       		          JR NZ,CC8	;
-135)   19DE 3A 0E 83    		          LD A,(CURSORY)	;
-136)   19E1 3D          		          DEC A	;
-137)   19E2 FE FF       		          CP 0XFF	;
-138)   19E4 CA 15 1B    		          JP Z,OSWREXIT	;
-139)   19E7 32 0E 83    		          LD (CURSORY),A           	;
-140)   19EA C3 15 1B    		          JP OSWREXIT   	;
-141)   19ED FE 0C       		CC8:      CP 12 ; CLS	; CLS
-142)   19EF 20 06       		          JR NZ,CC9	;
-143)   19F1 CD 38 0E    		          CALL LCD_CLRSCR	;
-144)   19F4 C3 15 1B    		          JP OSWREXIT   	;
-145)   19F7 FE 0D       		CC9:      CP 13 ;GOTO START OF LINE CR	;GOTO START OF LINE CR
-146)   19F9 CA 12 1B    		          JP Z,PRINTIT	;
-147)   19FC FE 0E       		CC10:     CP 14 ;ENABLE THE AUTOPAGING MODE	;ENABLE THE AUTOPAGING MODE
-148)   19FE 20 03       		          JR NZ,CC11	;
-149)   1A00 C3 15 1B    		          JP OSWREXIT   	;
-150)   1A03 FE 0F       		CC11:     CP 15 ;DISABLE THE AUTOPAGING MODE	;DISABLE THE AUTOPAGING MODE
-151)   1A05 20 03       		          JR NZ,CC12	;
-152)   1A07 C3 15 1B    		          JP OSWREXIT   	;
-153)   1A0A FE 10       		CC12:     CP 16 ;CLG	;CLG
-154)   1A0C 20 06       		          JR NZ,CC13	;
-155)   1A0E CD FE 1C    		          CALL MYOS_CLG       	;
-156)   1A11 C3 15 1B    		          JP OSWREXIT   	;
-157)   1A14 FE 11       		CC13:     CP 17 ; SAME AS COLOUR	; SAME AS COLOUR
-158)   1A16 20 09       		          JR NZ,CC14	;
-160)   1A18 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-161)   1A1A CD 94 5E    		          CALL    EXPRI	;
-162)   1A1D D9          		          EXX ;l has the param  color	;l has the param  color
-163)   1A1E C3 15 1B    		          JP OSWREXIT   	;
-164)   1A21 FE 12       		CC14:     CP 18 ;SAME AS GCOL	;SAME AS GCOL
-165)   1A23 20 0F       		          JR NZ,CC15	;
-166)   1A25 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-167)   1A27 CD 94 5E    		          CALL    EXPRI	;
-168)   1A2A D9          		          EXX ;l has the param  mode	;l has the param  mode
-169)   1A2B FD 23       		          INC IY ;SKIP ','	;SKIP ','
-170)   1A2D CD 94 5E    		          CALL    EXPRI	;
-171)   1A30 D9          		          EXX ;l has the param  color                                        	;l has the param  color
-173)   1A31 C3 15 1B    		          JP OSWREXIT   	;
-174)   1A34 FE 13       		CC15:     CP 19 ;SELECT A COLOR PALLETTE???	;SELECT A COLOR PALLETTE???
-175)   1A36 20 0F       		          JR NZ,CC16	;
-177)   1A38 06 05       		          LD B,5	;
-178)   1A3A C5          		CC15AGN:  PUSH BC	;
-179)   1A3B FD 23       		          INC IY ;SKIP ','	;SKIP ','
-180)   1A3D CD 94 5E    		          CALL    EXPRI	;
-181)   1A40 D9          		          EXX ;l has the param	;l has the param
-182)   1A41 C1          		          POP BC	;
-183)   1A42 10 F6       		          DJNZ CC15AGN           	;
-184)   1A44 C3 15 1B    		          JP OSWREXIT   	;
-185)   1A47 FE 14       		CC16:     CP 20 ;RESTORE THE DEFAULT LOGICAL COLORS	;RESTORE THE DEFAULT LOGICAL COLORS
-186)   1A49 20 03       		          JR NZ,CC17           	;
-188)   1A4B C3 15 1B    		          JP OSWREXIT   	;
-189)   1A4E FE 15       		CC17:     CP 21 ;NO OUTPUT TO SCREEN	;NO OUTPUT TO SCREEN
-190)   1A50 20 03       		          JR NZ,CC18	;
-192)   1A52 C3 15 1B    		          JP OSWREXIT   	;
-193)   1A55 FE 16       		CC18:     CP 22 ;LIKE MODE	;LIKE MODE
-194)   1A57 20 09       		          JR NZ,CC19	;
-195)   1A59 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-196)   1A5B CD 94 5E    		          CALL    EXPRI	;
-197)   1A5E D9          		          EXX ;l has the param           	;l has the param
-198)   1A5F C3 15 1B    		          JP OSWREXIT   	;
-199)   1A62 FE 17       		CC19:     CP 23 ;Program characters and control the cursor.???	;Program characters and control the cursor.???
-200)   1A64 20 27       		          JR NZ,CC20	;
-201)   1A66 06 09       		          LD B,9   ;9 PARAMS CHAR_NO +8 ROWS OF A CHAR	;9 PARAMS CHAR_NO +8 ROWS OF A CHAR
-202)   1A68 FD 7E 00    		          LD A,(IY)	;
-203)   1A6B FD 23       		          INC IY ;SKIP ',' OR ';'	;SKIP ',' OR ';'
-204)   1A6D FE 3B       		          CP ';'	;
-205)   1A6F 20 01       		          JR NZ,CC19AGN	;
-206)   1A71 05          		          DEC B ; IF ; THE DELIMETER THEN 2 BYTES AT START   	; IF ; THE DELIMETER THEN 2 BYTES AT START
-207)   1A72 C5          		CC19AGN:  PUSH BC	;
-208)   1A73 CD 94 5E    		          CALL    EXPRI	;
-209)   1A76 D9          		          EXX ;l has the param           	;l has the param
-210)   1A77 FD 7E 00    		     LD A,(IY)	;
-211)   1A7A FE 2C       		     CP ','	;
-212)   1A7C 28 07       		     JR Z,CC19NXT0              	;
-213)   1A7E FE 3B       		          CP ';'           	;
-214)   1A80 20 05       		          JR NZ,CC19NXT	;
-215)   1A82 C1          		          POP BC	;
-216)   1A83 05          		          DEC B	;
-217)   1A84 C5          		          PUSH BC	;
-218)   1A85 FD 23       		CC19NXT0: INC IY ;SKIP ','           	;SKIP ','
-219)   1A87 C1          		CC19NXT:  POP BC	;
-220)   1A88 10 E8       		          DJNZ CC19AGN                     	;
-221)   1A8A C3 15 1B    		          JP OSWREXIT   	;
-222)   1A8D FE 18       		CC20:     CP 24 ;Define a graphics window	;Define a graphics window
-223)   1A8F 20 11       		          JR NZ,CC21	;
-224)   1A91 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-225)   1A93 06 04       		          LD B,4   ;4 PARAMS TWO CORNERS OF A RECT	;4 PARAMS TWO CORNERS OF A RECT
-226)   1A95 C5          		CC20AGN:  PUSH BC           	;
-227)   1A96 CD 94 5E    		          CALL    EXPRI	;
-228)   1A99 D9          		          EXX ;HL has the param	;HL has the param
-229)   1A9A FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
-230)   1A9C C1          		          POP BC	;
-231)   1A9D 10 F6       		          DJNZ CC20AGN                                	;
-232)   1A9F C3 15 1B    		          JP OSWREXIT   	;
-233)   1AA2 FE 19       		CC21:     CP 25 ;Identical to PLOT.	;Identical to PLOT.
-234)   1AA4 20 17       		          JR NZ,CC22	;
-235)   1AA6 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-236)   1AA8 CD 94 5E    		          CALL    EXPRI	;
-237)   1AAB D9          		          EXX ;L has the param PLOTMODE	;L has the param PLOTMODE
-238)   1AAC FD 23       		          INC IY ;SKIP ','	;SKIP ','
-239)   1AAE CD 94 5E    		          CALL    EXPRI	;
-240)   1AB1 D9          		          EXX ;HL has the param X	;HL has the param X
-241)   1AB2 FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
-242)   1AB4 CD 94 5E    		          CALL    EXPRI	;
-243)   1AB7 D9          		          EXX ;HL has the param Y	;HL has the param Y
-244)   1AB8 FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
-247)   1ABA C3 15 1B    		          JP OSWREXIT   	;
-248)   1ABD FE 1A       		CC22:     CP 26 ;Restore the default text and graphics windows.	;Restore the default text and graphics windows.
-249)   1ABF 20 02       		          JR NZ,CC23	;
-250)   1AC1 18 52       		          JR OSWREXIT   	;
-251)   1AC3 FE 1B       		CC23:     CP 27 ;Send the next character to the screen.	;Send the next character to the screen.
-252)   1AC5 20 07       		          JR NZ,CC24	;
-253)   1AC7 CD 94 5E    		          CALL    EXPRI	;
-254)   1ACA D9          		          EXX ;	;
-255)   1ACB 7D          		          LD A,L	;
-256)   1ACC 18 44       		          JR PRINTIT           	;
-257)   1ACE FE 1C       		CC24:     CP 28 ;Define a text window.	;Define a text window.
-258)   1AD0 20 0E       		          JR NZ,CC25	;
-259)   1AD2 06 04       		          LD B,4   ;4 PARAMS UPPERLEFT AND LOWERRIGHT	;4 PARAMS UPPERLEFT AND LOWERRIGHT
-260)   1AD4 C5          		CC24AGN:  PUSH BC	;
-261)   1AD5 FD 23       		     INC IY ;SKIP ','	;SKIP ','
-262)   1AD7 CD 94 5E    		          CALL    EXPRI	;
-263)   1ADA D9          		          EXX ;l has the param	;l has the param
-264)   1ADB C1          		          POP BC           	;
-265)   1ADC 10 F6       		          DJNZ CC24AGN                                	;
-266)   1ADE 18 35       		          JR OSWREXIT   	;
-267)   1AE0 FE 1D       		CC25:     CP 29 ;Set the graphics origin.	;Set the graphics origin.
-268)   1AE2 20 10       		          JR NZ,CC26	;
-269)   1AE4 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-270)   1AE6 CD 94 5E    		          CALL    EXPRI	;
-271)   1AE9 D9          		          EXX ;HL has the param X	;HL has the param X
-272)   1AEA FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
-273)   1AEC CD 94 5E    		          CALL    EXPRI	;
-274)   1AEF D9          		          EXX ;HL has the param Y	;HL has the param Y
-275)   1AF0 FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
-277)   1AF2 18 21       		          JR OSWREXIT   	;
-278)   1AF4 FE 1E       		CC26:     CP 30 ;Home the text cursor to the top left of the screen.	;Home the text cursor to the top left of the screen.
-279)   1AF6 20 08       		          JR NZ,CC27	;
-280)   1AF8 21 00 00    		          LD HL,0	;
-281)   1AFB 22 0D 83    		          LD (CURSORX),HL	;
-282)   1AFE 18 15       		          JR OSWREXIT   	;
-283)   1B00 FE 1F       		CC27:     CP 31 ;Move the text cursor - identical to TAB(x,y).	;Move the text cursor - identical to TAB(x,y).
-284)   1B02 20 11       		          JR NZ,OSWREXIT   	;
-285)   1B04 FD 23       		          INC IY ;SKIP ','	;SKIP ','
-286)   1B06 CD 94 5E    		          CALL    EXPRI	;
-287)   1B09 D9          		          EXX ;l has the param X	;l has the param X
-288)   1B0A FD 23       		          INC IY ;SKIP ','	;SKIP ','
-289)   1B0C CD 94 5E    		          CALL    EXPRI	;
-290)   1B0F D9          		          EXX ;l has the param Y	;l has the param Y
-292)   1B10 18 03       		          JR OSWREXIT   	;
-295)   1B12 CD 1B 1B    		PRINTIT:  CALL    EDPUT	;
-296)   1B15 DD E1       		OSWREXIT: POP     IX	;
-297)   1B17 E1          		          POP     HL	;
-298)   1B18 D1          		          POP     DE	;
-299)   1B19 F1          		          POP     AF	;
-300)   1B1A C9          		          RET	;
-305)   1B1B 3A 00 83    		EDPUT: LD      A,(FLAGS)	;
-306)   1B1E CB 5F       		       BIT     3,A	;
-307)   1B20 28 10       		       JR      Z,WRCH	;
-308)   1B22 7B          		       LD      A,E	;
-309)   1B23 FE 20       		       CP      ' '	;
-310)   1B25 D8          		       RET     C	;
-311)   1B26 2A 12 83    		       LD      HL,(EDPTR)	;
-312)   1B29 73          		       LD      (HL),E	;
-313)   1B2A 2C          		       INC     L	;
-314)   1B2B C8          		       RET     Z	;
-315)   1B2C 22 12 83    		       LD      (EDPTR),HL	;
-316)   1B2F C9          		       RET           	;
-319)   1B30 1E 3E       		          LD E,'>'        	;
-320)   1B32 7B          		WRCH:     LD A,E	;
-322)   1B33 F5          		          PUSH AF	;
-323)   1B34 C5          		          PUSH BC	;
-324)   1B35 D5          		          PUSH DE	;
-325)   1B36 E5          		     PUSH HL	;
-326)   1B37 DD E5       		     PUSH IX	;
-327)   1B39 FD E5       		     PUSH IY	;
-329)   1B3B F5          		          PUSH AF	;
-330)   1B3C C5          		          PUSH BC	;
-331)   1B3D D5          		          PUSH DE	;
-332)   1B3E E5          		     PUSH HL	;
-333)   1B3F CD F1 0D    		     CALL LCD_RMVCURS	;
-334)   1B42 E1          		          POP HL	;
-335)   1B43 D1          		          POP DE	;
-336)   1B44 C1          		          POP BC	;
-337)   1B45 F1          		          POP AF	;
-338)   1B46 CD 73 0C    		          CALL LCD_PRINTCHAR	;
-339)   1B49 CD F6 0D    		          CALL LCD_PRNCURS	;
-341)   1B4C FD E1       		          POP IY	;
-342)   1B4E DD E1       		          POP IX	;
-343)   1B50 E1          		          POP HL	;
-344)   1B51 D1          		          POP DE	;
-345)   1B52 C1          		          POP BC	;
-346)   1B53 F1          		          POP AF	;
-347)   1B54 C9          		       RET 	;
-349)   1B55 3A 00 83    		TOGGLE: LD     A,(FLAGS)	;
-350)   1B58 EE 04       		       XOR     00000100B	;
-351)   1B5A 32 00 83    		       LD      (FLAGS),A	;
-352)   1B5D C9          		       RET	;
-361)   1B5E E5          		@MYOS_OSKEY: PUSH   HL	;
-362)   1B5F 21 15 83    		           LD      HL,INKEY	;
-363)   1B62 7E          		           LD      A,(HL)	;
-364)   1B63 36 00       		           LD      (HL),0	;
-365)   1B65 E1          		           POP     HL	;
-366)   1B66 B7          		           OR      A	;
-367)   1B67 37          		           SCF	;
-368)   1B68 C0          		           RET     NZ  	;
-370)   1B69 CD 5B 1D    		           CALL    GETKEYNW	;
-372)   1B6C D0          		           RET     NC	;
-373)   1B6D FE 1B       		           CP      ESC	;
-374)   1B6F 37          		           SCF	;
-375)   1B70 C0          		           RET     NZ                        	;
-376)   1B71 E5          		ESCSET:  PUSH    HL	;
-377)   1B72 21 00 83    		         LD      HL,FLAGS	;
-378)   1B75 CB 76       		         BIT     6,(HL)          ; ESC DISABLED?	; ESC DISABLED?
-379)   1B77 20 02       		         JR      NZ,ESCDIS	;
-380)   1B79 CB FE       		         SET     7,(HL)          ; SET ESCAPE FLAG	; SET ESCAPE FLAG
-381)   1B7B E1          		ESCDIS:  POP     HL	;
-382)   1B7C C9          		         RET 	;
-383)   1B7D CD 92 05    		ESCTEST: CALL RS_RXNW	;
-384)   1B80 B7          		        OR A	;
-385)   1B81 C8          		        RET Z	;
-386)   1B82 FE 1B       		        CP 0x1B   ; ESC 	; ESC
-387)   1B84 28 EB       		        JR Z,ESCSET	;
-388)   1B86 32 15 83    		        LD (INKEY),A	;
-389)   1B89 C9          		         RET	;
-391)   1B8A CD 7D 1B    		@MYOS_TRAP:  CALL ESCTEST	;
-392)   1B8D 3A 00 83    		@MYOS_LTRAP: LD A,(FLAGS)	;
-393)   1B90 B7          		            OR A	;
-394)   1B91 F0          		             RET P	;
-395)   1B92 21 00 83    		ABORT:        LD HL,FLAGS 	;
-396)   1B95 CB BE       		            RES 7,(HL)	;
-397)   1B97 C3 C2 4D    		            JP ESCAPE          	;
-406)   1B9A F3          		           DI	;
-407)   1B9B 21 F6 82    		           LD HL,RANDOM    ; SET RANDOM SEED TO NON 0	; SET RANDOM SEED TO NON 0
-408)   1B9E 3E 06       		           LD A,0x06	;
-409)   1BA0 77          		           LD (HL),A	;
-410)   1BA1 3E BB       		           LD A,0xBB	;
-411)   1BA3 77          		           LD (HL),A	;
-412)   1BA4 21 00 00    		           LD HL,0	;
-413)   1BA7 22 0D 83    		           LD (CURSORX),HL  ; CURSOR X 7 Y ZEROED            	; CURSOR X 7 Y ZEROED
-414)   1BAA 11 FF FF    		           LD DE,COL_WHITE   ; SET FCOLOR AND BCOLOR DEFAULT VALUES	; SET FCOLOR AND BCOLOR DEFAULT VALUES
-415)   1BAD 21 01 83    		           LD HL,FCOLOR	;
-416)   1BB0 73          		           LD (HL),E	;
-417)   1BB1 23          		           INC HL	;
-418)   1BB2 72          		           LD (HL),D	;
-419)   1BB3 23          		           INC HL	;
-420)   1BB4 11 00 00    		           LD DE,COL_BLACK	;
-421)   1BB7 73          		           LD (HL),E	;
-422)   1BB8 23          		           INC HL	;
-423)   1BB9 72          		           LD (HL),D     	;
-424)   1BBA 01 04 00    		           LD BC,4     ; COPY SAME COLORS TO GRAPHICS	; COPY SAME COLORS TO GRAPHICS
-425)   1BBD 11 05 83    		           LD DE,FGRCOL	;
-426)   1BC0 21 01 83    		           LD HL,FCOLOR	;
-427)   1BC3 ED B0       		           LDIR                                          	;
-428)   1BC5 11 17 83    		           LD DE,FCOLPAL	;
-429)   1BC8 CD D3 1B    		           CALL COPYPAL	;
-430)   1BCB 11 37 83    		           LD DE,BCOLPAL            	;
-431)   1BCE CD D3 1B    		           CALL COPYPAL	;
-432)   1BD1 18 16       		           JR OSFINSH;	;
-433)   1BD3 21 46 1C    		COPYPAL:   LD HL,COL_PALET   	;
-434)   1BD6 01 20 00    		           LD BC,16*2         ;SHOULD ADD 8 MORE COLORS 	;SHOULD ADD 8 MORE COLORS
-435)   1BD9 ED B0       		           LDIR	;
-436)   1BDB AF          		           XOR A	;
-437)   1BDC 32 0F 83    		           LD (SCRLN),A	;
-438)   1BDF 21 00 00    		           LD HL,0	;
-439)   1BE2 22 91 83    		           LD (TIMECTR),HL	;
-440)   1BE5 22 93 83    		           LD (TIMECTR+2),HL            	;
-441)   1BE8 C9          		           RET	;
-443)   1BE9 CD 38 0E    		OSFINSH:   CALL LCD_CLRSCR	;
-444)   1BEC CD 2B 4C    		           CALL    TELL	;
-445)   1BEF 20 20 43 44 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1BF3 65 73 70 20 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1BF7 4D 6F 64 75 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1BFB 6C 61 72 20 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1BFF 5A 38 30 20 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1C03 43 6F 6D 70 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1C07 75 74 65 72 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1C0B 20 32 30 32 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-445)   1C0F 30 20 20    		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
-446)   1C12 0A 0D       		     DEFB 0AH,0DH	;
-447)   1C14 41 54 4C 41 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C18 53 20 6F 70 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C1C 65 72 61 74 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C20 69 6E 67 20 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C24 73 79 73 74 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C28 65 6D 20 76 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C2C 65 72 73 69 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C30 6F 6E 20 32 		     DEFM "ATLAS operating system version 2.03"      	;
-447)   1C34 2E 30 33    		     DEFM "ATLAS operating system version 2.03"      	;
-448)   1C37 0A 0D 0A 0D 		     DEFB 0AH,0DH,0AH,0DH      	;
-449)   1C3B 00          		     DEFB 00H	;
-450)   1C3C AF          		           XOR A	;
-451)   1C3D 11 FF FF    		          LD DE,0xFFFF  ;DE = HIMEM	;DE = HIMEM
-452)   1C40 5F          		          LD E,A              ;PAGE BOUNDARY	;PAGE BOUNDARY
-453)   1C41 21 A2 83    		          LD HL,@USER      	;
-454)   1C44 FB          		          EI     	;
-455)   1C45 C9          		          RET 	;
-456)   1C46 00 00       		COL_PALET: DW COL_BLACK	;
-457)   1C48 00 F8       		           DW COL_RED	;
-458)   1C4A C0 07       		           DW COL_GREEN	;
-459)   1C4C C0 FF       		           DW COL_YELLOW	;
-460)   1C4E 3F 00       		           DW COL_BLUE	;
-461)   1C50 3F F8       		           DW COL_MAGENTA	;
-462)   1C52 FF 07       		           DW COL_CYAN	;
-463)   1C54 FF FF       		           DW COL_WHITE            	;
-464)   1C56 00 00       		          DW COL_BLACK ;TODO PICK 8 MORE COLORS	;TODO PICK 8 MORE COLORS
-465)   1C58 00 F8       		           DW COL_RED	;
-466)   1C5A C0 07       		           DW COL_GREEN	;
-467)   1C5C C0 FF       		           DW COL_YELLOW	;
-468)   1C5E 3F 00       		           DW COL_BLUE	;
-469)   1C60 3F F8       		           DW COL_MAGENTA	;
-470)   1C62 FF 07       		           DW COL_CYAN	;
-471)   1C64 FF FF       		           DW COL_WHITE            	;
-477)   1C66 CD C0 1C    		     CALL    SKIPSP	;
-478)   1C69 FE 0D       		  CP      CR	;
-479)   1C6B C8          		  RET     Z	;
-480)   1C6C FE 7C       		  CP      '|'	;
-481)   1C6E C8          		  RET     Z	;
-482)   1C6F FE 2E       		  CP      '.'	;
-483)   1C71 CA ED 1C    		  JP      Z,DOT           ;*.	;*.
-484)   1C74 EB          		  EX      DE,HL	;
-485)   1C75 21 CF 1C    		  LD      HL,COMDS	;
-486)   1C78 1A          		OSCLI0:  LD      A,(DE)	;
-487)   1C79 CD C7 1C    		  CALL    UPPRC	;
-488)   1C7C BE          		  CP      (HL)	;
-489)   1C7D 28 0B       		  JR      Z,OSCLI2	;
-490)   1C7F 38 2E       		  JR      C,HUH	;
-491)   1C81 CB 7E       		OSCLI1:  BIT     7,(HL)	;
-492)   1C83 23          		  INC     HL	;
-493)   1C84 28 FB       		  JR      Z,OSCLI1	;
-494)   1C86 23          		  INC     HL	;
-495)   1C87 23          		  INC     HL	;
-496)   1C88 18 EE       		  JR      OSCLI0	;
-498)   1C8A D5          		OSCLI2:  PUSH    DE	;
-499)   1C8B 13          		OSCLI3:  INC     DE	;
-500)   1C8C 23          		  INC     HL	;
-501)   1C8D 1A          		  LD      A,(DE)	;
-502)   1C8E CD C7 1C    		  CALL    UPPRC	;
-503)   1C91 FE 2E       		  CP      '.'             ;ABBREVIATED?	;ABBREVIATED?
-504)   1C93 28 0A       		  JR      Z,OSCLI4	;
-505)   1C95 AE          		  XOR     (HL)	;
-506)   1C96 28 F3       		  JR      Z,OSCLI3	;
-507)   1C98 FE 80       		  CP      80H	;
-508)   1C9A 28 03       		  JR      Z,OSCLI4	;
-509)   1C9C D1          		  POP     DE	;
-510)   1C9D 18 E2       		  JR      OSCLI1	;
-512)   1C9F F1          		OSCLI4:  POP     AF	;
-513)   1CA0 13          		         INC     DE	;
-514)   1CA1 CB 7E       		OSCLI5:  BIT     7,(HL)	;
-515)   1CA3 23          		  INC     HL	;
-516)   1CA4 28 FB       		  JR      Z,OSCLI5	;
-517)   1CA6 7E          		  LD      A,(HL)	;
-518)   1CA7 23          		  INC     HL	;
-519)   1CA8 66          		  LD      H,(HL)	;
-520)   1CA9 6F          		  LD      L,A	;
-521)   1CAA E5          		  PUSH    HL	;
-522)   1CAB EB          		  EX      DE,HL	;
-523)   1CAC C3 C0 1C    		  JP      SKIPSP	;
-525)   1CAF 3E FE       		HUH:     LD      A,254	;
-526)   1CB1 CD F0 46    		         CALL    EXTERR	;
-527)   1CB4 42 61 64 20 		         DEFM    'Bad command'	;
-527)   1CB8 63 6F 6D 6D 		         DEFM    'Bad command'	;
-527)   1CBC 61 6E 64    		         DEFM    'Bad command'	;
-528)   1CBF 00          		         DEFB    0   	;
-530)   1CC0 7E          		SKIPSP:  LD      A,(HL)	;
-531)   1CC1 FE 20       		         CP      ' '	;
-532)   1CC3 C0          		         RET     NZ	;
-533)   1CC4 23          		         INC     HL	;
-534)   1CC5 18 F9       		         JR      SKIPSP 	;
-536)   1CC7 E6 7F       		UPPRC:   AND     7FH	;
-537)   1CC9 FE 60       		  CP      '`'	;
-538)   1CCB D8          		  RET     C	;
-539)   1CCC E6 5F       		  AND     5FH             ;CONVERT TO UPPER CASE	;CONVERT TO UPPER CASE
-540)   1CCE C9          		  RET     	;
-544)   1CCF 42 59       		COMDS:DEFM   'BY'	;
-545)   1CD1 C5          		  DEFB    'E'+80H	;
-546)   1CD2 EE 1C       		  DEFW    BYE	;
-547)   1CD4 43          		     DEFM    'C'	;
-548)   1CD5 C4          		  DEFB    'D'+80H	;
-549)   1CD6 F2 1C       		  DEFW    NIMP   	;
-550)   1CD8 44 49       		     DEFM    'DI'	;
-551)   1CDA D2          		  DEFB    'R'+80H	;
-552)   1CDB F2 1C       		  DEFW    NIMP   	;
-553)   1CDD 46          		     DEFM    'F'	;
-554)   1CDE D8          		  DEFB    'X'+80H	;
-555)   1CDF F1 1C       		  DEFW    FX   	;
-556)   1CE1 50 57       		     DEFM    'PW'	;
-557)   1CE3 C4          		  DEFB    'D'+80H	;
-558)   1CE4 F2 1C       		  DEFW    NIMP   	;
-559)   1CE6 54 59 50    		     DEFM    'TYP'	;
-560)   1CE9 C5          		  DEFB    'E'+80H	;
-561)   1CEA F2 1C       		  DEFW    NIMP      	;
-563)   1CEC FF          		  DEFB 0FFH	;
-566)   1CED C9          		DOT:  RET	;
-571)   1CEE C3 00 00    		BYE:  JP 0	;
-574)   1CF1 C9          		FX: RET  	;
-577)   1CF2 C9          		NIMP: RET  ;NOT IMPLEMENTED YET	;NOT IMPLEMENTED YET
-591)   1CF3 3E 01       		@MYOS_GETEXT: LD A,1	;
-592)   1CF5 C9          		             RET 	;
-594)   1CF6 C9          		@MYOS_RESET: RET	;
-596)   1CF7 CD 94 5E    		@MYOS_MODE:CALL EXPRI   ;GET PARAM	;GET PARAM
-597)   1CFA D9          		          EXX           ;HL HAS THE PARAM      	;HL HAS THE PARAM
-598)   1CFB C3 E8 4C    		          JP XEQ	;
-600)   1CFE CD F7 15    		@MYOS_CLG: CALL GRPH_SAVECOLORS	;
-601)   1D01 CD 38 0E    		          CALL LCD_CLRSCR	;
-602)   1D04 CD 0E 16    		          CALL GRPH_RESTORECOLORS	;
-603)   1D07 C3 E8 4C    		          JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
-606)   1D0A DD E5       		@MYOS_GCOL:  PUSH IX	;
-607)   1D0C 3E 01       		             LD A,1	;
-608)   1D0E CD FC 13    		             CALL BAS_COLOUR     	;
-609)   1D11 DD E1       		             POP IX	;
-610)   1D13 C3 E8 4C    		             JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
-612)   1D16 DD E5       		@MYOS_COLOUR: PUSH IX	;
-613)   1D18 AF          		             XOR A   	;
-614)   1D19 CD FC 13    		             CALL BAS_COLOUR     	;
-615)   1D1C DD E1       		             POP IX	;
-616)   1D1E C3 E8 4C    		             JP XEQ           ;RETURN TO BASIC              	;RETURN TO BASIC
-618)   1D21 DD E5       		@MYOS_DRAW: PUSH IX 	;
-619)   1D23 CD D5 14    		           CALL BAS_DRAW	;
-620)   1D26 DD E1       		           POP IX	;
-621)   1D28 C3 E8 4C    		           JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
-623)   1D2B DD E5       		@MYOS_MOVE:PUSH IX	;
-624)   1D2D CD FE 14    		          CALL BAS_MOVE	;
-625)   1D30 DD E1       		          POP IX	;
-626)   1D32 C3 E8 4C    		          JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
-628)   1D35 DD E5       		@MYOS_PLOT:PUSH IX	;
-629)   1D37 CD 6E 15    		          CALL BAS_PLOT	;
-630)   1D3A DD E1       		          POP IX	;
-631)   1D3C C3 E8 4C    		          JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
-633)   1D3F DD E5       		@MYOS_POINT:PUSH IX	;
-634)   1D41 CD 0A 15    		          CALL BAS_POINT ;RETURNS A VALUE TO BASIC	;RETURNS A VALUE TO BASIC
-635)   1D44 DD E1       		          POP IX	;
-636)   1D46 C9          		          RET	;
-646)   1D47 CD 91 14    		@MYOS_PUTIMS:CALL GETBASICPARAMS;            	;
-647)   1D4A C3 E8 4C    		            JP XEQ	;
-649)   1D4D CD F0 46    		  CALL    EXTERR	;
-650)   1D50 53 6F 72 72 		  DEFM    'Sorry'	;
-650)   1D54 79          		  DEFM    'Sorry'	;
-651)   1D55 00          		  DEFB    0            	;
-658)   1D56 CD 04 03    		GETKEY:   CALL GET_CHAR	;
-659)   1D59 37          		           SCF	;
-660)   1D5A C9          		        RET       	;
-665)   1D5B CD 67 1D    		GETKEYNW: CALL CHKCURS	;
-666)   1D5E CD E1 02    		           CALL GET_CHARNW	;
-667)   1D61 3F          		           CCF	;
-668)   1D62 FE 00       		           CP 0	;
-669)   1D64 C8          		           RET Z	;
-670)   1D65 37          		           SCF	;
-671)   1D66 C9          		        RET       	;
-673)   1D67 F5          		@CHKCURS:   PUSH AF	;
-674)   1D68 3A 91 83    		           LD A,(TIMECTR)	;
-675)   1D6B CB 67       		           BIT 4,A	;
-676)   1D6D 28 11       		           JR Z,CCSHOW      ;IF SET SHOW       	;IF SET SHOW
-677)   1D6F 3A 11 83    		CCHIDE:    LD A,(CURSSTAT)	;
-678)   1D72 CB 4F       		           BIT 1,A	;
-679)   1D74 20 19       		           JR NZ,CCEX      ;IF NOT SET ALREADY HIDDEN	;IF NOT SET ALREADY HIDDEN
-680)   1D76 CB CF       		           SET 1,A	;
-681)   1D78 32 11 83    		           LD (CURSSTAT),A	;
-682)   1D7B CD F1 0D    		           CALL LCD_RMVCURS	;
-683)   1D7E 18 0F       		           JR CCEX                                               	;
-684)   1D80 3A 11 83    		CCSHOW:    LD A,(CURSSTAT)	;
-685)   1D83 CB 4F       		           BIT 1,A	;
-686)   1D85 28 08       		           JR Z,CCEX      ;IF SET ALREADY VISIBLE	;IF SET ALREADY VISIBLE
-687)   1D87 CB 8F       		           RES 1,A	;
-688)   1D89 32 11 83    		           LD (CURSSTAT),A	;
-689)   1D8C CD F6 0D    		           CALL LCD_PRNCURS	;
-691)   1D8F F1          		CCEX:      POP AF	;
-692)   1D90 C9          		     RET          	;
-703)   1D91 3A 00 83    		       LD      A,(FLAGS)	;
-704)   1D94 CB 5F       		       BIT     3,A             ;EDIT MODE?	;EDIT MODE?
-705)   1D96 28 09       		       JR      Z,OSLIN1	;
-706)   1D98 CB 9F       		       RES     3,A	;
-707)   1D9A 32 00 83    		       LD      (FLAGS),A	;
-708)   1D9D 2A 12 83    		       LD      HL,(EDPTR)	;
-709)   1DA0 BD          		       CP      L	;
-710)   1DA1 3E 0D       		OSLIN1: LD     A,CR	;
-711)   1DA3 77          		       LD      (HL),A	;
-712)   1DA4 C4 7E 19    		       CALL    NZ,MYOS_OSWRCH	;
-713)   1DA7 2E 00       		       LD      L,0	;
-714)   1DA9 4D          		       LD      C,L             ;REPEAT FLAG	;REPEAT FLAG
-715)   1DAA 28 20       		       JR      Z,OSWAIT        ;SUPPRESS UNWANTED SPACE	;SUPPRESS UNWANTED SPACE
-716)   1DAC 06 00       		UPDATE: LD     B,0	;
-717)   1DAE 7E          		UPD1:  LD      A,(HL)	;
-718)   1DAF 04          		       INC     B	;
-719)   1DB0 23          		       INC     HL	;
-720)   1DB1 FE 0D       		       CP      CR	;
-721)   1DB3 F5          		       PUSH    AF	;
-722)   1DB4 E5          		       PUSH    HL	;
-723)   1DB5 5F          		       LD      E,A	;
-724)   1DB6 C4 32 1B    		       CALL    NZ,WRCH         ;FAST WRCH	;FAST WRCH
-725)   1DB9 E1          		       POP     HL	;
-726)   1DBA F1          		       POP     AF	;
-727)   1DBB 20 F1       		       JR      NZ,UPD1	;
-728)   1DBD 3E 20       		       LD      A,' '	;
-729)   1DBF CD 7E 19    		       CALL    MYOS_OSWRCH	;
-730)   1DC2 1E 08       		       LD      E,BS	;
-731)   1DC4 E5          		UPD2:  PUSH    HL	;
-732)   1DC5 CD 32 1B    		       CALL    WRCH            ;FAST WRCH	;FAST WRCH
-733)   1DC8 E1          		       POP     HL	;
-734)   1DC9 2B          		       DEC     HL	;
-735)   1DCA 10 F8       		       DJNZ    UPD2	;
-736)   1DCC 79          		OSWAIT: LD     A,C	;
-737)   1DCD 05          		       DEC     B	;
-738)   1DCE 28 01       		       JR      Z,LIMIT	;
-739)   1DD0 B7          		       OR      A               ;REPEAT COMMAND?	;REPEAT COMMAND?
-740)   1DD1 CC 71 19    		LIMIT: CALL    Z,KEYGET        ;READ KEYBOARD	;READ KEYBOARD
-741)   1DD4 4F          		       LD      C,A             ;SAVE FOR REPEAT	;SAVE FOR REPEAT
-742)   1DD5 11 CC 1D    		       LD      DE,OSWAIT       ;RETURN ADDRESS	;RETURN ADDRESS
-743)   1DD8 D5          		       PUSH    DE	;
-744)   1DD9 3A 00 83    		       LD      A,(FLAGS)	;
-745)   1DDC B7          		       OR      A               ;TEST FOR ESCAPE	;TEST FOR ESCAPE
-746)   1DDD 79          		       LD      A,C	;
-747)   1DDE FA 20 1E    		       JP      M,OSEXIT	;
-748)   1DE1 FE 0B       		       CP      11         ;CURSOR UP     (IX-11)	;CURSOR UP     (IX-11)
-749)   1DE3 CA 64 1E    		       JP      Z,LEFT	;
-750)   1DE6 FE 0A       		       CP      10         ;CURSOR DOWN   (IX-10)	;CURSOR DOWN   (IX-10)
-751)   1DE8 CA 97 1E    		       JP      Z,RIGHT	;
-752)   1DEB 06 00       		       LD      B,0	;
-753)   1DED FE 05       		       CP      5          ;CLEAR LEFT    (IX-5)	;CLEAR LEFT    (IX-5)
-754)   1DEF 28 72       		       JR      Z,BACK	;
-755)   1DF1 FE 09       		       CP      9          ;START OF LINE (IX-9)	;START OF LINE (IX-9)
-756)   1DF3 28 6F       		       JR      Z,LEFT	;
-757)   1DF5 FE 07       		       CP      7          ;CLEAR RIGHT   (IX-7)	;CLEAR RIGHT   (IX-7)
-758)   1DF7 28 76       		       JR      Z,DELETE	;
-759)   1DF9 FE 08       		       CP      8          ;END OF LINE   (IX-8)	;END OF LINE   (IX-8)
-760)   1DFB CA 97 1E    		       JP      Z,RIGHT	;
-761)   1DFE 0E 00       		       LD      C,0             ;INHIBIT REPEAT	;INHIBIT REPEAT
-762)   1E00 FE 10       		       CP      'P' AND 1FH	;
-763)   1E02 CA 55 1B    		       JP      Z,TOGGLE	;
-764)   1E05 FE 06       		       CP      6          ;DELETE LEFT   (IX-6)	;DELETE LEFT   (IX-6)
-765)   1E07 28 5A       		       JR      Z,BACK	;
-766)   1E09 FE 04       		       CP      4          ;CURSOR LEFT   (IX-4)	;CURSOR LEFT   (IX-4)
-767)   1E0B 28 57       		       JR      Z,LEFT	;
-768)   1E0D FE 02       		       CP      2          ;DELETE RIGHT  (IX-2)	;DELETE RIGHT  (IX-2)
-769)   1E0F 28 5E       		       JR      Z,DELETE	;
-770)   1E11 FE 01       		       CP      1          ;INSERT SPACE  (IX-1)	;INSERT SPACE  (IX-1)
-771)   1E13 28 6E       		       JR      Z,INSERT	;
-772)   1E15 FE 03       		       CP      3          ;CURSOR RIGHT  (IX-3)	;CURSOR RIGHT  (IX-3)
-773)   1E17 28 7E       		       JR      Z,RIGHT	;
-774)   1E19 FE 20       		       CP      ' '             ;PRINTING CHARACTER	;PRINTING CHARACTER
-775)   1E1B 30 7F       		       JR      NC,SAVECH	;
-776)   1E1D FE 0D       		       CP      CR              ;ENTER LINE	;ENTER LINE
-777)   1E1F C0          		       RET     NZ	;
-778)   1E20 7E          		OSEXIT: LD     A,(HL)	;
-779)   1E21 CD 7E 19    		       CALL    MYOS_OSWRCH          ;WRITE REST OF LINE	;WRITE REST OF LINE
-780)   1E24 23          		       INC     HL	;
-781)   1E25 D6 0D       		       SUB     CR	;
-782)   1E27 20 F7       		       JR      NZ,OSEXIT	;
-783)   1E29 D1          		       POP     DE              ;DITCH RETURN ADDRESS	;DITCH RETURN ADDRESS
-784)   1E2A B9          		       CP      C	;
-785)   1E2B C2 92 1B    		       JP      NZ,ABORT        ;ESCAPE	;ESCAPE
-786)   1E2E 3E 0A       		       LD      A,LF	;
-787)   1E30 CD 7E 19    		       CALL    MYOS_OSWRCH	;
-788)   1E33 ED 5B F4 82 		       LD      DE,(ERRLIN)	;
-789)   1E37 AF          		       XOR     A	;
-790)   1E38 6F          		       LD      L,A	;
-791)   1E39 22 12 83    		       LD      (EDPTR),HL	;
-792)   1E3C BA          		       CP      D	;
-793)   1E3D C0          		       RET     NZ	;
-794)   1E3E BB          		       CP      E	;
-795)   1E3F C0          		       RET     NZ	;
-796)   1E40 11 B0 1E    		       LD      DE,EDITST	;
-797)   1E43 06 04       		       LD      B,4	;
-798)   1E45 1A          		CMPARE: LD     A,(DE)	;
-799)   1E46 BE          		       CP      (HL)	;
-800)   1E47 3E 00       		       LD      A,0	;
-801)   1E49 C0          		       RET     NZ	;
-802)   1E4A 23          		       INC     HL	;
-803)   1E4B 13          		       INC     DE	;
-804)   1E4C 7E          		       LD      A,(HL)	;
-805)   1E4D FE 2E       		       CP      '.'	;
-806)   1E4F 28 02       		       JR      Z,ABBR	;
-807)   1E51 10 F2       		       DJNZ    CMPARE	;
-808)   1E53 AF          		ABBR:  XOR     A	;
-809)   1E54 47          		       LD      B,A	;
-810)   1E55 4D          		       LD      C,L	;
-811)   1E56 6F          		       LD      L,A	;
-812)   1E57 11 B4 1E    		       LD      DE,LISTST	;
-813)   1E5A EB          		       EX      DE,HL	;
-814)   1E5B ED B0       		       LDIR	;
-815)   1E5D 21 00 83    		       LD      HL,FLAGS	;
-816)   1E60 CB DE       		       SET     3,(HL)	;
-817)   1E62 C9          		       RET	;
-819)   1E63 37          		BACK:  SCF                     ;DELETE LEFT	;DELETE LEFT
-820)   1E64 2C          		LEFT:  INC     L               ;CURSOR LEFT	;CURSOR LEFT
-821)   1E65 2D          		       DEC     L	;
-822)   1E66 28 45       		       JR      Z,STOP	;
-823)   1E68 3E 08       		       LD      A,BS	;
-824)   1E6A CD 7E 19    		       CALL    MYOS_OSWRCH	;
-825)   1E6D 2D          		       DEC     L	;
-826)   1E6E D0          		       RET     NC	;
-827)   1E6F 7E          		DELETE: LD     A,(HL)          ;DELETE RIGHT	;DELETE RIGHT
-828)   1E70 FE 0D       		       CP      CR	;
-829)   1E72 28 39       		       JR      Z,STOP	;
-830)   1E74 54          		       LD      D,H	;
-831)   1E75 5D          		       LD      E,L	;
-832)   1E76 13          		DEL1:  INC     DE	;
-833)   1E77 1A          		       LD      A,(DE)	;
-834)   1E78 1B          		       DEC     DE	;
-835)   1E79 12          		       LD      (DE),A	;
-836)   1E7A 13          		       INC     DE	;
-837)   1E7B FE 0D       		       CP      CR	;
-838)   1E7D 20 F7       		       JR      NZ,DEL1	;
-839)   1E7F D1          		DEL2:  POP     DE              ;DITCH	;DITCH
-840)   1E80 C3 AC 1D    		       JP      UPDATE	;
-842)   1E83 3E 0D       		INSERT: LD     A,CR            ;INSERT SPACE	;INSERT SPACE
-843)   1E85 BE          		       CP      (HL)	;
-844)   1E86 C8          		       RET     Z	;
-845)   1E87 54          		       LD      D,H	;
-846)   1E88 1E FE       		       LD      E,254	;
-847)   1E8A 13          		INS1:  INC     DE	;
-848)   1E8B 12          		       LD      (DE),A	;
-849)   1E8C 1B          		       DEC     DE	;
-850)   1E8D 7B          		       LD      A,E	;
-851)   1E8E BD          		       CP      L	;
-852)   1E8F 1B          		       DEC     DE	;
-853)   1E90 1A          		       LD      A,(DE)	;
-854)   1E91 20 F7       		       JR      NZ,INS1	;
-855)   1E93 36 20       		       LD      (HL),' '	;
-856)   1E95 18 E8       		       JR      DEL2	;
-858)   1E97 7E          		RIGHT: LD      A,(HL)          ;CURSOR RIGHT	;CURSOR RIGHT
-859)   1E98 FE 0D       		       CP      CR	;
-860)   1E9A 28 11       		       JR      Z,STOP	;
-861)   1E9C 56          		SAVECH: LD     D,(HL)          ;PRINTING CHARACTER	;PRINTING CHARACTER
-862)   1E9D 77          		       LD      (HL),A	;
-863)   1E9E 2C          		       INC     L	;
-864)   1E9F 28 09       		       JR      Z,WONTGO        ;LINE TOO LONG	;LINE TOO LONG
-865)   1EA1 CD 7E 19    		       CALL    MYOS_OSWRCH	;
-866)   1EA4 3E 0D       		       LD      A,CR	;
-867)   1EA6 BA          		       CP      D	;
-868)   1EA7 C0          		       RET     NZ	;
-869)   1EA8 77          		       LD      (HL),A	;
-870)   1EA9 C9          		       RET	;
-872)   1EAA 2D          		WONTGO: DEC    L	;
-873)   1EAB 36 0D       		       LD      (HL),CR	;
-876)   1EAD 0E 00       		STOP:  LD      C,0             ;STOP REPEAT	;STOP REPEAT
-877)   1EAF C9          		       RET	;
-880)   1EB0 45 44 49 54 		EDITST: DEFM   'EDIT'	;
-881)   1EB4 4C 49 53 54 		LISTST: DEFM   'LIST'	;
+  8)   18E5 21 00 00    		@Mult16:ld hl,0	;
+  9)   18E8 78          		   ld a,b	;
+ 10)   18E9 06 10       		   ld b,16	;
+ 12)   18EB 29          		   add hl,hl	;
+ 13)   18EC CB 21       		   sla c	;
+ 14)   18EE 17          		   rla	;
+ 15)   18EF 30 01       		   jr nc,Mult16_NoAdd	;
+ 16)   18F1 19          		   add hl,de	;
+ 18)   18F2 10 F7       		   djnz Mult16_Loop	;
+ 19)   18F4 C9          		   ret	;
+ 25)   18F5 D5          		@Mult32:PUSH DE	;
+ 26)   18F6 79          		   ld a,c	;
+ 27)   18F7 48          		   ld c,b	;
+ 28)   18F8 21 00 00    		   ld hl,0	;
+ 29)   18FB 06 10       		   ld b,16	;
+ 31)   18FD 29          		   add hl,hl	;
+ 32)   18FE 17          		   rla	;
+ 33)   18FF CB 11       		   rl c	;
+ 34)   1901 30 07       		   jr nc,Mult32_NoAdd	;
+ 35)   1903 19          		   add hl,de	;
+ 36)   1904 CE 00       		   adc a,0	;
+ 37)   1906 D2 0A 19    		   jp nc,Mult32_NoAdd	;
+ 38)   1909 0C          		   inc c	;
+ 40)   190A 10 F1       		   djnz Mult32_Loop	;
+ 41)   190C 41          		   ld b,c	;
+ 42)   190D 4F          		   ld c,a	;
+ 43)   190E D1          		   POP DE	;
+ 44)   190F C9          		   ret	;
+ 52)   1910 19          		       ADD     HL,DE   ; 16-BIT ADD OF HL AND DE	; 16-BIT ADD OF HL AND DE
+ 53)   1911 D9          		       EXX	;
+ 54)   1912 ED 5A       		       ADC     HL,DE   ; 16-BIT ADD OF HL AND DE WITH CARRY	; 16-BIT ADD OF HL AND DE WITH CARRY
+ 55)   1914 D9          		       EXX	;
+ 58)   1915 C9          		       RET	;
+ 68)   1916 11 40 00    		   ld de,$0040	;
+ 69)   1919 7D          		   ld a,l	;
+ 70)   191A 6C          		   ld l,h	;
+ 71)   191B 62          		   ld h,d	;
+ 72)   191C B7          		   or a	;
+ 73)   191D 06 08       		   ld b,8	;
+ 75)   191F ED 52       		   sbc hl,de	;
+ 76)   1921 30 01       		   jr nc,Sqr16_Skip	;
+ 77)   1923 19          		   add hl,de	;
+ 79)   1924 3F          		   ccf	;
+ 80)   1925 CB 12       		   rl d	;
+ 81)   1927 87          		   add a,a	;
+ 82)   1928 ED 6A       		   adc hl,hl	;
+ 83)   192A 87          		   add a,a	;
+ 84)   192B ED 6A       		   adc hl,hl	;
+ 85)   192D 10 F0       		   djnz Sqr16_Loop	;
+ 86)   192F C9          		   ret        	;
+ 30)   1930 C3 38 0E    		@MYOS_CLRSCN:JP LCD_CLRSCR       ; CLRSCN: clears the screen.	; CLRSCN: clears the screen.
+ 33)   1933 7D          		         LD A,L	;
+ 34)   1934 32 91 83    		         LD (TIMECTR),A	;
+ 35)   1937 7C          		     LD A,H	;
+ 36)   1938 32 92 83    		        LD (TIMECTR+1),A	;
+ 37)   193B 7B          		        LD A,E	;
+ 38)   193C 32 93 83    		        LD (TIMECTR+2),A	;
+ 39)   193F 7A          		        LD A,D	;
+ 40)   1940 32 94 83    		        LD (TIMECTR+3),A         	;
+ 41)   1943 C9          		        RET	;
+ 45)   1944 3A 91 83    		         LD A,(TIMECTR)	;
+ 46)   1947 6F          		         LD L,A	;
+ 47)   1948 3A 92 83    		        LD A,(TIMECTR+1)	;
+ 48)   194B 67          		        LD H,A	;
+ 49)   194C 3A 93 83    		        LD A,(TIMECTR+2)	;
+ 50)   194F 5F          		        LD E,A	;
+ 51)   1950 3A 94 83    		        LD A,(TIMECTR+3)	;
+ 52)   1953 57          		        LD D,A	;
+ 53)   1954 C9          		       RET         	;
+ 55)   1955 63          		          LD H,E	;
+ 56)   1956 E5          		          PUSH HL	;
+ 57)   1957 CD F1 0D    		          CALL LCD_RMVCURS	;
+ 58)   195A E1          		          POP HL	;
+ 59)   195B 7C          		          LD A,H	;
+ 60)   195C 32 0D 83    		          LD (CURSORX),A	;
+ 61)   195F 7D          		          LD A,L	;
+ 62)   1960 32 0E 83    		          LD (CURSORY),A	;
+ 63)   1963 CD F6 0D    		          CALL LCD_PRNCURS                      	;
+ 64)   1966 C9          		          RET	;
+ 66)   1967 16 00       		          LD D,0	;
+ 67)   1969 3A 0D 83    		          LD A,(CURSORX)	;
+ 68)   196C 5F          		          LD E,A	;
+ 69)   196D 26 00       		          LD H,0	;
+ 71)   196F CD 47 0D    		          CALL LCD_CALCLINE ;GETS CURSORY WITH SCROLL	;GETS CURSORY WITH SCROLL
+ 72)   1972 6F          		       LD L,A	;
+ 73)   1973 C9          		       RET	;
+ 74)   1974 06 50       		KEYGET: LD      B,80 ;SCREEN WIDTH IN CHARS      	;SCREEN WIDTH IN CHARS
+ 76)   1976 E5          		         PUSH    HL	;
+ 77)   1977 ED 62       		          SBC     HL,HL           ;HL=0	;HL=0
+ 78)   1979 CD 61 1B    		          CALL    MYOS_OSKEY	;
+ 79)   197C E1          		          POP     HL	;
+ 80)   197D D8          		          RET     C	;
+ 81)   197E 18 F6       		          JR      MYOS_OSRDCH           	;
+ 82)   1980 C9          		       RET  	;
+ 84)   1981 F5          		       PUSH    AF	;
+ 85)   1982 D5          		          PUSH    DE	;
+ 86)   1983 E5          		          PUSH    HL	;
+ 87)   1984 DD E5       		          PUSH    IX                      	;
+ 88)   1986 5F          		          LD      E,A	;
+ 89)   1987 CD 80 1B    		          CALL    ESCTEST	;
+ 92)   198A 7B          		          LD A,E	;
+ 93)   198B FE 20       		          CP 32	;
+ 94)   198D 38 0D       		          JR C,CTRCODE	;
+ 95)   198F FE 7F       		          CP 127   ;BACKSPACE 	;BACKSPACE
+ 96)   1991 C2 15 1B    		          JP NZ,PRINTIT	;
+ 97)   1994 3E 08       		          LD A,8            ;DO A BACKSPACE	;DO A BACKSPACE
+ 98)   1996 CD 73 0C    		          CALL LCD_PRINTCHAR	;
+ 99)   1999 C3 18 1B    		          JP OSWREXIT	;
+100)   199C FE 04       		CTRCODE:  CP 4 ;WRITE TEXT AT TEXT POS	;WRITE TEXT AT TEXT POS
+101)   199E 20 06       		          JR NZ,CC1	;
+102)   19A0 32 16 83    		          LD (VDUMODE),A           	;
+103)   19A3 C3 18 1B    		          JP OSWREXIT	;
+104)   19A6 FE 05       		CC1:      CP 5 ;WRITE TEXT AT GRAPH POS    	;WRITE TEXT AT GRAPH POS
+105)   19A8 20 06       		          JR NZ,CC2	;
+106)   19AA 32 16 83    		          LD (VDUMODE),A	;
+107)   19AD C3 18 1B    		          JP OSWREXIT	;
+108)   19B0 FE 06       		CC2:      CP 6 ;ENABLE OUTPUT TO SCREEN	;ENABLE OUTPUT TO SCREEN
+109)   19B2 20 03       		          JR NZ,CC3	;
+110)   19B4 C3 18 1B    		          JP OSWREXIT	;
+111)   19B7 FE 07       		CC3:      CP 7 ;BEEP	;BEEP
+112)   19B9 20 03       		          JR NZ,CC4	;
+113)   19BB C3 18 1B    		          JP OSWREXIT	;
+114)   19BE FE 08       		CC4:      CP 8 ;MOVE TEXT CURSOR BACK A CHAR	;MOVE TEXT CURSOR BACK A CHAR
+115)   19C0 20 03       		          JR NZ,CC5	;
+116)   19C2 C3 15 1B    		          JP PRINTIT	;
+123)   19C5 FE 09       		CC5:      CP 9 ;MOVE TEXT CURSOR FORWARD A CHAR	;MOVE TEXT CURSOR FORWARD A CHAR
+124)   19C7 20 0F       		          JR NZ,CC6	;
+125)   19C9 3A 0D 83    		          LD A,(CURSORX)	;
+126)   19CC 3C          		          INC A	;
+127)   19CD FE 50       		          CP 80	;
+128)   19CF D2 18 1B    		          JP NC,OSWREXIT	;
+129)   19D2 32 0D 83    		          LD (CURSORX),A         	;
+130)   19D5 C3 18 1B    		          JP OSWREXIT   	;
+131)   19D8 FE 0A       		CC6:      CP 10 ;MOVE TEXT DOWN LF	;MOVE TEXT DOWN LF
+132)   19DA CA 15 1B    		          JP Z,PRINTIT	;
+133)   19DD FE 0B       		CC7:      CP 11 ;MOVE TEXT UP	;MOVE TEXT UP
+134)   19DF 20 0F       		          JR NZ,CC8	;
+135)   19E1 3A 0E 83    		          LD A,(CURSORY)	;
+136)   19E4 3D          		          DEC A	;
+137)   19E5 FE FF       		          CP 0XFF	;
+138)   19E7 CA 18 1B    		          JP Z,OSWREXIT	;
+139)   19EA 32 0E 83    		          LD (CURSORY),A           	;
+140)   19ED C3 18 1B    		          JP OSWREXIT   	;
+141)   19F0 FE 0C       		CC8:      CP 12 ; CLS	; CLS
+142)   19F2 20 06       		          JR NZ,CC9	;
+143)   19F4 CD 38 0E    		          CALL LCD_CLRSCR	;
+144)   19F7 C3 18 1B    		          JP OSWREXIT   	;
+145)   19FA FE 0D       		CC9:      CP 13 ;GOTO START OF LINE CR	;GOTO START OF LINE CR
+146)   19FC CA 15 1B    		          JP Z,PRINTIT	;
+147)   19FF FE 0E       		CC10:     CP 14 ;ENABLE THE AUTOPAGING MODE	;ENABLE THE AUTOPAGING MODE
+148)   1A01 20 03       		          JR NZ,CC11	;
+149)   1A03 C3 18 1B    		          JP OSWREXIT   	;
+150)   1A06 FE 0F       		CC11:     CP 15 ;DISABLE THE AUTOPAGING MODE	;DISABLE THE AUTOPAGING MODE
+151)   1A08 20 03       		          JR NZ,CC12	;
+152)   1A0A C3 18 1B    		          JP OSWREXIT   	;
+153)   1A0D FE 10       		CC12:     CP 16 ;CLG	;CLG
+154)   1A0F 20 06       		          JR NZ,CC13	;
+155)   1A11 CD 01 1D    		          CALL MYOS_CLG       	;
+156)   1A14 C3 18 1B    		          JP OSWREXIT   	;
+157)   1A17 FE 11       		CC13:     CP 17 ; SAME AS COLOUR	; SAME AS COLOUR
+158)   1A19 20 09       		          JR NZ,CC14	;
+160)   1A1B FD 23       		          INC IY ;SKIP ','	;SKIP ','
+161)   1A1D CD 94 5E    		          CALL    EXPRI	;
+162)   1A20 D9          		          EXX ;l has the param  color	;l has the param  color
+163)   1A21 C3 18 1B    		          JP OSWREXIT   	;
+164)   1A24 FE 12       		CC14:     CP 18 ;SAME AS GCOL	;SAME AS GCOL
+165)   1A26 20 0F       		          JR NZ,CC15	;
+166)   1A28 FD 23       		          INC IY ;SKIP ','	;SKIP ','
+167)   1A2A CD 94 5E    		          CALL    EXPRI	;
+168)   1A2D D9          		          EXX ;l has the param  mode	;l has the param  mode
+169)   1A2E FD 23       		          INC IY ;SKIP ','	;SKIP ','
+170)   1A30 CD 94 5E    		          CALL    EXPRI	;
+171)   1A33 D9          		          EXX ;l has the param  color                                        	;l has the param  color
+173)   1A34 C3 18 1B    		          JP OSWREXIT   	;
+174)   1A37 FE 13       		CC15:     CP 19 ;SELECT A COLOR PALLETTE???	;SELECT A COLOR PALLETTE???
+175)   1A39 20 0F       		          JR NZ,CC16	;
+177)   1A3B 06 05       		          LD B,5	;
+178)   1A3D C5          		CC15AGN:  PUSH BC	;
+179)   1A3E FD 23       		          INC IY ;SKIP ','	;SKIP ','
+180)   1A40 CD 94 5E    		          CALL    EXPRI	;
+181)   1A43 D9          		          EXX ;l has the param	;l has the param
+182)   1A44 C1          		          POP BC	;
+183)   1A45 10 F6       		          DJNZ CC15AGN           	;
+184)   1A47 C3 18 1B    		          JP OSWREXIT   	;
+185)   1A4A FE 14       		CC16:     CP 20 ;RESTORE THE DEFAULT LOGICAL COLORS	;RESTORE THE DEFAULT LOGICAL COLORS
+186)   1A4C 20 03       		          JR NZ,CC17           	;
+188)   1A4E C3 18 1B    		          JP OSWREXIT   	;
+189)   1A51 FE 15       		CC17:     CP 21 ;NO OUTPUT TO SCREEN	;NO OUTPUT TO SCREEN
+190)   1A53 20 03       		          JR NZ,CC18	;
+192)   1A55 C3 18 1B    		          JP OSWREXIT   	;
+193)   1A58 FE 16       		CC18:     CP 22 ;LIKE MODE	;LIKE MODE
+194)   1A5A 20 09       		          JR NZ,CC19	;
+195)   1A5C FD 23       		          INC IY ;SKIP ','	;SKIP ','
+196)   1A5E CD 94 5E    		          CALL    EXPRI	;
+197)   1A61 D9          		          EXX ;l has the param           	;l has the param
+198)   1A62 C3 18 1B    		          JP OSWREXIT   	;
+199)   1A65 FE 17       		CC19:     CP 23 ;Program characters and control the cursor.???	;Program characters and control the cursor.???
+200)   1A67 20 27       		          JR NZ,CC20	;
+201)   1A69 06 09       		          LD B,9   ;9 PARAMS CHAR_NO +8 ROWS OF A CHAR	;9 PARAMS CHAR_NO +8 ROWS OF A CHAR
+202)   1A6B FD 7E 00    		          LD A,(IY)	;
+203)   1A6E FD 23       		          INC IY ;SKIP ',' OR ';'	;SKIP ',' OR ';'
+204)   1A70 FE 3B       		          CP ';'	;
+205)   1A72 20 01       		          JR NZ,CC19AGN	;
+206)   1A74 05          		          DEC B ; IF ; THE DELIMETER THEN 2 BYTES AT START   	; IF ; THE DELIMETER THEN 2 BYTES AT START
+207)   1A75 C5          		CC19AGN:  PUSH BC	;
+208)   1A76 CD 94 5E    		          CALL    EXPRI	;
+209)   1A79 D9          		          EXX ;l has the param           	;l has the param
+210)   1A7A FD 7E 00    		     LD A,(IY)	;
+211)   1A7D FE 2C       		     CP ','	;
+212)   1A7F 28 07       		     JR Z,CC19NXT0              	;
+213)   1A81 FE 3B       		          CP ';'           	;
+214)   1A83 20 05       		          JR NZ,CC19NXT	;
+215)   1A85 C1          		          POP BC	;
+216)   1A86 05          		          DEC B	;
+217)   1A87 C5          		          PUSH BC	;
+218)   1A88 FD 23       		CC19NXT0: INC IY ;SKIP ','           	;SKIP ','
+219)   1A8A C1          		CC19NXT:  POP BC	;
+220)   1A8B 10 E8       		          DJNZ CC19AGN                     	;
+221)   1A8D C3 18 1B    		          JP OSWREXIT   	;
+222)   1A90 FE 18       		CC20:     CP 24 ;Define a graphics window	;Define a graphics window
+223)   1A92 20 11       		          JR NZ,CC21	;
+224)   1A94 FD 23       		          INC IY ;SKIP ','	;SKIP ','
+225)   1A96 06 04       		          LD B,4   ;4 PARAMS TWO CORNERS OF A RECT	;4 PARAMS TWO CORNERS OF A RECT
+226)   1A98 C5          		CC20AGN:  PUSH BC           	;
+227)   1A99 CD 94 5E    		          CALL    EXPRI	;
+228)   1A9C D9          		          EXX ;HL has the param	;HL has the param
+229)   1A9D FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
+230)   1A9F C1          		          POP BC	;
+231)   1AA0 10 F6       		          DJNZ CC20AGN                                	;
+232)   1AA2 C3 18 1B    		          JP OSWREXIT   	;
+233)   1AA5 FE 19       		CC21:     CP 25 ;Identical to PLOT.	;Identical to PLOT.
+234)   1AA7 20 17       		          JR NZ,CC22	;
+235)   1AA9 FD 23       		          INC IY ;SKIP ','	;SKIP ','
+236)   1AAB CD 94 5E    		          CALL    EXPRI	;
+237)   1AAE D9          		          EXX ;L has the param PLOTMODE	;L has the param PLOTMODE
+238)   1AAF FD 23       		          INC IY ;SKIP ','	;SKIP ','
+239)   1AB1 CD 94 5E    		          CALL    EXPRI	;
+240)   1AB4 D9          		          EXX ;HL has the param X	;HL has the param X
+241)   1AB5 FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
+242)   1AB7 CD 94 5E    		          CALL    EXPRI	;
+243)   1ABA D9          		          EXX ;HL has the param Y	;HL has the param Y
+244)   1ABB FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
+247)   1ABD C3 18 1B    		          JP OSWREXIT   	;
+248)   1AC0 FE 1A       		CC22:     CP 26 ;Restore the default text and graphics windows.	;Restore the default text and graphics windows.
+249)   1AC2 20 02       		          JR NZ,CC23	;
+250)   1AC4 18 52       		          JR OSWREXIT   	;
+251)   1AC6 FE 1B       		CC23:     CP 27 ;Send the next character to the screen.	;Send the next character to the screen.
+252)   1AC8 20 07       		          JR NZ,CC24	;
+253)   1ACA CD 94 5E    		          CALL    EXPRI	;
+254)   1ACD D9          		          EXX ;	;
+255)   1ACE 7D          		          LD A,L	;
+256)   1ACF 18 44       		          JR PRINTIT           	;
+257)   1AD1 FE 1C       		CC24:     CP 28 ;Define a text window.	;Define a text window.
+258)   1AD3 20 0E       		          JR NZ,CC25	;
+259)   1AD5 06 04       		          LD B,4   ;4 PARAMS UPPERLEFT AND LOWERRIGHT	;4 PARAMS UPPERLEFT AND LOWERRIGHT
+260)   1AD7 C5          		CC24AGN:  PUSH BC	;
+261)   1AD8 FD 23       		     INC IY ;SKIP ','	;SKIP ','
+262)   1ADA CD 94 5E    		          CALL    EXPRI	;
+263)   1ADD D9          		          EXX ;l has the param	;l has the param
+264)   1ADE C1          		          POP BC           	;
+265)   1ADF 10 F6       		          DJNZ CC24AGN                                	;
+266)   1AE1 18 35       		          JR OSWREXIT   	;
+267)   1AE3 FE 1D       		CC25:     CP 29 ;Set the graphics origin.	;Set the graphics origin.
+268)   1AE5 20 10       		          JR NZ,CC26	;
+269)   1AE7 FD 23       		          INC IY ;SKIP ','	;SKIP ','
+270)   1AE9 CD 94 5E    		          CALL    EXPRI	;
+271)   1AEC D9          		          EXX ;HL has the param X	;HL has the param X
+272)   1AED FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
+273)   1AEF CD 94 5E    		          CALL    EXPRI	;
+274)   1AF2 D9          		          EXX ;HL has the param Y	;HL has the param Y
+275)   1AF3 FD 23       		          INC IY ;SKIP ';'	;SKIP ';'
+277)   1AF5 18 21       		          JR OSWREXIT   	;
+278)   1AF7 FE 1E       		CC26:     CP 30 ;Home the text cursor to the top left of the screen.	;Home the text cursor to the top left of the screen.
+279)   1AF9 20 08       		          JR NZ,CC27	;
+280)   1AFB 21 00 00    		          LD HL,0	;
+281)   1AFE 22 0D 83    		          LD (CURSORX),HL	;
+282)   1B01 18 15       		          JR OSWREXIT   	;
+283)   1B03 FE 1F       		CC27:     CP 31 ;Move the text cursor - identical to TAB(x,y).	;Move the text cursor - identical to TAB(x,y).
+284)   1B05 20 11       		          JR NZ,OSWREXIT   	;
+285)   1B07 FD 23       		          INC IY ;SKIP ','	;SKIP ','
+286)   1B09 CD 94 5E    		          CALL    EXPRI	;
+287)   1B0C D9          		          EXX ;l has the param X	;l has the param X
+288)   1B0D FD 23       		          INC IY ;SKIP ','	;SKIP ','
+289)   1B0F CD 94 5E    		          CALL    EXPRI	;
+290)   1B12 D9          		          EXX ;l has the param Y	;l has the param Y
+292)   1B13 18 03       		          JR OSWREXIT   	;
+295)   1B15 CD 1E 1B    		PRINTIT:  CALL    EDPUT	;
+296)   1B18 DD E1       		OSWREXIT: POP     IX	;
+297)   1B1A E1          		          POP     HL	;
+298)   1B1B D1          		          POP     DE	;
+299)   1B1C F1          		          POP     AF	;
+300)   1B1D C9          		          RET	;
+305)   1B1E 3A 00 83    		EDPUT: LD      A,(FLAGS)	;
+306)   1B21 CB 5F       		       BIT     3,A	;
+307)   1B23 28 10       		       JR      Z,WRCH	;
+308)   1B25 7B          		       LD      A,E	;
+309)   1B26 FE 20       		       CP      ' '	;
+310)   1B28 D8          		       RET     C	;
+311)   1B29 2A 12 83    		       LD      HL,(EDPTR)	;
+312)   1B2C 73          		       LD      (HL),E	;
+313)   1B2D 2C          		       INC     L	;
+314)   1B2E C8          		       RET     Z	;
+315)   1B2F 22 12 83    		       LD      (EDPTR),HL	;
+316)   1B32 C9          		       RET           	;
+319)   1B33 1E 3E       		          LD E,'>'        	;
+320)   1B35 7B          		WRCH:     LD A,E	;
+322)   1B36 F5          		          PUSH AF	;
+323)   1B37 C5          		          PUSH BC	;
+324)   1B38 D5          		          PUSH DE	;
+325)   1B39 E5          		     PUSH HL	;
+326)   1B3A DD E5       		     PUSH IX	;
+327)   1B3C FD E5       		     PUSH IY	;
+329)   1B3E F5          		          PUSH AF	;
+330)   1B3F C5          		          PUSH BC	;
+331)   1B40 D5          		          PUSH DE	;
+332)   1B41 E5          		     PUSH HL	;
+333)   1B42 CD F1 0D    		     CALL LCD_RMVCURS	;
+334)   1B45 E1          		          POP HL	;
+335)   1B46 D1          		          POP DE	;
+336)   1B47 C1          		          POP BC	;
+337)   1B48 F1          		          POP AF	;
+338)   1B49 CD 73 0C    		          CALL LCD_PRINTCHAR	;
+339)   1B4C CD F6 0D    		          CALL LCD_PRNCURS	;
+341)   1B4F FD E1       		          POP IY	;
+342)   1B51 DD E1       		          POP IX	;
+343)   1B53 E1          		          POP HL	;
+344)   1B54 D1          		          POP DE	;
+345)   1B55 C1          		          POP BC	;
+346)   1B56 F1          		          POP AF	;
+347)   1B57 C9          		       RET 	;
+349)   1B58 3A 00 83    		TOGGLE: LD     A,(FLAGS)	;
+350)   1B5B EE 04       		       XOR     00000100B	;
+351)   1B5D 32 00 83    		       LD      (FLAGS),A	;
+352)   1B60 C9          		       RET	;
+361)   1B61 E5          		@MYOS_OSKEY: PUSH   HL	;
+362)   1B62 21 15 83    		           LD      HL,INKEY	;
+363)   1B65 7E          		           LD      A,(HL)	;
+364)   1B66 36 00       		           LD      (HL),0	;
+365)   1B68 E1          		           POP     HL	;
+366)   1B69 B7          		           OR      A	;
+367)   1B6A 37          		           SCF	;
+368)   1B6B C0          		           RET     NZ  	;
+370)   1B6C CD 5E 1D    		           CALL    GETKEYNW	;
+372)   1B6F D0          		           RET     NC	;
+373)   1B70 FE 1B       		           CP      ESC	;
+374)   1B72 37          		           SCF	;
+375)   1B73 C0          		           RET     NZ                        	;
+376)   1B74 E5          		ESCSET:  PUSH    HL	;
+377)   1B75 21 00 83    		         LD      HL,FLAGS	;
+378)   1B78 CB 76       		         BIT     6,(HL)          ; ESC DISABLED?	; ESC DISABLED?
+379)   1B7A 20 02       		         JR      NZ,ESCDIS	;
+380)   1B7C CB FE       		         SET     7,(HL)          ; SET ESCAPE FLAG	; SET ESCAPE FLAG
+381)   1B7E E1          		ESCDIS:  POP     HL	;
+382)   1B7F C9          		         RET 	;
+383)   1B80 CD 92 05    		ESCTEST: CALL RS_RXNW	;
+384)   1B83 B7          		        OR A	;
+385)   1B84 C8          		        RET Z	;
+386)   1B85 FE 1B       		        CP 0x1B   ; ESC 	; ESC
+387)   1B87 28 EB       		        JR Z,ESCSET	;
+388)   1B89 32 15 83    		        LD (INKEY),A	;
+389)   1B8C C9          		         RET	;
+391)   1B8D CD 80 1B    		@MYOS_TRAP:  CALL ESCTEST	;
+392)   1B90 3A 00 83    		@MYOS_LTRAP: LD A,(FLAGS)	;
+393)   1B93 B7          		            OR A	;
+394)   1B94 F0          		             RET P	;
+395)   1B95 21 00 83    		ABORT:        LD HL,FLAGS 	;
+396)   1B98 CB BE       		            RES 7,(HL)	;
+397)   1B9A C3 C2 4D    		            JP ESCAPE          	;
+406)   1B9D F3          		           DI	;
+407)   1B9E 21 F6 82    		           LD HL,RANDOM    ; SET RANDOM SEED TO NON 0	; SET RANDOM SEED TO NON 0
+408)   1BA1 3E 06       		           LD A,0x06	;
+409)   1BA3 77          		           LD (HL),A	;
+410)   1BA4 3E BB       		           LD A,0xBB	;
+411)   1BA6 77          		           LD (HL),A	;
+412)   1BA7 21 00 00    		           LD HL,0	;
+413)   1BAA 22 0D 83    		           LD (CURSORX),HL  ; CURSOR X 7 Y ZEROED            	; CURSOR X 7 Y ZEROED
+414)   1BAD 11 FF FF    		           LD DE,COL_WHITE   ; SET FCOLOR AND BCOLOR DEFAULT VALUES	; SET FCOLOR AND BCOLOR DEFAULT VALUES
+415)   1BB0 21 01 83    		           LD HL,FCOLOR	;
+416)   1BB3 73          		           LD (HL),E	;
+417)   1BB4 23          		           INC HL	;
+418)   1BB5 72          		           LD (HL),D	;
+419)   1BB6 23          		           INC HL	;
+420)   1BB7 11 00 00    		           LD DE,COL_BLACK	;
+421)   1BBA 73          		           LD (HL),E	;
+422)   1BBB 23          		           INC HL	;
+423)   1BBC 72          		           LD (HL),D     	;
+424)   1BBD 01 04 00    		           LD BC,4     ; COPY SAME COLORS TO GRAPHICS	; COPY SAME COLORS TO GRAPHICS
+425)   1BC0 11 05 83    		           LD DE,FGRCOL	;
+426)   1BC3 21 01 83    		           LD HL,FCOLOR	;
+427)   1BC6 ED B0       		           LDIR                                          	;
+428)   1BC8 11 17 83    		           LD DE,FCOLPAL	;
+429)   1BCB CD D6 1B    		           CALL COPYPAL	;
+430)   1BCE 11 37 83    		           LD DE,BCOLPAL            	;
+431)   1BD1 CD D6 1B    		           CALL COPYPAL	;
+432)   1BD4 18 16       		           JR OSFINSH;	;
+433)   1BD6 21 49 1C    		COPYPAL:   LD HL,COL_PALET   	;
+434)   1BD9 01 20 00    		           LD BC,16*2         ;SHOULD ADD 8 MORE COLORS 	;SHOULD ADD 8 MORE COLORS
+435)   1BDC ED B0       		           LDIR	;
+436)   1BDE AF          		           XOR A	;
+437)   1BDF 32 0F 83    		           LD (SCRLN),A	;
+438)   1BE2 21 00 00    		           LD HL,0	;
+439)   1BE5 22 91 83    		           LD (TIMECTR),HL	;
+440)   1BE8 22 93 83    		           LD (TIMECTR+2),HL            	;
+441)   1BEB C9          		           RET	;
+443)   1BEC CD 38 0E    		OSFINSH:   CALL LCD_CLRSCR	;
+444)   1BEF CD 2B 4C    		           CALL    TELL	;
+445)   1BF2 20 20 43 44 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1BF6 65 73 70 20 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1BFA 4D 6F 64 75 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1BFE 6C 61 72 20 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1C02 5A 38 30 20 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1C06 43 6F 6D 70 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1C0A 75 74 65 72 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1C0E 20 32 30 32 		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+445)   1C12 30 20 20    		     DEFM "  CDesp Modular Z80 Computer 2020  "	;
+446)   1C15 0A 0D       		     DEFB 0AH,0DH	;
+447)   1C17 41 54 4C 41 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C1B 53 20 6F 70 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C1F 65 72 61 74 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C23 69 6E 67 20 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C27 73 79 73 74 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C2B 65 6D 20 76 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C2F 65 72 73 69 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C33 6F 6E 20 32 		     DEFM "ATLAS operating system version 2.03"      	;
+447)   1C37 2E 30 33    		     DEFM "ATLAS operating system version 2.03"      	;
+448)   1C3A 0A 0D 0A 0D 		     DEFB 0AH,0DH,0AH,0DH      	;
+449)   1C3E 00          		     DEFB 00H	;
+450)   1C3F AF          		           XOR A	;
+451)   1C40 11 FF FF    		          LD DE,0xFFFF  ;DE = HIMEM	;DE = HIMEM
+452)   1C43 5F          		          LD E,A              ;PAGE BOUNDARY	;PAGE BOUNDARY
+453)   1C44 21 A2 83    		          LD HL,@USER      	;
+454)   1C47 FB          		          EI     	;
+455)   1C48 C9          		          RET 	;
+456)   1C49 00 00       		COL_PALET: DW COL_BLACK	;
+457)   1C4B 00 F8       		           DW COL_RED	;
+458)   1C4D C0 07       		           DW COL_GREEN	;
+459)   1C4F C0 FF       		           DW COL_YELLOW	;
+460)   1C51 3F 00       		           DW COL_BLUE	;
+461)   1C53 3F F8       		           DW COL_MAGENTA	;
+462)   1C55 FF 07       		           DW COL_CYAN	;
+463)   1C57 FF FF       		           DW COL_WHITE            	;
+464)   1C59 00 00       		          DW COL_BLACK ;TODO PICK 8 MORE COLORS	;TODO PICK 8 MORE COLORS
+465)   1C5B 00 F8       		           DW COL_RED	;
+466)   1C5D C0 07       		           DW COL_GREEN	;
+467)   1C5F C0 FF       		           DW COL_YELLOW	;
+468)   1C61 3F 00       		           DW COL_BLUE	;
+469)   1C63 3F F8       		           DW COL_MAGENTA	;
+470)   1C65 FF 07       		           DW COL_CYAN	;
+471)   1C67 FF FF       		           DW COL_WHITE            	;
+477)   1C69 CD C3 1C    		     CALL    SKIPSP	;
+478)   1C6C FE 0D       		  CP      CR	;
+479)   1C6E C8          		  RET     Z	;
+480)   1C6F FE 7C       		  CP      '|'	;
+481)   1C71 C8          		  RET     Z	;
+482)   1C72 FE 2E       		  CP      '.'	;
+483)   1C74 CA F0 1C    		  JP      Z,DOT           ;*.	;*.
+484)   1C77 EB          		  EX      DE,HL	;
+485)   1C78 21 D2 1C    		  LD      HL,COMDS	;
+486)   1C7B 1A          		OSCLI0:  LD      A,(DE)	;
+487)   1C7C CD CA 1C    		  CALL    UPPRC	;
+488)   1C7F BE          		  CP      (HL)	;
+489)   1C80 28 0B       		  JR      Z,OSCLI2	;
+490)   1C82 38 2E       		  JR      C,HUH	;
+491)   1C84 CB 7E       		OSCLI1:  BIT     7,(HL)	;
+492)   1C86 23          		  INC     HL	;
+493)   1C87 28 FB       		  JR      Z,OSCLI1	;
+494)   1C89 23          		  INC     HL	;
+495)   1C8A 23          		  INC     HL	;
+496)   1C8B 18 EE       		  JR      OSCLI0	;
+498)   1C8D D5          		OSCLI2:  PUSH    DE	;
+499)   1C8E 13          		OSCLI3:  INC     DE	;
+500)   1C8F 23          		  INC     HL	;
+501)   1C90 1A          		  LD      A,(DE)	;
+502)   1C91 CD CA 1C    		  CALL    UPPRC	;
+503)   1C94 FE 2E       		  CP      '.'             ;ABBREVIATED?	;ABBREVIATED?
+504)   1C96 28 0A       		  JR      Z,OSCLI4	;
+505)   1C98 AE          		  XOR     (HL)	;
+506)   1C99 28 F3       		  JR      Z,OSCLI3	;
+507)   1C9B FE 80       		  CP      80H	;
+508)   1C9D 28 03       		  JR      Z,OSCLI4	;
+509)   1C9F D1          		  POP     DE	;
+510)   1CA0 18 E2       		  JR      OSCLI1	;
+512)   1CA2 F1          		OSCLI4:  POP     AF	;
+513)   1CA3 13          		         INC     DE	;
+514)   1CA4 CB 7E       		OSCLI5:  BIT     7,(HL)	;
+515)   1CA6 23          		  INC     HL	;
+516)   1CA7 28 FB       		  JR      Z,OSCLI5	;
+517)   1CA9 7E          		  LD      A,(HL)	;
+518)   1CAA 23          		  INC     HL	;
+519)   1CAB 66          		  LD      H,(HL)	;
+520)   1CAC 6F          		  LD      L,A	;
+521)   1CAD E5          		  PUSH    HL	;
+522)   1CAE EB          		  EX      DE,HL	;
+523)   1CAF C3 C3 1C    		  JP      SKIPSP	;
+525)   1CB2 3E FE       		HUH:     LD      A,254	;
+526)   1CB4 CD F0 46    		         CALL    EXTERR	;
+527)   1CB7 42 61 64 20 		         DEFM    'Bad command'	;
+527)   1CBB 63 6F 6D 6D 		         DEFM    'Bad command'	;
+527)   1CBF 61 6E 64    		         DEFM    'Bad command'	;
+528)   1CC2 00          		         DEFB    0   	;
+530)   1CC3 7E          		SKIPSP:  LD      A,(HL)	;
+531)   1CC4 FE 20       		         CP      ' '	;
+532)   1CC6 C0          		         RET     NZ	;
+533)   1CC7 23          		         INC     HL	;
+534)   1CC8 18 F9       		         JR      SKIPSP 	;
+536)   1CCA E6 7F       		UPPRC:   AND     7FH	;
+537)   1CCC FE 60       		  CP      '`'	;
+538)   1CCE D8          		  RET     C	;
+539)   1CCF E6 5F       		  AND     5FH             ;CONVERT TO UPPER CASE	;CONVERT TO UPPER CASE
+540)   1CD1 C9          		  RET     	;
+544)   1CD2 42 59       		COMDS:DEFM   'BY'	;
+545)   1CD4 C5          		  DEFB    'E'+80H	;
+546)   1CD5 F1 1C       		  DEFW    BYE	;
+547)   1CD7 43          		     DEFM    'C'	;
+548)   1CD8 C4          		  DEFB    'D'+80H	;
+549)   1CD9 F5 1C       		  DEFW    NIMP   	;
+550)   1CDB 44 49       		     DEFM    'DI'	;
+551)   1CDD D2          		  DEFB    'R'+80H	;
+552)   1CDE F5 1C       		  DEFW    NIMP   	;
+553)   1CE0 46          		     DEFM    'F'	;
+554)   1CE1 D8          		  DEFB    'X'+80H	;
+555)   1CE2 F4 1C       		  DEFW    FX   	;
+556)   1CE4 50 57       		     DEFM    'PW'	;
+557)   1CE6 C4          		  DEFB    'D'+80H	;
+558)   1CE7 F5 1C       		  DEFW    NIMP   	;
+559)   1CE9 54 59 50    		     DEFM    'TYP'	;
+560)   1CEC C5          		  DEFB    'E'+80H	;
+561)   1CED F5 1C       		  DEFW    NIMP      	;
+563)   1CEF FF          		  DEFB 0FFH	;
+566)   1CF0 C9          		DOT:  RET	;
+571)   1CF1 C3 00 00    		BYE:  JP 0	;
+574)   1CF4 C9          		FX: RET  	;
+577)   1CF5 C9          		NIMP: RET  ;NOT IMPLEMENTED YET	;NOT IMPLEMENTED YET
+591)   1CF6 3E 01       		@MYOS_GETEXT: LD A,1	;
+592)   1CF8 C9          		             RET 	;
+594)   1CF9 C9          		@MYOS_RESET: RET	;
+596)   1CFA CD 94 5E    		@MYOS_MODE:CALL EXPRI   ;GET PARAM	;GET PARAM
+597)   1CFD D9          		          EXX           ;HL HAS THE PARAM      	;HL HAS THE PARAM
+598)   1CFE C3 E8 4C    		          JP XEQ	;
+600)   1D01 CD F7 15    		@MYOS_CLG: CALL GRPH_SAVECOLORS	;
+601)   1D04 CD 38 0E    		          CALL LCD_CLRSCR	;
+602)   1D07 CD 0E 16    		          CALL GRPH_RESTORECOLORS	;
+603)   1D0A C3 E8 4C    		          JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
+606)   1D0D DD E5       		@MYOS_GCOL:  PUSH IX	;
+607)   1D0F 3E 01       		             LD A,1	;
+608)   1D11 CD FC 13    		             CALL BAS_COLOUR     	;
+609)   1D14 DD E1       		             POP IX	;
+610)   1D16 C3 E8 4C    		             JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
+612)   1D19 DD E5       		@MYOS_COLOUR: PUSH IX	;
+613)   1D1B AF          		             XOR A   	;
+614)   1D1C CD FC 13    		             CALL BAS_COLOUR     	;
+615)   1D1F DD E1       		             POP IX	;
+616)   1D21 C3 E8 4C    		             JP XEQ           ;RETURN TO BASIC              	;RETURN TO BASIC
+618)   1D24 DD E5       		@MYOS_DRAW: PUSH IX 	;
+619)   1D26 CD D5 14    		           CALL BAS_DRAW	;
+620)   1D29 DD E1       		           POP IX	;
+621)   1D2B C3 E8 4C    		           JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
+623)   1D2E DD E5       		@MYOS_MOVE:PUSH IX	;
+624)   1D30 CD FE 14    		          CALL BAS_MOVE	;
+625)   1D33 DD E1       		          POP IX	;
+626)   1D35 C3 E8 4C    		          JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
+628)   1D38 DD E5       		@MYOS_PLOT:PUSH IX	;
+629)   1D3A CD 6E 15    		          CALL BAS_PLOT	;
+630)   1D3D DD E1       		          POP IX	;
+631)   1D3F C3 E8 4C    		          JP XEQ           ;RETURN TO BASIC    	;RETURN TO BASIC
+633)   1D42 DD E5       		@MYOS_POINT:PUSH IX	;
+634)   1D44 CD 0A 15    		          CALL BAS_POINT ;RETURNS A VALUE TO BASIC	;RETURNS A VALUE TO BASIC
+635)   1D47 DD E1       		          POP IX	;
+636)   1D49 C9          		          RET	;
+646)   1D4A CD 91 14    		@MYOS_PUTIMS:CALL GETBASICPARAMS;            	;
+647)   1D4D C3 E8 4C    		            JP XEQ	;
+649)   1D50 CD F0 46    		  CALL    EXTERR	;
+650)   1D53 53 6F 72 72 		  DEFM    'Sorry'	;
+650)   1D57 79          		  DEFM    'Sorry'	;
+651)   1D58 00          		  DEFB    0            	;
+658)   1D59 CD 04 03    		GETKEY:   CALL GET_CHAR	;
+659)   1D5C 37          		           SCF	;
+660)   1D5D C9          		        RET       	;
+665)   1D5E CD 6A 1D    		GETKEYNW: CALL CHKCURS	;
+666)   1D61 CD E1 02    		           CALL GET_CHARNW	;
+667)   1D64 3F          		           CCF	;
+668)   1D65 FE 00       		           CP 0	;
+669)   1D67 C8          		           RET Z	;
+670)   1D68 37          		           SCF	;
+671)   1D69 C9          		        RET       	;
+673)   1D6A F5          		@CHKCURS:   PUSH AF	;
+674)   1D6B 3A 91 83    		           LD A,(TIMECTR)	;
+675)   1D6E CB 67       		           BIT 4,A	;
+676)   1D70 28 11       		           JR Z,CCSHOW      ;IF SET SHOW       	;IF SET SHOW
+677)   1D72 3A 11 83    		CCHIDE:    LD A,(CURSSTAT)	;
+678)   1D75 CB 4F       		           BIT 1,A	;
+679)   1D77 20 19       		           JR NZ,CCEX      ;IF NOT SET ALREADY HIDDEN	;IF NOT SET ALREADY HIDDEN
+680)   1D79 CB CF       		           SET 1,A	;
+681)   1D7B 32 11 83    		           LD (CURSSTAT),A	;
+682)   1D7E CD F1 0D    		           CALL LCD_RMVCURS	;
+683)   1D81 18 0F       		           JR CCEX                                               	;
+684)   1D83 3A 11 83    		CCSHOW:    LD A,(CURSSTAT)	;
+685)   1D86 CB 4F       		           BIT 1,A	;
+686)   1D88 28 08       		           JR Z,CCEX      ;IF SET ALREADY VISIBLE	;IF SET ALREADY VISIBLE
+687)   1D8A CB 8F       		           RES 1,A	;
+688)   1D8C 32 11 83    		           LD (CURSSTAT),A	;
+689)   1D8F CD F6 0D    		           CALL LCD_PRNCURS	;
+691)   1D92 F1          		CCEX:      POP AF	;
+692)   1D93 C9          		     RET          	;
+703)   1D94 3A 00 83    		       LD      A,(FLAGS)	;
+704)   1D97 CB 5F       		       BIT     3,A             ;EDIT MODE?	;EDIT MODE?
+705)   1D99 28 09       		       JR      Z,OSLIN1	;
+706)   1D9B CB 9F       		       RES     3,A	;
+707)   1D9D 32 00 83    		       LD      (FLAGS),A	;
+708)   1DA0 2A 12 83    		       LD      HL,(EDPTR)	;
+709)   1DA3 BD          		       CP      L	;
+710)   1DA4 3E 0D       		OSLIN1: LD     A,CR	;
+711)   1DA6 77          		       LD      (HL),A	;
+712)   1DA7 C4 81 19    		       CALL    NZ,MYOS_OSWRCH	;
+713)   1DAA 2E 00       		       LD      L,0	;
+714)   1DAC 4D          		       LD      C,L             ;REPEAT FLAG	;REPEAT FLAG
+715)   1DAD 28 20       		       JR      Z,OSWAIT        ;SUPPRESS UNWANTED SPACE	;SUPPRESS UNWANTED SPACE
+716)   1DAF 06 00       		UPDATE: LD     B,0	;
+717)   1DB1 7E          		UPD1:  LD      A,(HL)	;
+718)   1DB2 04          		       INC     B	;
+719)   1DB3 23          		       INC     HL	;
+720)   1DB4 FE 0D       		       CP      CR	;
+721)   1DB6 F5          		       PUSH    AF	;
+722)   1DB7 E5          		       PUSH    HL	;
+723)   1DB8 5F          		       LD      E,A	;
+724)   1DB9 C4 35 1B    		       CALL    NZ,WRCH         ;FAST WRCH	;FAST WRCH
+725)   1DBC E1          		       POP     HL	;
+726)   1DBD F1          		       POP     AF	;
+727)   1DBE 20 F1       		       JR      NZ,UPD1	;
+728)   1DC0 3E 20       		       LD      A,' '	;
+729)   1DC2 CD 81 19    		       CALL    MYOS_OSWRCH	;
+730)   1DC5 1E 08       		       LD      E,BS	;
+731)   1DC7 E5          		UPD2:  PUSH    HL	;
+732)   1DC8 CD 35 1B    		       CALL    WRCH            ;FAST WRCH	;FAST WRCH
+733)   1DCB E1          		       POP     HL	;
+734)   1DCC 2B          		       DEC     HL	;
+735)   1DCD 10 F8       		       DJNZ    UPD2	;
+736)   1DCF 79          		OSWAIT: LD     A,C	;
+737)   1DD0 05          		       DEC     B	;
+738)   1DD1 28 01       		       JR      Z,LIMIT	;
+739)   1DD3 B7          		       OR      A               ;REPEAT COMMAND?	;REPEAT COMMAND?
+740)   1DD4 CC 74 19    		LIMIT: CALL    Z,KEYGET        ;READ KEYBOARD	;READ KEYBOARD
+741)   1DD7 4F          		       LD      C,A             ;SAVE FOR REPEAT	;SAVE FOR REPEAT
+742)   1DD8 11 CF 1D    		       LD      DE,OSWAIT       ;RETURN ADDRESS	;RETURN ADDRESS
+743)   1DDB D5          		       PUSH    DE	;
+744)   1DDC 3A 00 83    		       LD      A,(FLAGS)	;
+745)   1DDF B7          		       OR      A               ;TEST FOR ESCAPE	;TEST FOR ESCAPE
+746)   1DE0 79          		       LD      A,C	;
+747)   1DE1 FA 23 1E    		       JP      M,OSEXIT	;
+748)   1DE4 FE 0B       		       CP      11         ;CURSOR UP     (IX-11)	;CURSOR UP     (IX-11)
+749)   1DE6 CA 67 1E    		       JP      Z,LEFT	;
+750)   1DE9 FE 0A       		       CP      10         ;CURSOR DOWN   (IX-10)	;CURSOR DOWN   (IX-10)
+751)   1DEB CA 9A 1E    		       JP      Z,RIGHT	;
+752)   1DEE 06 00       		       LD      B,0	;
+753)   1DF0 FE 05       		       CP      5          ;CLEAR LEFT    (IX-5)	;CLEAR LEFT    (IX-5)
+754)   1DF2 28 72       		       JR      Z,BACK	;
+755)   1DF4 FE 09       		       CP      9          ;START OF LINE (IX-9)	;START OF LINE (IX-9)
+756)   1DF6 28 6F       		       JR      Z,LEFT	;
+757)   1DF8 FE 07       		       CP      7          ;CLEAR RIGHT   (IX-7)	;CLEAR RIGHT   (IX-7)
+758)   1DFA 28 76       		       JR      Z,DELETE	;
+759)   1DFC FE 08       		       CP      8          ;END OF LINE   (IX-8)	;END OF LINE   (IX-8)
+760)   1DFE CA 9A 1E    		       JP      Z,RIGHT	;
+761)   1E01 0E 00       		       LD      C,0             ;INHIBIT REPEAT	;INHIBIT REPEAT
+762)   1E03 FE 10       		       CP      'P' AND 1FH	;
+763)   1E05 CA 58 1B    		       JP      Z,TOGGLE	;
+764)   1E08 FE 06       		       CP      6          ;DELETE LEFT   (IX-6)	;DELETE LEFT   (IX-6)
+765)   1E0A 28 5A       		       JR      Z,BACK	;
+766)   1E0C FE 04       		       CP      4          ;CURSOR LEFT   (IX-4)	;CURSOR LEFT   (IX-4)
+767)   1E0E 28 57       		       JR      Z,LEFT	;
+768)   1E10 FE 02       		       CP      2          ;DELETE RIGHT  (IX-2)	;DELETE RIGHT  (IX-2)
+769)   1E12 28 5E       		       JR      Z,DELETE	;
+770)   1E14 FE 01       		       CP      1          ;INSERT SPACE  (IX-1)	;INSERT SPACE  (IX-1)
+771)   1E16 28 6E       		       JR      Z,INSERT	;
+772)   1E18 FE 03       		       CP      3          ;CURSOR RIGHT  (IX-3)	;CURSOR RIGHT  (IX-3)
+773)   1E1A 28 7E       		       JR      Z,RIGHT	;
+774)   1E1C FE 20       		       CP      ' '             ;PRINTING CHARACTER	;PRINTING CHARACTER
+775)   1E1E 30 7F       		       JR      NC,SAVECH	;
+776)   1E20 FE 0D       		       CP      CR              ;ENTER LINE	;ENTER LINE
+777)   1E22 C0          		       RET     NZ	;
+778)   1E23 7E          		OSEXIT: LD     A,(HL)	;
+779)   1E24 CD 81 19    		       CALL    MYOS_OSWRCH          ;WRITE REST OF LINE	;WRITE REST OF LINE
+780)   1E27 23          		       INC     HL	;
+781)   1E28 D6 0D       		       SUB     CR	;
+782)   1E2A 20 F7       		       JR      NZ,OSEXIT	;
+783)   1E2C D1          		       POP     DE              ;DITCH RETURN ADDRESS	;DITCH RETURN ADDRESS
+784)   1E2D B9          		       CP      C	;
+785)   1E2E C2 95 1B    		       JP      NZ,ABORT        ;ESCAPE	;ESCAPE
+786)   1E31 3E 0A       		       LD      A,LF	;
+787)   1E33 CD 81 19    		       CALL    MYOS_OSWRCH	;
+788)   1E36 ED 5B F4 82 		       LD      DE,(ERRLIN)	;
+789)   1E3A AF          		       XOR     A	;
+790)   1E3B 6F          		       LD      L,A	;
+791)   1E3C 22 12 83    		       LD      (EDPTR),HL	;
+792)   1E3F BA          		       CP      D	;
+793)   1E40 C0          		       RET     NZ	;
+794)   1E41 BB          		       CP      E	;
+795)   1E42 C0          		       RET     NZ	;
+796)   1E43 11 B3 1E    		       LD      DE,EDITST	;
+797)   1E46 06 04       		       LD      B,4	;
+798)   1E48 1A          		CMPARE: LD     A,(DE)	;
+799)   1E49 BE          		       CP      (HL)	;
+800)   1E4A 3E 00       		       LD      A,0	;
+801)   1E4C C0          		       RET     NZ	;
+802)   1E4D 23          		       INC     HL	;
+803)   1E4E 13          		       INC     DE	;
+804)   1E4F 7E          		       LD      A,(HL)	;
+805)   1E50 FE 2E       		       CP      '.'	;
+806)   1E52 28 02       		       JR      Z,ABBR	;
+807)   1E54 10 F2       		       DJNZ    CMPARE	;
+808)   1E56 AF          		ABBR:  XOR     A	;
+809)   1E57 47          		       LD      B,A	;
+810)   1E58 4D          		       LD      C,L	;
+811)   1E59 6F          		       LD      L,A	;
+812)   1E5A 11 B7 1E    		       LD      DE,LISTST	;
+813)   1E5D EB          		       EX      DE,HL	;
+814)   1E5E ED B0       		       LDIR	;
+815)   1E60 21 00 83    		       LD      HL,FLAGS	;
+816)   1E63 CB DE       		       SET     3,(HL)	;
+817)   1E65 C9          		       RET	;
+819)   1E66 37          		BACK:  SCF                     ;DELETE LEFT	;DELETE LEFT
+820)   1E67 2C          		LEFT:  INC     L               ;CURSOR LEFT	;CURSOR LEFT
+821)   1E68 2D          		       DEC     L	;
+822)   1E69 28 45       		       JR      Z,STOP	;
+823)   1E6B 3E 08       		       LD      A,BS	;
+824)   1E6D CD 81 19    		       CALL    MYOS_OSWRCH	;
+825)   1E70 2D          		       DEC     L	;
+826)   1E71 D0          		       RET     NC	;
+827)   1E72 7E          		DELETE: LD     A,(HL)          ;DELETE RIGHT	;DELETE RIGHT
+828)   1E73 FE 0D       		       CP      CR	;
+829)   1E75 28 39       		       JR      Z,STOP	;
+830)   1E77 54          		       LD      D,H	;
+831)   1E78 5D          		       LD      E,L	;
+832)   1E79 13          		DEL1:  INC     DE	;
+833)   1E7A 1A          		       LD      A,(DE)	;
+834)   1E7B 1B          		       DEC     DE	;
+835)   1E7C 12          		       LD      (DE),A	;
+836)   1E7D 13          		       INC     DE	;
+837)   1E7E FE 0D       		       CP      CR	;
+838)   1E80 20 F7       		       JR      NZ,DEL1	;
+839)   1E82 D1          		DEL2:  POP     DE              ;DITCH	;DITCH
+840)   1E83 C3 AF 1D    		       JP      UPDATE	;
+842)   1E86 3E 0D       		INSERT: LD     A,CR            ;INSERT SPACE	;INSERT SPACE
+843)   1E88 BE          		       CP      (HL)	;
+844)   1E89 C8          		       RET     Z	;
+845)   1E8A 54          		       LD      D,H	;
+846)   1E8B 1E FE       		       LD      E,254	;
+847)   1E8D 13          		INS1:  INC     DE	;
+848)   1E8E 12          		       LD      (DE),A	;
+849)   1E8F 1B          		       DEC     DE	;
+850)   1E90 7B          		       LD      A,E	;
+851)   1E91 BD          		       CP      L	;
+852)   1E92 1B          		       DEC     DE	;
+853)   1E93 1A          		       LD      A,(DE)	;
+854)   1E94 20 F7       		       JR      NZ,INS1	;
+855)   1E96 36 20       		       LD      (HL),' '	;
+856)   1E98 18 E8       		       JR      DEL2	;
+858)   1E9A 7E          		RIGHT: LD      A,(HL)          ;CURSOR RIGHT	;CURSOR RIGHT
+859)   1E9B FE 0D       		       CP      CR	;
+860)   1E9D 28 11       		       JR      Z,STOP	;
+861)   1E9F 56          		SAVECH: LD     D,(HL)          ;PRINTING CHARACTER	;PRINTING CHARACTER
+862)   1EA0 77          		       LD      (HL),A	;
+863)   1EA1 2C          		       INC     L	;
+864)   1EA2 28 09       		       JR      Z,WONTGO        ;LINE TOO LONG	;LINE TOO LONG
+865)   1EA4 CD 81 19    		       CALL    MYOS_OSWRCH	;
+866)   1EA7 3E 0D       		       LD      A,CR	;
+867)   1EA9 BA          		       CP      D	;
+868)   1EAA C0          		       RET     NZ	;
+869)   1EAB 77          		       LD      (HL),A	;
+870)   1EAC C9          		       RET	;
+872)   1EAD 2D          		WONTGO: DEC    L	;
+873)   1EAE 36 0D       		       LD      (HL),CR	;
+876)   1EB0 0E 00       		STOP:  LD      C,0             ;STOP REPEAT	;STOP REPEAT
+877)   1EB2 C9          		       RET	;
+880)   1EB3 45 44 49 54 		EDITST: DEFM   'EDIT'	;
+881)   1EB7 4C 49 53 54 		LISTST: DEFM   'LIST'	;
   9)   8300 00          		   @FLAGS   DEFS 1  ; Flags: B7=ESC PRESSED, B6=ESC DISABLED	; Flags: B7=ESC PRESSED, B6=ESC DISABLED
  10)   8301 00 00       		   @FCOLOR   DEFS 2 ;FOREGROUND COLOR FOR TEXT	;FOREGROUND COLOR FOR TEXT
  11)   8303 00 00       		   @BCOLOR   DEFS 2 ;BACKGROUND COLOR FOR TEXT	;BACKGROUND COLOR FOR TEXT
