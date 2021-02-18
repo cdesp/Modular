@@ -3,22 +3,53 @@
 @INTSER:   DI
            PUSH HL
            PUSH AF
+           PUSH BC
+           PUSH IX
            
            ;TEST INTERRUPT MODULE
            ;AND ACT ON WHAT DEVICE CAUSED THE INTERRUPT
            IN A,(DEVINP)
            CPL
-           AND 0X07 ;BITS 0-2           
-           CP 1
-           CALL Z,INT_TIMER
+           AND 0X07 ;BITS 0-2  
+           DEC A 	;CONVERT 1-8 TO 0-7 NOT NEEDED ON NEW BOARD ONLY ON MY PROTOTYPE
+           LD IX,MYINTADDR                    
+           LD B,0
+           LD C,A
+           SLA C ;DOUBLE THIS CAUSE 2 BYTES PER ADDR
+           ADD IX,BC
+           LD L,(IX)
+           LD H,(IX+1)
+           LD BC,IS_EX
+           PUSH BC ;RETURN ADDRESS
+           JP (HL) ;JP TO HL
            
-IS_EX:     POP AF
+IS_EX:     POP IX
+	   POP BC
+	   POP AF
            POP HL
            EI
-           RET           
+           RET 
+           
+MYINTADDR  DEFW INT_TIMER
+	   DEFW SAVETE
+	   DEFW DOCLRINT
+	   DEFW DOCLRINT
+	   DEFW DOCLRINT
+	   DEFW DOCLRINT
+	   DEFW DOCLRINT
+	   DEFW DOCLRINT                    
+	              
+SAVETE	   OUT (DEVINT),A  ;CLEAR THE INTERRUPT 
+	   LD HL,INT2TE    ;TEARING EFFECT
+	   LD A,1
+	   LD (HL),A;
+	   RET
+           
+	              
+DOCLRINT   OUT (DEVINT),A
+	   RET
 
-INT_TIMER: DEC A
-           OUT (DEVINT),A
+INT_TIMER: OUT (DEVINT),A
            LD HL,TIMECTR
            INC (HL)  
            LD A,(HL)

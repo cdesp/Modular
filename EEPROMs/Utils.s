@@ -3,9 +3,13 @@
 	GLOBAL DELAY
 	GLOBAL DEL2
 	GLOBAL DELAYMICRO
-	GLOBAL B2BCD
-	GLOBAL BCD2HA
-	GLOBAL OUTASC
+	GLOBAL BCD2BN     ;CONVERT ONE BYTE BCD TO BINARY
+	GLOBAL BN2BCD	  ;CONVERT ONE BYTE BINARY  TO BCD
+	GLOBAL B2BCD      ;CONVERT 16BIT ON HL TO 6 DIGIT BCD ON C:HL
+	GLOBAL BCD2HA	  ;Converts a 6-digit BCD number to a hex ASCII string
+	GLOBAL OUTASC	  CONVERTS A 16BIT BINARY NUMBER ON HL TO 6 DIGIT ASCII
+	GLOBAL Bcd2ASC    ;Converts a 2-digit BCD number to an ASCII string
+	GLOBAL PAUSE_LOOP
 
 
 @SCCLS:
@@ -70,9 +74,69 @@ OUTASC	PUSH AF
 	POP DE
 	CALL BCD2HA
 	POP AF
-	RET	
+	RET
 	
-	;;--------------------------------------------------
+;------------------------------------------------------------------------------				 
+
+; BCD to Binary 
+; Convert one byte BCD to one byte binary data
+; INPUT
+; BCD data in A
+; OUTPUT
+; Binary data in A
+; 
+; REGISTERS : A,B,C,F
+;------------------------------------------------------------------------------				 
+
+BCD2BN: OR A
+        LD B,A
+	AND $F0
+	RRCA
+	LD C,A
+	RRCA
+	RRCA
+	ADD A,C
+	LD C,A
+	LD A,B
+	AND $0F
+	ADD A,C
+	RET		
+	
+;------------------------------------------------------------------------------				 
+
+; Binary to BCD
+; Convert one byte of binary data to two bytes of BCD data
+; INPUT
+; Binary data in A
+; OUTPUT
+; Hundreds digit in H
+; Tens and ones digits in L
+; 
+; REGISTERS : AF,C,HL
+;------------------------------------------------------------------------------				 
+
+BN2BCD: LD H,$FF
+D100LP: INC H
+	SUB 100
+	JR NC,D100LP
+	ADD A,100
+	LD L,$FF
+D10LP:  INC L
+        SUB 10
+        JR NC, D10LP
+        ADD A,10
+        LD C,A
+        LD A,L
+        RLCA
+        RLCA        
+	RLCA
+        RLCA
+	OR C
+	LD L,A
+	RET
+	
+	
+;;--------------------------------------------------
 ;; Binary to BCD conversion
 ;;
 ;; Converts a 16-bit unsigned integer into a 6-digit
@@ -140,6 +204,61 @@ INC DE
 RET
 
 
+;;----------------------------------------------------
+;; Converts a 2-digit BCD number to a hex ASCII string
+;;
+;; input: DE = pointer to start of ASCII string
+;; L number to be converted
+;; output: DE = pointer past end of ASCII string
+;; destroys: A,F,D,E
+;;-----------------------------------------------------
+Bcd2ASC:
+LD A, L
+CALL cvtUN
+LD A, L
+JR cvtLN
+cvtUN:
+RRA ; move upper nibble into lower nibble
+RRA
+RRA
+RRA
+cvtLN:
+AND  0Fh ; isolate lower nibble
+ADD A, 90h ; old trick
+DAA ; for converting
+ADC A, 40h ; one nibble
+DAA ; to hex ASCII
+LD (DE), A
+INC DE
+RET
+
+;------------------------------------------------------------------------------				 
+; PAUSE_LOOP
+;
+; Timer function
+;
+; 16-bit (BC) decrement counter, performing 4xNEG loop until BC
+; reaches zero.
+;
+; 61 T-states in loop = 15.25uS per loop @ 4 MHz - near enough
+; a second delay for 65,535 iterations.
+;
+; Set iteration count in BC before calling this function.
+; Destroys: BC
+;------------------------------------------------------------------------------
+PAUSE_LOOP:
+	PUSH	AF							; 11 T-states
+pau_lp:
+	NEG									; 8 T-states
+	NEG									; 8 T-states
+	NEG									; 8 T-states
+	NEG									; 8 T-states
+	DEC		BC							; 6 T-states
+	LD		A,C							; 9 T-states
+	OR		B							; 4 T-states
+	JP		NZ,pau_lp					; 10 T-states
+	POP		AF							; 10 T-states
+	RET									; Pause complete, RETurn
 
 
 	

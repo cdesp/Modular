@@ -1,6 +1,5 @@
 ORG $9000
 
-MENU EQU 237
 
 INCLUDE \..\MYOS_2_0000.SYM
 
@@ -26,8 +25,8 @@ AGN:
  CALL Z,MOVESPR
  CP 'G'
  CALL Z,STARTGAME
- CP 'T'
- CALL Z,TEST
+ CP 'C'
+ CALL Z,CLEARSCREEN
 
 CP 'M'
 JP Z,MENU
@@ -36,13 +35,42 @@ JR AGN
 MYMSG1 DEFM "S:CREATE P:PRINT D:MOVE R:REFRESH | M=MENU"
     DB 10,13,0
     
-    
-TEST:			CALL MAINSETUP
-			LD A,0
-			CALL getScreenBG			
-			LD A,0
-			CALL setScreenBG
+
+CLEARSCREEN:		LD DE,COL_WHITE   ; SET FCOLOR AND BCOLOR DEFAULT VALUES
+	 	        LD HL,FCOLOR
+            		LD (HL),E
+            		INC HL
+            		LD (HL),D
+            		INC HL
+            		LD DE,COL_BLACK
+            		LD (HL),E
+            		INC HL
+            		LD (HL),D     
+			CALL LCD_CLRSCR
+			LD A,10
+			LD (CURSORX),A
+			LD A,20
+			LD (CURSORY),A
+			LD HL,MYMSG1
+			CALL LCD_MSG
+			LD A,10
+			LD (CURSORX),A
+			LD A,10
+			LD (CURSORY),A
+			LD HL,MYMSG1
+			CALL LCD_MSG
 			RET
+
+WAITFORTE		LD HL,INT2TE
+			XOR A
+			LD (HL),A
+			EI
+WFTEAGN:		LD A,(HL)
+			CP 1
+			JR NZ,WFTEAGN
+			DI
+			RET
+
 			     
 
 STARTGAME:		CALL MAINSETUP
@@ -149,12 +177,14 @@ SPRMOVERG:		LD A,0
 PRINTSPR:  		LD A,0
 			CALL getScreenBG
 			LD A,0
-			CALL blendSprite
+			CALL blendSprite			
 			LD A,0
 			CALL setScreenSPR
 			RET
 			
-MOVESPR:		LD A,0
+MOVESPR:		CALL WAITFORTE		;WAITFOR TEARING EFFECT
+                        OUT ($48),A
+			LD A,0
 			CALL setScreenBG  ;erase sprite
 			CALL getSpriteStruct
 			LD A,(IX+4)
@@ -166,6 +196,7 @@ MOVESPR:		LD A,0
 			LD A,(IX+7)
 			LD (IX+3),A  ;POSY=NEWPOSY
 			CALL PRINTSPR
+			OUT ($48),A
 			LD HL,SHPNT
 			XOR A
 			LD (HL),A			
