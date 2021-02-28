@@ -442,9 +442,9 @@ COPYPAL:    LD HL,COL_PALET
             ;PRINT MYOS MESSAGE HERE
 OSFINSH:    CALL LCD_CLRSCR
             CALL    TELL
-						DEFM	"  CDesp Modular Z80 Computer 2020  "
+						DEFM	"CDesp Modular Z80 Computer 2020-21"
 						DEFB	0AH,0DH
-						DEFM	"ATLAS operating system version 2.03"						
+						DEFM	"ATLAS Operating System Version 2.04"						
 						DEFB 0AH,0DH,0AH,0DH						
 						DEFB 00H
             XOR A

@@ -58,14 +58,19 @@
 ;	SERERR EQU RAMAD+2		;SERIAL ERROR
 	
 				;A=5 RECEIVE INTERRUPTS ON
-RS_INI:	
+;A IS THE BAUD RATE PARAM				
+RS_INI:	PUSH AF
 	LD      A,$80          	; Mask to set DLAB on
-	OUT     (LCR),A         ; Send to LINe Control Register
-	LD      A,12           ; Divisor of 12 = 9600 bps with 1.8432 MHz clock
+	OUT     (LCR),A         ; Send to LINe Control Register	
+	;LD      A,12           ; Divisor of 12 = 9600 bps with 1.8432 MHz clock
 	;LD      A,96           ; Divisor of 96 = 1200 bps with 1.8432 MHz clock
 	;LD      A,72            ; Divisor of 96 = 7200?? bps with 14.7456 MHz clock
 				; 72=1600BPS WITH 1.8432
-  	
+	;LD A,6			;19200BPS
+	;LD A,3			;38400BPS
+	;LD A,2			;56000BPS
+	;LD A,1			;115200BPS				
+  	POP AF
 	OUT     (DLL),A        	; Set LSB of divisor
 	LD      A,00            ; This will be the MSB of the divisior
 	OUT     (DLM),A        	; Send to the MSB register

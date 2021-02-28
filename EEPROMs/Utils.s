@@ -167,6 +167,33 @@ DJNZ cvtLp
 EX DE,HL
 RET
 
+;------------------------------------------------------------------------------				 
+
+; BCD to Binary 
+; Convert one byte BCD to one byte binary data
+; INPUT
+; BCD data in A
+; OUTPUT
+; Binary data in A
+; 
+; REGISTERS : A,B,C,F
+;------------------------------------------------------------------------------				 
+
+BCD2BN: OR A
+        LD B,A
+	AND $F0
+	RRCA
+	LD C,A
+	RRCA
+	RRCA
+	ADD A,C
+	LD C,A
+	LD A,B
+	AND $0F
+	ADD A,C
+	RET
+
+
 ;;----------------------------------------------------
 ;; Converts a 6-digit BCD number to a hex ASCII string
 ;;
