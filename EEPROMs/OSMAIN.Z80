@@ -549,10 +549,13 @@ COMDS:DEFM    'BY'
 			DEFW    NIMP			
       DEFM    'DI'
 			DEFB    'R'+80H
-			DEFW    NIMP			
+			DEFW    NIMP						
       DEFM    'F'
 			DEFB    'X'+80H
-			DEFW    FX			
+			DEFW    FX	
+      DEFM    'LCD_PRIN' 
+      			DEFB	'T'+80H
+      			DEFW    LCD_PRN				
       DEFM    'PW'
 			DEFB    'D'+80H
 			DEFW    NIMP			
@@ -576,7 +579,80 @@ FX: RET
 ; OSCLI - *VARIOUS
 NIMP: RET			;NOT IMPLEMENTED YET
 
+FORMAT 	EQU BBCBASIC+0x16E3
+EXPR 	EQU BBCBASIC+0x1D84
+HEXSTR	EQU BBCBASIC+0x2353
+STR 	EQU BBCBASIC+0x2396
+FILL 	EQU BBCBASIC+0x172A
+TERM?   EQU BBCBASIC+0x16C2
+STAVAR  EQU $8200
+COUNT   EQU $82FB
 
+
+LCD_PRN:	PUSH HL
+		POP IY        
+		JR PRINT0
+PRINT6:			LD      B,2
+			JR      PRINTC
+PRINT8:			LD      BC,100H
+			JR      PRINTC
+PRINT9:			LD      HL,STAVAR
+			XOR     A
+			CP      (HL)
+			JR      Z,PRINT0
+			LD      A,(COUNT)
+			OR      A
+			JR      Z,PRINT0
+PRINTA:			SUB     (HL)
+			JR      Z,PRINT0
+			JR      NC,PRINTA
+			NEG
+			CALL    FILL		              
+PRINT0:			LD      A,(STAVAR)
+			LD      C,A             ;PRINTS
+			LD      B,0             ;PRINTF
+PRINTC:			CALL    TERM?
+			JR      Z,PRINT4
+			RES     0,B
+			INC     IY
+			CP      '~'
+			JR      Z,PRINT6
+			CP      ';'
+			JR      Z,PRINT8
+			CP      ','
+			JR      Z,PRINT9
+			CALL    FORMAT          ;SPC, TAB, '
+			JR      Z,PRINTC
+			DEC     IY
+			PUSH    BC
+			CALL    EXPR            ;VARIABLE TYPE
+			EX      AF,AF'
+			JP      M,PRINT3        ;STRING
+			POP     DE
+			PUSH    DE
+			BIT     1,D
+			PUSH    AF
+			CALL    Z,STR           ;DECIMAL
+			POP     AF
+			CALL    NZ,HEXSTR       ;HEX
+			POP     BC
+			PUSH    BC
+			LD      A,C
+			SUB     E
+			CALL    NC,FILL         ;RIGHT JUSTIFY
+PRINT3:			POP     BC
+			;E HAS THE NO OF BYTES TO PRINT
+			;ACCS HAS THE DATA TO PRINT
+			LD HL,ACCS ; L IS 00
+			LD A,L
+			ADD E
+			LD L,A
+			XOR A
+			LD (HL),A
+			LD L,A
+			CALL LCD16_PRINT           ;PRINT
+			JR      PRINTC
+PRINT4:			JP      XEQ            
             
   
   
