@@ -1,11 +1,11 @@
     MODULE OSMAIN
   ;MAIN INTERFACE IMPLEMENTATION WITH BASIC
 
-    CR  	 EQU 0DH
-    LF		 EQU 0AH
-    ES		 EQU 1BH    
-    BS     EQU 08H
-    ESC    EQU 1BH
+    CR  	EQU 0DH
+    LF		EQU 0AH
+    ES		EQU 1BH    
+    BS          EQU 08H
+    ESC         EQU 1BH
     
     ;global vars FROM BBC BASIC
     @ACCS   EQU 0x8000       ;STRING INPUT BUFFER
