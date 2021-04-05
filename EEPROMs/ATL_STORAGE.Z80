@@ -76,12 +76,11 @@ STOR_INI:	PUSH AF
   		OUT 	(FCR),A						;//was commented
 		LD      A,$00          	; 5 A=0 Disable all INterrupts
 		OUT     (IER),A        	; Send to INterrupt Enable Register	
+	    XOR A					;NOT ready to receive SIGNAL RTS 0
+        OUT (MCR),A  		
 		RET
 		
-; Sends byte IN A to the UART
-STOR_TX:	CALL    STORTXRD
-        	OUT     (THR),A
-        	RET
+
 
 ; RETurns when UART is ready to receive
 
@@ -92,7 +91,33 @@ STORTXLP: 	IN      A,(LSR)        	; fetch the control register
         	POP     AF
         	RET		
 
+;TODO:IMPLEMENT A TIMEOUT
+WAITCTSLOW:	PUSH AF
+TSTAGN:		IN A,(MSR)
+			BIT 4,A 				;COMPLEMENT OF CTS SO IF CTS=0 THIS IS 1
+			JR NZ,WCLEX
+			JR TSTAGN
+WCLEX:		POP AF
+			RET
+			
+RS_TX EQU $05FE
 
+; Sends byte IN A to the UART
+STOR_TX:	;test CTS if low then send
+			CALL WAITCTSLOW
+			;push af
+			;ld a, 'C'
+			;call RS_TX
+			;pop af
+			CALL    STORTXRD
+			;push af
+			;ld a, 'R'
+			;call RS_TX
+			;pop af
+        	OUT     (THR),A
+        	RET
+
+;Sends a zero terminated string
 STOR_TXT: 	LD A,(HL)
 		INC HL	
 		CP 0
@@ -106,9 +131,9 @@ STOR_TXT: 	LD A,(HL)
 ; Wait for a byte from the UART, and save it IN A
 
 STOR_RX:  	DI
-        	LD A,2 ;BIT 1					;ready to receive SIGNAL RTS 1
+        	LD A,2 ;BIT 1					;ready to receive SIGNAL RTS 1 MEANS ARDUINO CTS=0
         	OUT (MCR),A
-		CALL    STORRXRD              
+			CALL    STORRXRD              
 STOR_GTCH: 	XOR A						;NOT ready to receive SIGNAL RTS 0
         	OUT (MCR),A        
 	      	IN A,(RBR)
@@ -125,7 +150,13 @@ STOR_RXNW:	LD A,2					;ready to receive SIGNAL RTS 1
 STOR_NOCHAR: 	XOR A  ;RETURN ZERO
         	RET
         
-        
+FLUSHREC:	LD B,10
+FRAGN:      CALL  STOR_RXNW
+			DJNZ FRAGN       
+			XOR A
+			OUT (MCR),A
+			RET
+
 
 ; RETurns when UART has received data
 
