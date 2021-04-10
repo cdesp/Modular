@@ -455,7 +455,7 @@ OSFINSH:    CALL LCD_CLRSCR
             CALL    TELL
 						DEFM	"CDesp Modular Z80 Computer 2020-21"
 						DEFB	0AH,0DH
-						DEFM	"ATLAS Operating System Version 2.04"						
+						DEFM	"ATLAS Operating System Version 2.5"						
 						DEFB 0AH,0DH,0AH,0DH						
 						DEFB 00H
             XOR A
@@ -559,10 +559,10 @@ COMDS:DEFM    'BY'
 			DEFW    BYE
       DEFM    'C'
 			DEFB    'D'+80H
-			DEFW    NIMP			
+			DEFW    DRV_CD			
       DEFM    'DI'
 			DEFB    'R'+80H
-			DEFW    NIMP						
+			DEFW    DRV_DIR						
       DEFM    'F'
 			DEFB    'X'+80H
 			DEFW    FX	
@@ -607,7 +607,7 @@ COMDS:DEFM    'BY'
       			DEFW    LCD_SCRLFT		      														
       DEFM    'LCD_SCRRIGH' 
       			DEFB	'T'+80H
-      			DEFW    LCD_SCRRGT      			      			
+      			DEFW    LCD_SCRRGT       
       DEFM    'PW'
 			DEFB    'D'+80H
 			DEFW    NIMP	
@@ -619,7 +619,7 @@ COMDS:DEFM    'BY'
 			DEFW    RTC_GET			
       DEFM    'TYP'
 			DEFB    'E'+80H
-			DEFW    NIMP						
+			DEFW    DRV_TYPFILE						
 			
 			DEFB	0FFH
 
@@ -637,6 +637,33 @@ FX: JP      EXTCMDRET
 ; OSCLI - *VARIOUS
 NIMP: JP      EXTCMDRET			;NOT IMPLEMENTED YET
 
+;PRINT THE CURRENT DIRECTORY ON SCREEN
+DRV_DIR:                CALL STRG_DIRLIST
+                        JP EXTCMDRET
+
+DRV_GETFNPRM:           CALL    EXPR            ;VARIABLE TYPE
+			EX      AF,AF'          ;E NO OF BYTES ACCS THE PARAM
+                        LD HL,ACCS
+                        LD B,0
+                        LD C,E                        
+                        LD DE,STRGBUFF
+                        LDIR
+                        XOR A
+                        LD (DE),A
+                        RET
+
+;CHANGE TO A SUBDIR OF THE CURRENT DIR                        
+DRV_CD:                 ;TODO:GET THE DIRNAME FROM PARAM AND PUT IT ON STRGBUFF
+                        CALL DRV_GETFNPRM
+                        CALL STRG_DIRCHG
+                        JP EXTCMDRET
+
+
+DRV_TYPFILE:           ;TODO:GET THE FILENAME FROM PARAM AND PUT IT ON STRGBUFF
+                        CALL DRV_GETFNPRM
+                        CALL STRG_OPNFILE;
+                        CALL STRG_TPFILE    
+                        JP EXTCMDRET                    
 
 ;GETS A PARAM FROM BASIC CMD LINE CONVERTS IT IN BCD
 ;ON RETURN A HAS THE BCD NUM, ZERO FLAG IF THERE IS ANOTHER PARAM NOT Z MEANS NO PARAM
