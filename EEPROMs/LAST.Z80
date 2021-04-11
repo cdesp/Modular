@@ -67,6 +67,7 @@
     @STRGBUFF  	    DEFS 40		;USED FOR DIRECTORY AND FILENAME
     @STRGCMD     	DEFS 4
     @FID		        DEFS 1
+    @SPC        DEFS 1
 
     
     

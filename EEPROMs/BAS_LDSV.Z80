@@ -38,60 +38,40 @@ OSSV_NXT2:  LD A,(HL)
             LD A,B
             OR C
             JR NZ,OSSV_NXT2                        
-            RET              
-@MYOS_OSLOAD:
-            ;OUT LOAD COMMAND (TWO BYTES)
-            ;OUT THE FILENAME 0X0D TERMINATED
-            ;IN THE LENGTH (TWO BYTES)
-            ;IN THE BYTES 
-            LD A,0xDD
-            CALL RS_TX
-            LD A,COMMD_LOAD
-            CALL RS_TX
-            ;FILENAME
-OSLD_NXT:   LD A,(HL)
-            CALL RS_TX
-            INC HL
-            CP 0x0D
-            JR NZ,OSLD_NXT
-            ;LENGTH READ
-            CALL RS_RX
-            LD C,A
-            CALL RS_RX
-            LD B,A
-            OR A
-            JR NZ,OK1
-            LD A,C
-            OR A
-            JR NZ,OK1
-            ;ERROR FILE SIZE IS 0
-            CALL RS_RX ;GET THE ERRORCODE            
-            JP LDERR
-            
-OK1:        ;BYTES
-            LD HL,(PAGE)                        
-OSLD_NXT2:  CALL RS_RX
-            LD (HL),A
-            INC HL
-            DEC BC
-            LD A,B
-            OR C
-            JR NZ,OSLD_NXT2                        
-            LD B,H
-            LD C,L
-            LD HL,TOP ;SAVE TOP OF BASIC 
-            LD (HL),C
-            INC HL
-            LD (HL),B            
-            SCF       ;SET C = NO ERROR            
-            RET   
-            
-LDERR:    	CP 4
-            JR Z,FLNOTF
-            CALL    EXTERR
-        		DEFM    'Error Loading'
-        		DEFB    0			
-FLNOTF:     CALL    EXTERR
-        		DEFM    'Wrong Filename'
-        		DEFB    0			
+            RET          
+
+;HL HAS A FILENAME TERMINATED BY #13
+@MYOS_OSLOAD:LD DE,STRGBUFF
+OLNXT:       LD A,(HL)
+             CP 13      ;
+             JR NZ,OLCONT
+             XOR A
+OLCONT:      LD (DE),a
+             INC HL
+             INC DE
+             CP 0 
+             JR NZ,OLNXT
+             CALL STRG_OPNFILE ;FID HAS THE FILE ID ALSO ON A             
+             LD HL,(PAGE)
+             EX DE,HL
+             LD BC,0           ;ZERO MEANS LOAD ALL
+             CALL STRG_BLKREAD ;ON RETURN BC HAS THE BYTES WE READ A=RESULT DE=AFTER THE LAST BYTE SAVED
+             CP FCMDOK
+             JR NZ,LDERR
+             LD A,(FID)
+             CALL STRG_CLSFILE
+             LD HL,TOP ;SAVE TOP OF BASIC 
+             LD (HL),E
+             INC HL
+             LD (HL),D            
+             SCF       ;SET C = NO ERROR            
+             RET                           
+LDERR:    	 CP FNOTFND
+             JR Z,FLNOTF
+             CALL    EXTERR
+        		 DEFM    'Error Loading'
+        		 DEFB    0			
+FLNOTF:      CALL    EXTERR
+        		 DEFM    'Wrong Filename'
+        		 DEFB    0			
       

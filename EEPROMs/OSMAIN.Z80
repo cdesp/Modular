@@ -38,11 +38,11 @@
       
 ;TEST: JP LCD_TEST    
     
-@MYOS_CLRSCN:JP LCD_CLRSCR        ; CLRSCN: clears the screen.
+@MYOS_CLRSCN:           JP LCD_CLRSCR        ; CLRSCN: clears the screen.
             
-@MYOS_PUTIME:        ; PUTIME: set current time to DE:HL, in centiseconds.
-       		 LD A,L
-       		 LD (TIMECTR),A
+@MYOS_PUTIME:           ; PUTIME: set current time to DE:HL, in centiseconds.
+       		        LD A,L
+       		        LD (TIMECTR),A
 					 LD A,H
  	  		   LD (TIMECTR+1),A
  	  		   LD A,E
@@ -333,10 +333,9 @@ WRCH:      LD A,E
            PUSH AF
            PUSH BC
            PUSH DE
-					 PUSH HL
-					 PUSH IX
-					 PUSH IY
-					 
+		PUSH HL
+		PUSH IX
+		PUSH IY				 
            PUSH AF
            PUSH BC
            PUSH DE
@@ -637,8 +636,11 @@ FX: JP      EXTCMDRET
 ; OSCLI - *VARIOUS
 NIMP: JP      EXTCMDRET			;NOT IMPLEMENTED YET
 
+
+;DRV_ STORAGE COMMANDS
+
 ;PRINT THE CURRENT DIRECTORY ON SCREEN
-DRV_DIR:                CALL STRG_DIRLIST
+DRV_DIR:                CALL STRG_DIRLIST       ;DIRECTLY TYPES THE DIRECTORY ON SCREEN
                         JP EXTCMDRET
 
 DRV_GETFNPRM:           CALL    EXPR            ;VARIABLE TYPE
@@ -653,17 +655,20 @@ DRV_GETFNPRM:           CALL    EXPR            ;VARIABLE TYPE
                         RET
 
 ;CHANGE TO A SUBDIR OF THE CURRENT DIR                        
-DRV_CD:                 ;TODO:GET THE DIRNAME FROM PARAM AND PUT IT ON STRGBUFF
-                        CALL DRV_GETFNPRM
+DRV_CD:                 CALL DRV_GETFNPRM
                         CALL STRG_DIRCHG
                         JP EXTCMDRET
 
 
-DRV_TYPFILE:           ;TODO:GET THE FILENAME FROM PARAM AND PUT IT ON STRGBUFF
-                        CALL DRV_GETFNPRM
-                        CALL STRG_OPNFILE;
-                        CALL STRG_TPFILE    
-                        JP EXTCMDRET                    
+DRV_TYPFILE:            CALL DRV_GETFNPRM
+                        CALL STRG_OPNFILE
+                        CALL STRG_TPFILE        ;DIRECTLY TYPES THE FILE ON SCREEN NO BUFFER
+                        LD A,(FID)
+                        CALL STRG_CLSFILE  
+                        JP EXTCMDRET              
+
+
+;RTC_ REAL TIME CLOCK VIA I2C COMMANDS
 
 ;GETS A PARAM FROM BASIC CMD LINE CONVERTS IT IN BCD
 ;ON RETURN A HAS THE BCD NUM, ZERO FLAG IF THERE IS ANOTHER PARAM NOT Z MEANS NO PARAM
