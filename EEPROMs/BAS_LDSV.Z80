@@ -1,44 +1,35 @@
-;Load / Save using RS232 Serial Port
+;Load / Save using RS232 TO CONNECT WITH THE STORAGE DEVICE ARDUINO NANO
 
-;LOCAL CONSTS
-PORT_TAPE       EQU DEVTAP      ; SAVE/LOAD PORT 1 BYTE=0xDD 2ND BYTE=COMMAND 
-COMMD_SAVE      EQU 10
-COMMD_LOAD      EQU 20;
-
-@MYOS_OSSAVE:
-            ;bc = length of program
-            ;hl = ACCS =FILENAME ENDS WITH 0X0D
-            ;TOP = CONTAINS START OF BASIC PROGRAM LD HL,(TOP)
-            ;OUT SAVE COMMAND (TWO BYTES)            
-            ;OUT THE FILENAME 0X0D TERMINATED
-            ;OUT THE LENGTH (TWO BYTES)            
-            ;OUT THE BYTES
-            ;COMMAND
-            LD A,0xDD
-            CALL RS_TX
-            LD A,COMMD_SAVE
-            CALL RS_TX
-            ;FILENAME
-OSSV_NXT:   LD A,(HL)
-            CALL RS_TX
-            INC HL
-            CP 0x0D
-            JR NZ,OSSV_NXT
-            ;LENGTH
-            LD A,C
-            CALL RS_TX
-            LD A,B
-            CALL RS_TX
-            ;BYTES
-            LD HL,(PAGE)
-OSSV_NXT2:  LD A,(HL)
-            CALL RS_TX
-            INC HL
-            DEC BC
-            LD A,B
-            OR C
-            JR NZ,OSSV_NXT2                        
-            RET          
+;HL HAS A FILENAME TERMINATED BY #13
+;PAGE HAS THE START OF BASIC PROGRAM
+;TOP HAS THE END OF BASIC
+@MYOS_OSSAVE:   LD DE,STRGBUFF
+OSNXT:          LD A,(HL)          ;hl = ACCS =FILENAME ENDS WITH 0X0D
+                CP 13      ;
+                JR NZ,OSCONT
+                XOR A
+OSCONT:         LD (DE),A
+                INC HL
+                INC DE
+                CP 0 
+                JR NZ,OSNXT
+                LD A,4             ;OPEN FILE FOR WRITE AND CREATE IT
+                PUSH BC
+                CALL STRG_OPNFILE  ;A=4=CREATE ON RET FID HAS THE FILE ID ALSO ON A  
+                POP BC             ;bc = length of program
+                LD DE,(PAGE)
+                CALL STRG_BLKWRITE ;BLOCK WRITE
+                CP FCMDOK
+                JR NZ,SVERR
+                LD A,(FID)
+                CALL STRG_CLSFILE
+                RET                ;ON RET A=RESULT
+SVERR:          CP FNOTFND
+                JP Z,FLNOTF
+                CALL    EXTERR
+                DEFM    'Error Saving'
+        	DEFB    0			
+               
 
 ;HL HAS A FILENAME TERMINATED BY #13
 @MYOS_OSLOAD:LD DE,STRGBUFF
@@ -51,7 +42,7 @@ OLCONT:      LD (DE),a
              INC DE
              CP 0 
              JR NZ,OLNXT
-             CALL STRG_OPNFILE ;FID HAS THE FILE ID ALSO ON A             
+             CALL STRG_OPNFILE ;A=0=READ ON RET FID HAS THE FILE ID ALSO ON A             
              LD HL,(PAGE)
              EX DE,HL
              LD BC,0           ;ZERO MEANS LOAD ALL
@@ -66,7 +57,7 @@ OLCONT:      LD (DE),a
              LD (HL),D            
              SCF       ;SET C = NO ERROR            
              RET                           
-LDERR:    	 CP FNOTFND
+LDERR:       CP FNOTFND
              JR Z,FLNOTF
              CALL    EXTERR
         		 DEFM    'Error Loading'
