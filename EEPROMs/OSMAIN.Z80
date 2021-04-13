@@ -856,18 +856,96 @@ LCD_SCRRGT:	CALL LCD16_SCRRIGHT
 		RET
 		;JP XEQ    
        
-    
-@MYOS_OSBPUT:
-@MYOS_OSBGET: 
-@MYOS_OSSTAT: 
-@MYOS_OSSHUT: 
-@MYOS_OSOPEN: 
-@MYOS_OSCALL:   
-@MYOS_GETPTR: 
-@MYOS_PUTPTR: 
-@MYOS_GETEXT: LD A,1
-              RET 
 
+;A=0 OPENIN A=255 OPENOUT A=1 OPENUP (READ/WRITE) 
+;HL=START OF FILENAME
+;DE=END OF FILENAME
+@MYOS_OSOPEN:   CP 255
+                JR Z,OPW
+                CP 1
+                JR Z,OPRW
+                ;0 IS READONLY
+                JR DOOP
+OPW:            LD A,1
+                JR DOOP
+OPRW:           LD A,2
+DOOP:           PUSH AF                  ;SAVE A                
+                XOR A                   ;CLEAR CARRY FLAG                
+                LD (DE),A               ;MAKE FILENAME ZERO TERMINATED REPLACE #13 WITH 0
+                EX DE,HL
+                SBC HL,DE
+                INC HL                  ;+1 FOR ZERO
+                PUSH HL
+                POP BC
+                EX DE,HL
+                LD DE,STRGBUFF
+                LDIR                    ;COPY FILENAME TO STRGBUFF
+                POP AF                  ;RESTORE A
+                CALL STRG_OPNFILE               
+                RET        
+
+;A= VALUE TO WRITE
+;E= FID
+@MYOS_OSBPUT:   LD HL,STRGBUFF
+                LD (HL),A               ;VALUE
+                LD A,E                  ;FID
+                EX DE,HL
+                LD BC,1                 ;NO OF BYTES TO WRITE
+                CALL STRG_BLKWRITE
+                RET
+
+;E=FID
+;RET ??? A=VALUE READ
+@MYOS_OSBGET:   LD A,E                  ;FID
+                LD DE,STRGBUFF          ;SET BUFFER
+                LD BC,1                 ;NO OF BYTES TO READ
+                CALL STRG_BLKREAD
+                LD A,B
+                ADD C
+                CP 1
+                JR Z,GETISOK
+                LD A,255
+                RET
+GETISOK:        LD A,(STRGBUFF)
+                RET
+
+;GET FILE POSITION
+;E=FID
+;RET  HL=FILE POSITION
+@MYOS_GETPTR:   LD A,E
+                CALL STRG_GETPOS
+                RET
+
+;SET FILE POSITION
+;A=FID
+;HL=NEW FILE POSITION
+@MYOS_PUTPTR:   CALL STRG_SETPOS
+                RET 
+
+;RETURN FILE SIZE
+;E=FID
+;RET HL=FILE SIZE
+@MYOS_GETEXT:   LD A,E
+                CALL STRG_GETSIZE
+                RET
+
+;CLOSE FILE E=FID
+;BBC BASIC CALLS THIS WITH 0 TO CLOSE ALL FILES
+@MYOS_OSSHUT:   LD A,E
+                CALL STRG_CLSFILE
+                RET   
+
+;RETURNS EOF=-1 FOR TRUE
+@MYOS_OSSTAT:   LD A,E
+                CALL STRG_GETEOF
+                CP 255                ;TEST IF -1                
+                RET
+
+;NOT IMPLEMENTED YET
+;CALLED BY USR = A CALL TO ROM/RAM WITH A RETURN VALUE
+@MYOS_OSCALL: RET 
+
+;RESET OPSYS
 @MYOS_RESET: RET
 
 @MYOS_MODE:CALL EXPRI    ;GET PARAM
