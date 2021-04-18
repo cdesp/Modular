@@ -114,17 +114,17 @@ RS_TXT: LD A,(HL)
 RS_RX:  DI
         LD A,1					;ready to receive SIGNAL DSR 1
         OUT (MCR),A
-				CALL    RSRXRD              
+	CALL    RSRXRD              
 RS_GTCH: XOR A						;NOT ready to receive SIGNAL DSR 0
         OUT (MCR),A        
 				;CALL CHKERR 		;CHECK ERROR ON RECEIVED CHAR
-	      IN A,(RBR)
-	      EI
+	IN A,(RBR)
+	EI
         RET
 
 RS_RXNW:LD A,1					;ready to receive SIGNAL DSR 1
         OUT (MCR),A
-				IN      A,(LSR)        	; fetch the conrtol register
+	IN      A,(LSR)        	; fetch the conrtol register
         BIT     0,A                    
         JR Z,RS_NOCHAR
         DI

@@ -1,0 +1,13 @@
+ORG $8000
+	
+
+
+
+
+INCLUDE MYOS_2_0000.SYM
+
+
+
+
+	CALL STRG_DIRLIST
+	RET

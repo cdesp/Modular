@@ -35,21 +35,6 @@ TOKLO:			EQU     8FH
 TOKHI:			EQU     93H
 OFFSET:			EQU     0CFH-TOKLO
 
-;START:			JP      COLD
-;			JP      WARM
-;			JP      ESCAPE
-;			JP      EXTERR
-;			JP      TELL
-;			JP      TEXT
-;			JP      SETTOP
-;			JP      CLEAR
-;			JP      RUN0
-;			JP      OSCLI
-;			JP      OSBGET
-;			JP      OSBPUT
-;			JP      OSSTAT
-;			JP      OSSHUT
-
 COLD:			LD      HL,STAVAR       ;COLD START
 			LD      SP,HL
 			LD      (HL),10
@@ -975,7 +960,7 @@ ERROR2:			LD      HL,0
 			CALL    CRLF
 			CALL    REPORT          ;MESSAGE
 			CALL    SAYLN
-			LD      E,0
+			LD      E,128		;WAS 0 (CHANGED BY CDESP)
 			CALL    C,OSSHUT        ;CLOSE ALL FILES
 			CALL    CRLF
 			JP      CLOOP

@@ -9,7 +9,7 @@
 ;n.b. ACCS, BUFFER & STAVAR must be on page boundaries.
 ;
 
-			ORG 8000h
+			ORG FB00h
 
 			ALIGN 256
 

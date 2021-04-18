@@ -8,7 +8,7 @@
     ESC         EQU 1BH
     
     ;global vars FROM BBC BASIC
-    @ACCS   EQU 0x8000       ;STRING INPUT BUFFER
+    @ACCS   EQU 0xFB00;      ;0x8000       ;STRING INPUT BUFFER
     @ERRLIN EQU ACCS+0x2F4   ;
     @RANDOM EQU ACCS+0x2F6   ;RANDOM SEED MUST BE NON ZERO 5 BYTES
     @TOP    EQU ACCS+0x2DE   ;START OF BASIC PROGRAM
@@ -454,13 +454,16 @@ OSFINSH:    CALL LCD_CLRSCR
             CALL    TELL
 						DEFM	"CDesp Modular Z80 Computer 2020-21"
 						DEFB	0AH,0DH
-						DEFM	"ATLAS Operating System Version 2.5"						
+						DEFM	"ATLAS Operating System Version "
+                                                DEFB MJVER
+                                                DEFB 46
+                                                DEFB MNVER1,MNVER2						
 						DEFB 0AH,0DH,0AH,0DH						
 						DEFB 00H
             XOR A
-         		LD DE,0xFFFF		;DE = HIMEM
+         		LD DE,STACKP-0x100	;DE = HIMEM 
          		LD E,A             	;PAGE BOUNDARY
-         		LD HL,@USER      
+         		LD HL,RAMAD             ;@USER      
          		EI   		
          		RET	
 COL_PALET:  DW COL_BLACK
@@ -640,7 +643,7 @@ NIMP: JP      EXTCMDRET			;NOT IMPLEMENTED YET
 ;DRV_ STORAGE COMMANDS
 
 ;PRINT THE CURRENT DIRECTORY ON SCREEN
-DRV_DIR:                CALL STRG_DIRLIST       ;DIRECTLY TYPES THE DIRECTORY ON SCREEN
+DRV_DIR:                CALL STRG_DIRLIST       ;DIRECTLY PRINTS THE DIRECTORY ON SCREEN
                         JP EXTCMDRET
 
 DRV_GETFNPRM:           CALL    EXPR            ;VARIABLE TYPE
@@ -662,7 +665,7 @@ DRV_CD:                 CALL DRV_GETFNPRM
 
 DRV_TYPFILE:            CALL DRV_GETFNPRM
                         CALL STRG_OPNFILE
-                        CALL STRG_TPFILE        ;DIRECTLY TYPES THE FILE ON SCREEN NO BUFFER
+                        CALL STRG_TPFILE        ;DIRECTLY PRINTS THE FILE ON SCREEN NO BUFFER
                         LD A,(FID)
                         CALL STRG_CLSFILE  
                         JP EXTCMDRET              
@@ -931,6 +934,7 @@ GETISOK:        LD A,(STRGBUFF)
 
 ;CLOSE FILE E=FID
 ;BBC BASIC CALLS THIS WITH 0 TO CLOSE ALL FILES
+;CHANGED IT TO CALL WITH 128 THEN CLOSE ALL FILES ON LOOP
 @MYOS_OSSHUT:   LD A,E
                 CALL STRG_CLSFILE
                 RET   
@@ -1011,20 +1015,20 @@ SNTX_ERROR:		CALL    EXTERR
 ; Read a character - waits for input
 ; A: ASCII character
 ;
-GETKEY:		  CALL GET_CHAR
-            SCF
-			      RET       
+GETKEY:		CALL GET_CHAR
+                SCF
+		RET       
       
 ; Read a character - DOES NOT wait for input
 ; A: ASCII character
 ;
-GETKEYNW:	CALL CHKCURS
+GETKEYNW:	;CALL CHKCURS
             CALL GET_CHARNW
             CCF
             CP 0
             RET Z
             SCF
-			      RET       
+	      RET       
       
 @CHKCURS:    PUSH AF
             LD A,(TIMECTR)

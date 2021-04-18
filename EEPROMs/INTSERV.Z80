@@ -1,6 +1,6 @@
 
 
-@INTSER:   DI
+@INTSER:   ;DI ;NOT NEEDED
            PUSH HL
            PUSH AF
            PUSH BC
@@ -28,7 +28,7 @@ IS_EX:     POP IX
 	   POP AF
            POP HL
            EI
-           RET 
+           RETI
            
 MYINTADDR  DEFW INT_TIMER
 	   DEFW SAVETE
