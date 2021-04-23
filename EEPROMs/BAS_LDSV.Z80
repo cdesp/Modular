@@ -15,8 +15,9 @@ OSCONT:         LD (DE),A
                 JR NZ,OSNXT
                 LD A,4             ;OPEN FILE FOR WRITE AND CREATE IT
                 PUSH BC
-                CALL STRG_OPNFILE  ;A=4=CREATE ON RET FID HAS THE FILE ID ALSO ON A  
+                CALL STRG_OPNFILE  ;A=4=CREATE ON RET FID HAS THE FILE ID ALSO ON A                  
                 POP BC             ;bc = length of program
+                JR C,SVERR
                 LD DE,(PAGE)
                 CALL STRG_BLKWRITE ;BLOCK WRITE
                 CP FCMDOK
@@ -42,7 +43,8 @@ OLCONT:      LD (DE),a
              INC DE
              CP 0 
              JR NZ,OLNXT
-             CALL STRG_OPNFILE ;A=0=READ ON RET FID HAS THE FILE ID ALSO ON A             
+             CALL STRG_OPNFILE ;A=0=READ ON RET FID HAS THE FILE ID ALSO ON A  
+             JR C,LDERR          
              LD HL,(PAGE)
              EX DE,HL
              LD BC,0           ;ZERO MEANS LOAD ALL

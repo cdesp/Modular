@@ -642,9 +642,16 @@ NIMP: JP      EXTCMDRET			;NOT IMPLEMENTED YET
 
 ;DRV_ STORAGE COMMANDS
 
+DRV_ERROR:              CALL    EXTERR
+			DEFM    'STORAGE ERROR'
+			DEFB    0       
+
+
+
 ;PRINT THE CURRENT DIRECTORY ON SCREEN
 DRV_DIR:                CALL STRG_DIRLIST       ;DIRECTLY PRINTS THE DIRECTORY ON SCREEN
-                        JP EXTCMDRET
+                        JP NC,EXTCMDRET
+                        JR DRV_ERROR
 
 DRV_GETFNPRM:           CALL    EXPR            ;VARIABLE TYPE
 			EX      AF,AF'          ;E NO OF BYTES ACCS THE PARAM
@@ -660,11 +667,13 @@ DRV_GETFNPRM:           CALL    EXPR            ;VARIABLE TYPE
 ;CHANGE TO A SUBDIR OF THE CURRENT DIR                        
 DRV_CD:                 CALL DRV_GETFNPRM
                         CALL STRG_DIRCHG
-                        JP EXTCMDRET
+                        JP NC,EXTCMDRET
+                        JR DRV_ERROR
 
 
 DRV_TYPFILE:            CALL DRV_GETFNPRM
                         CALL STRG_OPNFILE
+                        JR C,DRV_ERROR
                         CALL STRG_TPFILE        ;DIRECTLY PRINTS THE FILE ON SCREEN NO BUFFER
                         LD A,(FID)
                         CALL STRG_CLSFILE  
@@ -884,7 +893,8 @@ DOOP:           PUSH AF                  ;SAVE A
                 LD DE,STRGBUFF
                 LDIR                    ;COPY FILENAME TO STRGBUFF
                 POP AF                  ;RESTORE A
-                CALL STRG_OPNFILE               
+                CALL STRG_OPNFILE   
+                JP C,DRV_ERROR
                 RET        
 
 ;A= VALUE TO WRITE
@@ -895,6 +905,7 @@ DOOP:           PUSH AF                  ;SAVE A
                 EX DE,HL
                 LD BC,1                 ;NO OF BYTES TO WRITE
                 CALL STRG_BLKWRITE
+                JP C,DRV_ERROR
                 RET
 
 ;E=FID
@@ -903,6 +914,7 @@ DOOP:           PUSH AF                  ;SAVE A
                 LD DE,STRGBUFF          ;SET BUFFER
                 LD BC,1                 ;NO OF BYTES TO READ
                 CALL STRG_BLKREAD
+                JP C,DRV_ERROR
                 LD A,B
                 ADD C
                 CP 1
