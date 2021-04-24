@@ -1,4 +1,4 @@
-# Modular
+# Atlas Computer
 Atlas Modular Z80 Homebrew Computer
 
 Specifications
