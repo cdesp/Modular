@@ -1,0 +1,58 @@
+{
+	"name": "z80asmformat",
+	"publisher": "cdesp",
+	"displayName": "z80asmformat",
+	"description": "Formats z80 assembly code",
+	"version": "0.0.6",
+	"engines": {
+		"vscode": "^1.55.0"
+	},
+	"categories": [
+		"Other"
+	],
+	"activationEvents": [
+		"onCommand:z80asmformat.format"
+	],
+	"main": "./extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "z80asmformat.format",
+				"title": "Format Z80 Assembly"
+			}
+		],
+		"menus": {
+			"editor/context": [
+				{
+					"when": "resourceExtname == .z80 || resourceExtname == .s || resourceExtname == .Z80 || resourceExtname == .S",
+					"command": "z80asmformat.format",
+					"group": "navigation"
+				}
+			]
+		}
+	},
+	"scripts": {
+		"lint": "eslint .",
+		"pretest": "npm run lint",
+		"test": "node ./test/runTest.js"
+	},
+	"devDependencies": {
+		"@types/vscode": "^1.55.0",
+		"@types/glob": "^7.1.3",
+		"@types/mocha": "^8.0.4",
+		"@types/node": "^12.11.7",
+		"eslint": "^7.19.0",
+		"glob": "^7.1.6",
+		"mocha": "^8.2.1",
+		"typescript": "^4.1.3",
+		"vscode-test": "^1.5.0"
+	},
+	"bugs": {
+		"email": "cdesp72@gmail.com"
+	},
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cdesp/z80AsmFormat.git"
+	},
+	"homepage": "https://github.com/cdesp/Z80AsmFormat/blob/master/README.md"
+}

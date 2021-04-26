@@ -7,3 +7,4 @@
 EEPROMs/BBCBasic/BackUp/
 EEPROMs/BBCBasic/Basic test/
 *.dmp
+*.vsix
