@@ -1,70 +1,69 @@
 ;Load / Save using RS232 TO CONNECT WITH THE STORAGE DEVICE ARDUINO NANO
-
+		
 ;HL HAS A FILENAME TERMINATED BY #13
 ;PAGE HAS THE START OF BASIC PROGRAM
 ;TOP HAS THE END OF BASIC
-@MYOS_OSSAVE:   LD DE,STRGBUFF
-OSNXT:          LD A,(HL)          ;hl = ACCS =FILENAME ENDS WITH 0X0D
-                CP 13      ;
-                JR NZ,OSCONT
-                XOR A
-OSCONT:         LD (DE),A
-                INC HL
-                INC DE
-                CP 0 
-                JR NZ,OSNXT
-                LD A,4             ;OPEN FILE FOR WRITE AND CREATE IT
-                PUSH BC
-                CALL STRG_OPNFILE  ;A=4=CREATE ON RET FID HAS THE FILE ID ALSO ON A                  
-                POP BC             ;bc = length of program
-                JR C,SVERR
-                LD DE,(PAGE)
-                CALL STRG_BLKWRITE ;BLOCK WRITE
-                CP FCMDOK
-                JR NZ,SVERR
-                LD A,(FID)
-                CALL STRG_CLSFILE
-                RET                ;ON RET A=RESULT
-SVERR:          CP FNOTFND
-                JP Z,FLNOTF
-                CALL    EXTERR
-                DEFM    'Error Saving'
-        	DEFB    0			
-               
-
+@MYOS_OSSAVE:	LD DE, STRGBUFF
+OSNXT:		LD A, (HL) 							;hl = ACCS =FILENAME ENDS WITH 0X0D
+		CP 13 								;
+		JR NZ, OSCONT
+		XOR A
+OSCONT:		LD (DE), A
+		INC HL
+		INC DE
+		CP 0
+		JR NZ, OSNXT
+		LD A, 4 							;OPEN FILE FOR WRITE AND CREATE IT
+		PUSH BC
+		CALL STRG_OPNFILE 						;A=4=CREATE ON RET FID HAS THE FILE ID ALSO ON A
+		POP BC 								;bc = length of program
+		JR C, SVERR
+		LD DE, (PAGE)
+		CALL STRG_BLKWRITE						;BLOCK WRITE
+		CP FCMDOK
+		JR NZ, SVERR
+		LD A, (FID)
+		CALL STRG_CLSFILE
+		RET 								;ON RET A=RESULT
+SVERR:		CP FNOTFND
+		JP Z, FLNOTF
+		CALL EXTERR
+		DEFM  "Error Saving"
+		DEFB    0
+		
+		
 ;HL HAS A FILENAME TERMINATED BY #13
-@MYOS_OSLOAD:LD DE,STRGBUFF
-OLNXT:       LD A,(HL)
-             CP 13      ;
-             JR NZ,OLCONT
-             XOR A
-OLCONT:      LD (DE),a
-             INC HL
-             INC DE
-             CP 0 
-             JR NZ,OLNXT
-             CALL STRG_OPNFILE ;A=0=READ ON RET FID HAS THE FILE ID ALSO ON A  
-             JR C,LDERR          
-             LD HL,(PAGE)
-             EX DE,HL
-             LD BC,0           ;ZERO MEANS LOAD ALL
-             CALL STRG_BLKREAD ;ON RETURN BC HAS THE BYTES WE READ A=RESULT DE=AFTER THE LAST BYTE SAVED
-             CP FCMDOK
-             JR NZ,LDERR
-             LD A,(FID)
-             CALL STRG_CLSFILE
-             LD HL,TOP ;SAVE TOP OF BASIC 
-             LD (HL),E
-             INC HL
-             LD (HL),D            
-             SCF       ;SET C = NO ERROR            
-             RET                           
-LDERR:       CP FNOTFND
-             JR Z,FLNOTF
-             CALL    EXTERR
-        		 DEFM    'Error Loading'
-        		 DEFB    0			
-FLNOTF:      CALL    EXTERR
-        		 DEFM    'Wrong Filename'
-        		 DEFB    0			
-      
+@MYOS_OSLOAD:	LD DE, STRGBUFF
+OLNXT:		LD A, (HL)
+		CP 13 								;
+		JR NZ, OLCONT
+		XOR A
+OLCONT:		LD (DE), a
+		INC HL
+		INC DE
+		CP 0
+		JR NZ, OLNXT
+		CALL STRG_OPNFILE						;A=0=READ ON RET FID HAS THE FILE ID ALSO ON A
+		JR C, LDERR
+		LD HL, (PAGE)
+		EX DE, HL
+		LD BC, 0 							;ZERO MEANS LOAD ALL
+		CALL STRG_BLKREAD						;ON RETURN BC HAS THE BYTES WE READ A=RESULT DE=AFTER THE LAST BYTE SAVED
+		CP FCMDOK
+		JR NZ, LDERR
+		LD A, (FID)
+		CALL STRG_CLSFILE
+		LD HL, TOP							;SAVE TOP OF BASIC
+		LD (HL), E
+		INC HL
+		LD (HL), D
+		SCF 								;SET C = NO ERROR
+		RET
+LDERR:		CP FNOTFND
+		JR Z, FLNOTF
+		CALL EXTERR
+		DEFM  "Error Loading"
+		DEFB    0
+FLNOTF:		CALL EXTERR
+		DEFM  "Wrong Filename"
+		DEFB    0

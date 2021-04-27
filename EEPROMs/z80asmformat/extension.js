@@ -132,17 +132,17 @@ function format(text) {
 				var comstr = getPos(tmps2, ';');
 				if (secstr > 0 && secstr < comstr) { //comma not in text
 					comnt = lines[i].substr(posComment, 100);
-					lines[i] = lines[i].substr(0, posComment - 1);
+					lines[i] = lines[i].substr(0, posComment);
 				}
 			} else {
 				comnt = lines[i].substr(posComment, 100);
-				lines[i] = lines[i].substr(0, posComment - 1);
+				lines[i] = lines[i].substr(0, posComment);
 			}
 		}
 
 		if (posString > 0 && posString < posComment) { //do not replace in comments
 			comnt = lines[i].substr(posComment, 100);
-			lines[i] = lines[i].substr(0, posComment - 1);
+			lines[i] = lines[i].substr(0, posComment);
 		}
 		posString = getPos(lines[i], '"');
 		if (posString > 0 && lines[i][posString - 1] != "'") { //do not replace inside strings

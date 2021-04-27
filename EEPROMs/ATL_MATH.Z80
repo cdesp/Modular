@@ -1,86 +1,84 @@
-
-
 ;
 ; Multiply 16-bit values (with 16-bit result)
 ; In: Multiply BC with DE
 ; Out: HL = result
 ;
-@Mult16:ld hl,0
-    ld a,b
-    ld b,16
-Mult16_Loop:
-    add hl,hl
-    sla c
-    rla
-    jr nc,Mult16_NoAdd
-    add hl,de
-Mult16_NoAdd:
-    djnz Mult16_Loop
-    ret
+@Mult16:	ld hl, 0
+		ld a, b
+		ld b, 16
+Mult16_Loop:	
+		add hl, hl
+		sla c
+		rla
+		jr nc, Mult16_NoAdd
+		add hl, de
+Mult16_NoAdd:	
+		djnz Mult16_Loop
+		ret
 ;
 ; Multiply 16-bit values (with 32-bit result)
 ; In: Multiply BC with DE
 ; Out: BCHL = result
 ;
-@Mult32:PUSH DE
-    ld a,c
-    ld c,b
-    ld hl,0
-    ld b,16
-Mult32_Loop:
-    add hl,hl
-    rla
-    rl c
-    jr nc,Mult32_NoAdd
-    add hl,de
-    adc a,0
-    jp nc,Mult32_NoAdd
-    inc c
-Mult32_NoAdd:
-    djnz Mult32_Loop
-    ld b,c
-    ld c,a
-    POP DE
-    ret
-     
+@Mult32:	PUSH DE
+		ld a, c
+		ld c, b
+		ld hl, 0
+		ld b, 16
+Mult32_Loop:	
+		add hl, hl
+		rla
+		rl c
+		jr nc, Mult32_NoAdd
+		add hl, de
+		adc a, 0
+		jp nc, Mult32_NoAdd
+		inc c
+Mult32_NoAdd:	
+		djnz Mult32_Loop
+		ld b, c
+		ld c, a
+		POP DE
+		ret
+		
 ;==================================================
 ; ADD ROUTINE 32+32BIT=32BIT
 ; H'L'HL = H'L'HL + D'E'DE
 ; CHANGES FLAGS
 ;
-@ADD32:
-        ADD     HL,DE   ; 16-BIT ADD OF HL AND DE
-        EXX
-        ADC     HL,DE   ; 16-BIT ADD OF HL AND DE WITH CARRY
-        EXX
-
+@ADD32:		
+		ADD HL, DE 							; 16-BIT ADD OF HL AND DE
+		EXX
+		ADC HL, DE 							; 16-BIT ADD OF HL AND DE WITH CARRY
+		EXX
+		
 ; RESULT IS IN H'L'HL
-        RET
-
- 
-        
+		RET
+		
+		
+		
 ;
 ; Square root of 16-bit value
 ; In:  HL = value
 ; Out:  D = result (rounded down)
 ;
-@Sqr16:
-    ld de,$0040
-    ld a,l
-    ld l,h
-    ld h,d
-    or a
-    ld b,8
-Sqr16_Loop:
-    sbc hl,de
-    jr nc,Sqr16_Skip
-    add hl,de
-Sqr16_Skip:
-    ccf
-    rl d
-    add a,a
-    adc hl,hl
-    add a,a
-    adc hl,hl
-    djnz Sqr16_Loop
-    ret        
+@Sqr16:		
+		ld de, $0040
+		ld a, l
+		ld l, h
+		ld h, d
+		or a
+		ld b, 8
+Sqr16_Loop:	
+		sbc hl, de
+		jr nc, Sqr16_Skip
+		add hl, de
+Sqr16_Skip:	
+		ccf
+		rl d
+		add a, a
+		adc hl, hl
+		add a, a
+		adc hl, hl
+		djnz Sqr16_Loop
+		ret

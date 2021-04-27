@@ -1,324 +1,318 @@
-
-MAXQ EQU 600
-
-NEGHL:xor a
-      sub l
-      ld l,a
-      sbc a,a
-      sub h
-      ld h,a
-      RET
-
-QPUSH:
-      ;if (sp<stack+MAX && Y+(DY)>=win->y0 && Y+(DY)<=win->y1)       
-      LD HL,(FILL_IDX)
-      LD BC,MAXQ
-      AND A
-      SBC HL,BC
-      RET NC ;IF IDX=HL>=MAXQ THEN EXIT
-      LD HL,(FILL_PY)
-      LD DE,(FILL_PDY)
-      ADD HL,DE
-      LD A,H
-      CP 80H
-      RET NC ;NC MEANS NEGATIVE <0
-      LD DE,LCD_WIDTH
-      SBC HL,DE
-      RET NC  ;C MEANS Y+DY<=LCD_WIDTH
-      ;DO THE PUSH
-      LD HL,(FILL_Q)
-      LD BC,(FILL_IDX)
-      LD A,B
-      OR C         ;IF IDX=0 THEN NXT1
-      JR Z,QPS_NXT1 
-      EX DE,HL
-      PUSH BC
-      POP HL      
-      ADD HL, HL
-      ADD HL, HL
-      ADD HL, HL        ; SLEFT 3 TIMES MEANS *8
-      EX DE,HL
-      ADD HL,DE      
-QPS_NXT1:                  
-      LD DE,FILL_PY
-      EX DE,HL  ;DEST=QUEUE ORIGIN=FILL_PY
-      LD BC,8   ;8 BYTES
-      LDIR      ;COPY
-      LD HL,(FILL_IDX)      
-      INC HL
-      LD (FILL_IDX),HL
-QPS_EXT: RET    
-      
-QPOP: LD HL,(FILL_Q)
-      LD BC,(FILL_IDX)
-      DEC BC      
-      PUSH BC
-      LD A,B
-      OR C         ;IF IDX=0 THEN WE ARE ON START
-      JR Z,QPP_NXT1                        
-      EX DE,HL
-      PUSH BC
-      POP HL      
-      ADD HL, HL
-      ADD HL, HL
-      ADD HL, HL        ; SLEFT 3 TIMES MEANS *8
-      EX DE,HL
-      ADD HL,DE      
-QPP_NXT1: POP BC 
-      LD (FILL_IDX),BC
-    ;  PUSH HL     
-      LD DE,FILL_PY  ;ORIGIN=QUEUE DEST=FILL_PY               
-      LD BC,8   ;8 BYTES
-      LDIR      ;COPY
-      LD HL,(FILL_PXL)
-      LD (FILL_X1),HL
-      LD HL,(FILL_PXR)
-      LD (FILL_X2),HL
-      LD DE,(FILL_PDY)
-      LD (FILL_DY),DE      
-      LD HL,(FILL_PY)
-      AND A
-      ADD HL,DE
-      LD (FILL_Y),HL 
-      ;FOR TESTING
-    ;  POP HL
-    ;  LD A,$FF
-   ;   LD B,8
+		MAXQ EQU 600
+		
+NEGHL:	xor a
+		sub l
+		ld l, a
+		sbc a, a
+		sub h
+		ld h, a
+		RET
+		
+QPUSH:	
+;if (sp<stack+MAX && Y+(DY)>=win->y0 && Y+(DY)<=win->y1)
+		LD HL, (FILL_IDX)
+		LD BC, MAXQ
+		AND A
+		SBC HL, BC
+		RET NC					;IF IDX=HL>=MAXQ THEN EXIT
+		LD HL, (FILL_PY)
+		LD DE, (FILL_PDY)
+		ADD HL, DE
+		LD A, H
+		CP 80H
+		RET NC					;NC MEANS NEGATIVE <0
+		LD DE, LCD_WIDTH
+		SBC HL, DE
+		RET NC 					;C MEANS Y+DY<=LCD_WIDTH
+;DO THE PUSH
+		LD HL, (FILL_Q)
+		LD BC, (FILL_IDX)
+		LD A, B
+		OR C 						;IF IDX=0 THEN NXT1
+		JR Z, QPS_NXT1
+		EX DE, HL
+		PUSH BC
+		POP HL
+		ADD HL, HL
+		ADD HL, HL
+		ADD HL, HL 					; SLEFT 3 TIMES MEANS *8
+		EX DE, HL
+		ADD HL, DE
+QPS_NXT1:	
+		LD DE, FILL_PY
+		EX DE, HL 					;DEST=QUEUE ORIGIN=FILL_PY
+		LD BC, 8 					;8 BYTES
+		LDIR 						;COPY
+		LD HL, (FILL_IDX)
+		INC HL
+		LD (FILL_IDX), HL
+QPS_EXT:	RET
+		
+QPOP:		LD HL, (FILL_Q)
+		LD BC, (FILL_IDX)
+		DEC BC
+		PUSH BC
+		LD A, B
+		OR C 						;IF IDX=0 THEN WE ARE ON START
+		JR Z, QPP_NXT1
+		EX DE, HL
+		PUSH BC
+		POP HL
+		ADD HL, HL
+		ADD HL, HL
+		ADD HL, HL 					; SLEFT 3 TIMES MEANS *8
+		EX DE, HL
+		ADD HL, DE
+QPP_NXT1:	POP BC
+		LD (FILL_IDX), BC
+;  PUSH HL
+		LD DE, FILL_PY 				;ORIGIN=QUEUE DEST=FILL_PY
+		LD BC, 8 					;8 BYTES
+		LDIR 						;COPY
+		LD HL, (FILL_PXL)
+		LD (FILL_X1), HL
+		LD HL, (FILL_PXR)
+		LD (FILL_X2), HL
+		LD DE, (FILL_PDY)
+		LD (FILL_DY), DE
+		LD HL, (FILL_PY)
+		AND A
+		ADD HL, DE
+		LD (FILL_Y), HL
+;FOR TESTING
+;  POP HL
+;  LD A,$FF
+;   LD B,8
 ;QPP_NXT2:  LD (HL),A ;ON STACK
- ;     INC HL
-  ;    DJNZ QPP_NXT2           
-      RET
-      
-@_FILL: POP HL         ;GET THE RETURN ADDRESS
-      POP DE          ;Y
-      POP BC          ;X      
-      PUSH HL         ;RET ADDR TO SP
-      LD (FILL_X),BC
-      LD (FILL_Y),DE   
-      LD (FILL_OLDSP),SP   
-      LD HL,-((MAXQ*8)+2) ; MAKE SPACE FOR OUR QUEUE
-      ADD HL,SP
-      LD SP,HL        ;NEW SP
-      ;LD IX,0
-      ;ADD IX,SP       ;INDEX FOR THE QUEUE 
-      LD (FILL_Q),HL  ;START OF QUEUE STACK VAR IN C
-      LD HL,0
-      LD (FILL_IDX),HL ;INDEX OF ITEMS SP IN C
-      
-      
-      ;ov = pixelread(x, y);		/* read pv at seed point */
-      LD HL,(FILL_X);
-      PUSH HL
-      LD HL,(FILL_y);
-      PUSH HL
-      CALL LCD_READPIXEL
-      LD (FILL_OV),HL
-      ;if (ov==nv || x<win->x0 || x>win->x1 || y<win->y0 || y>win->y1) return;
-      LD DE,(FCOLOR)
-      AND A
-      SBC HL,DE      ;CHK OV=NV
-      JP Z,FL_EXIT
-      LD HL,(FILL_X)
-      LD A,H
-      CP 0x80         ;CHK <0
-      JP NC,FL_EXIT
-      LD DE,LCD_WIDTH 
-      AND A
-      SBC HL,DE       ;CHK>799
-      JP NC,FL_EXIT
-      LD HL,(FILL_Y)
-      LD A,H
-      CP 0x80         ;CHK <0
-      JP NC,FL_EXIT
-      LD DE,LCD_HEIGHT 
-      AND A
-      SBC HL,DE       ;CHK>480
-      JP NC,FL_EXIT           
-      ;PUSH(y, x, x, 1);			/* needed in some cases */
-      LD HL,(FILL_Y)
-      LD (FILL_PY),HL
-      LD HL,(FILL_X)
-      LD (FILL_PXL),HL
-      LD (FILL_PXR),HL
-      LD HL,1
-      LD (FILL_PDY),HL
-      CALL QPUSH         ;     /PUSH VALUES TO QUEUE ADD 8 TO IDX
-      ;PUSH(y+1, x, x, -1);		/* seed segment (popped 1st) */
-      LD HL,(FILL_Y)
-      INC HL
-      LD (FILL_PY),HL
-      LD HL,-1
-      LD (FILL_PDY),HL
-      CALL QPUSH
-FL_LP0:  ;while (sp>stack) {
-	    LD DE,(FILL_IDX)
-	    LD A,D
-	    OR E
-	    JP Z,FL_EXIT    ; IF FILL_IDX=0 THEN NO MORE ITEMS ON QUEUE SO EXIT 
-	    
-	    ;/* pop segment off stack and fill a neighboring scan line */
-	    ;POP(y, x1, x2, dy);      
-      CALL QPOP            ;POP VALUES FROM QUEUE SUB 8 FROM IDX TO Y,X1,X2,DY
-      ;for (x=x1; x>=win->x0 && pixelread(x, y)==ov; x--)
-	    ;pixelwrite(x, y, nv);
-       LD HL,(FILL_X1)
-      LD (FILL_X),HL
-FL_LP1:  LD A,H
-      CP 0x80          ;CHK X<0 THEN EXIT LOOP
-      JP NC,FL_NXT1
-      LD DE,(FILL_Y)
-      PUSH HL
-      PUSH DE
-      CALL LCD_READPIXEL
-      LD DE,(FILL_OV)
-      AND A
-      SBC HL,DE      ;PIXELREAD<>0 THEN  EXIT LOOP
-      JP NZ,FL_NXT1
-      LD DE,(FILL_X)
-      LD HL,(FILL_Y)
-      PUSH DE
-      CALL PLOTP
-      POP HL
-      DEC HL
-      LD (FILL_X),HL
-      JR FL_LP1     
-      
-FL_NXT1:
-      ;if (x>=x1) goto skip;
-      LD HL,(FILL_X)
-      LD DE,(FILL_X1)
-      LD A,H
-      CP 80H
-      JR NC,FL_NXT1A   ;IF X<0 THEN X<X1 IF NEGATIVE DON'T SKIP      
-      AND A
-      SBC HL,DE       ;CHK X-X1<0 THEN CONTINUE ELSE SKIP
-      JP NC,FL_SKIP   ;C IF DE>HL X1>X, NC IF X>=X1    
-      ADC HL,DE
-FL_NXT1A:  
-	    ;l = x+1;
-	    INC HL
-	    LD (FILL_L),HL
-	    
-	    ;if (l<x1) PUSH(y, l, x1-1, -dy);		/* leak on left? */
-	    AND A	    
-	    SBC HL,DE   ;CHK L-X1
-	    JR NC,FL_NXT2   ;C IF DE>HL X1>L
-	    JR Z,FL_NXT2
-	    ADC HL,DE
-	    LD (FILL_PXL),HL ;L
-	    LD HL,(FILL_Y)
-	    LD (FILL_PY),HL
-	    DEC DE
-	    LD (FILL_PXR),DE
-	    LD HL,(FILL_DY) 
-	    CALL NEGHL
-	    LD (FILL_PDY),HL	    
-	    CALL QPUSH	    
-	    
-FL_NXT2:	    
-	    ;x = x1+1;
-      LD HL,(FILL_X1)  ;COULD USE DE=X1 OR DE=X1-1 IF WE INCREASE IT
-      INC HL
-      LD (FILL_X),HL
-      
-FL_LP2:         ; for (; x<=win->x1 && pixelread(x, y)==ov; x++)
-		            ; pixelwrite(x, y, nv);
-		  LD DE,LCD_WIDTH
-		  AND A
-		  EX DE,HL
-		  SBC HL,DE		  ;800-(X=DE)
-		  JR C,FL_NXT3   ;C IF X>800
-		  EX DE,HL      ;HL=X
-		  PUSH HL
-		  LD HL,(FILL_Y)
-		  PUSH HL
-		  CALL LCD_READPIXEL
-		  LD DE,(FILL_OV)
-		  AND A
-		  SBC HL,DE       ;PIXELREAD=OV
-		  JR NZ,FL_NXT3
-		  LD DE,(FILL_X)
-		  LD HL,(FILL_Y)
-		  PUSH DE
-		  CALL PLOTP
-		  POP HL
-		  INC HL
-		  LD (FILL_X),HL
-		  JR FL_LP2
-		  		  
-FL_NXT3: ;PUSH(y, l, x-1, dy);
-	    LD HL,(FILL_Y)
-	    LD (FILL_PY),HL
-	    LD HL,(FILL_L)
-	    LD (FILL_PXL),HL
-	    LD HL,(FILL_X)
-	    DEC HL
-	    LD (FILL_PXR),HL
-	    LD HL,(FILL_DY)
-	    LD (FILL_PDY),HL
-	    CALL QPUSH    	    
-	    ;if (x>x2+1) PUSH(y, x2+1, x-1, -dy);	/* leak on right? */
-	    LD HL,(FILL_X)
-	    LD DE,(FILL_X2)
-	    INC DE
-	    AND A
-	    SBC HL,DE    ;X-(X2+1) C IF X2+1>X 
-	    JR C,FL_NXT4
-	    JR Z,FL_NXT4
-	    LD HL,(FILL_Y)
-	    LD (FILL_PY),HL
-	    LD (FILL_PXL),DE
-	    LD HL,(FILL_X);
-	    DEC HL
-	    LD (FILL_PXR),HL
-	    LD HL,(FILL_DY)
-	    CALL NEGHL
-	    LD (FILL_PDY),HL	 
-	    CALL QPUSH    	    
-FL_NXT4:	    
-FL_SKIP: ; for (x++; x<=x2 && pixelread(x, y)!=ov; x++);
-        LD HL,(FILL_X)
-        INC HL
-        LD (FILL_X),HL
-FL_LP3: LD DE,(FILL_X2)
-        AND A
-        EX DE,HL         ;X2=HL X=DE
-        SBC HL,DE        ;C IF DE>HL X>X2       
-        JR C,FL_NXT5
-        ADD HL,DE        ;
-        EX DE,HL         ;X=HL X2=DE
-        PUSH HL
-        LD HL,(FILL_Y)
-        PUSH HL
-        CALL LCD_READPIXEL
-        LD DE,(FILL_OV)
-        AND A
-        SBC HL,DE     ;CHK PIXELREAD!=OV ELSE EXIT LOOP
-        JR Z,FL_NXT5
-        LD HL,(FILL_X)
-        INC HL
-        LD (FILL_X),HL
-        JR FL_LP3
-
-FL_NXT5: ;l = x
-        LD HL,(FILL_X)
-        LD (FILL_L),HL
-        ;} while (x<=x2);
-	      LD DE,(FILL_X2)
-	      AND A
-	      EX DE,HL    ;X2=HL X=DE
-	      SBC HL,DE   ;X2-X C IF X>X2
-	      EX DE,HL    ;X=HL X2-X=DE
-	      JP C,FL_LP0 ; IF X>X2 THEN EXIT DO WHILE GOTO ;while (sp>stack)
-	      JP FL_LP2   ;GOTO DO WHILE
-
-
-FL_EXIT: LD HL,(MAXQ*8)+2 ; RETREIVE SPACE FOR OUR QUEUE
-         ADD HL,SP
-         LD SP,HL        ;NEW SP
-         RET
-
-
-
-	    
-	    
+;     INC HL
+;    DJNZ QPP_NXT2
+		RET
+		
+@_FILL:	POP HL 					;GET THE RETURN ADDRESS
+		POP DE 					;Y
+		POP BC 					;X
+		PUSH HL 					;RET ADDR TO SP
+		LD (FILL_X), BC
+		LD (FILL_Y), DE
+		LD (FILL_OLDSP), SP
+		LD HL, - ((MAXQ * 8) + 2)		; MAKE SPACE FOR OUR QUEUE
+		ADD HL, SP
+		LD SP, HL 					;NEW SP
+;LD IX,0
+;ADD IX,SP       ;INDEX FOR THE QUEUE
+		LD (FILL_Q), HL 				;START OF QUEUE STACK VAR IN C
+		LD HL, 0
+		LD (FILL_IDX), HL				;INDEX OF ITEMS SP IN C
+		
+		
+;ov = pixelread(x, y);		/* read pv at seed point */
+		LD HL, (FILL_X)				;
+		PUSH HL
+		LD HL, (FILL_y)				;
+		PUSH HL
+		CALL LCD_READPIXEL
+		LD (FILL_OV), HL
+;if (ov==nv || x<win->x0 || x>win->x1 || y<win->y0 || y>win->y1) return;
+		LD DE, (FCOLOR)
+		AND A
+		SBC HL, DE 					;CHK OV=NV
+		JP Z, FL_EXIT
+		LD HL, (FILL_X)
+		LD A, H
+		CP 0x80 					;CHK <0
+		JP NC, FL_EXIT
+		LD DE, LCD_WIDTH
+		AND A
+		SBC HL, DE 					;CHK>799
+		JP NC, FL_EXIT
+		LD HL, (FILL_Y)
+		LD A, H
+		CP 0x80 					;CHK <0
+		JP NC, FL_EXIT
+		LD DE, LCD_HEIGHT
+		AND A
+		SBC HL, DE 					;CHK>480
+		JP NC, FL_EXIT
+;PUSH(y, x, x, 1);			/* needed in some cases */
+		LD HL, (FILL_Y)
+		LD (FILL_PY), HL
+		LD HL, (FILL_X)
+		LD (FILL_PXL), HL
+		LD (FILL_PXR), HL
+		LD HL, 1
+		LD (FILL_PDY), HL
+		CALL QPUSH 					;     /PUSH VALUES TO QUEUE ADD 8 TO IDX
+;PUSH(y+1, x, x, -1);		/* seed segment (popped 1st) */
+		LD HL, (FILL_Y)
+		INC HL
+		LD (FILL_PY), HL
+		LD HL, - 1
+		LD (FILL_PDY), HL
+		CALL QPUSH
+FL_LP0:							;while (sp>stack) {
+		LD DE, (FILL_IDX)
+		LD A, D
+		OR E
+		JP Z, FL_EXIT 				; IF FILL_IDX=0 THEN NO MORE ITEMS ON QUEUE SO EXIT
+		
+;/* pop segment off stack and fill a neighboring scan line */
+;POP(y, x1, x2, dy);
+		CALL QPOP 					;POP VALUES FROM QUEUE SUB 8 FROM IDX TO Y,X1,X2,DY
+;for (x=x1; x>=win->x0 && pixelread(x, y)==ov; x--)
+;pixelwrite(x, y, nv);
+		LD HL, (FILL_X1)
+		LD (FILL_X), HL
+FL_LP1:	LD A, H
+		CP 0x80 					;CHK X<0 THEN EXIT LOOP
+		JP NC, FL_NXT1
+		LD DE, (FILL_Y)
+		PUSH HL
+		PUSH DE
+		CALL LCD_READPIXEL
+		LD DE, (FILL_OV)
+		AND A
+		SBC HL, DE 					;PIXELREAD<>0 THEN  EXIT LOOP
+		JP NZ, FL_NXT1
+		LD DE, (FILL_X)
+		LD HL, (FILL_Y)
+		PUSH DE
+		CALL PLOTP
+		POP HL
+		DEC HL
+		LD (FILL_X), HL
+		JR FL_LP1
+		
+FL_NXT1:	
+;if (x>=x1) goto skip;
+		LD HL, (FILL_X)
+		LD DE, (FILL_X1)
+		LD A, H
+		CP 80H
+		JR NC, FL_NXT1A 				;IF X<0 THEN X<X1 IF NEGATIVE DON'T SKIP
+		AND A
+		SBC HL, DE 					;CHK X-X1<0 THEN CONTINUE ELSE SKIP
+		JP NC, FL_SKIP 				;C IF DE>HL X1>X, NC IF X>=X1
+		ADC HL, DE
+FL_NXT1A:	
+;l = x+1;
+		INC HL
+		LD (FILL_L), HL
+		
+;if (l<x1) PUSH(y, l, x1-1, -dy);		/* leak on left? */
+		AND A
+		SBC HL, DE 					;CHK L-X1
+		JR NC, FL_NXT2 				;C IF DE>HL X1>L
+		JR Z, FL_NXT2
+		ADC HL, DE
+		LD (FILL_PXL), HL				;L
+		LD HL, (FILL_Y)
+		LD (FILL_PY), HL
+		DEC DE
+		LD (FILL_PXR), DE
+		LD HL, (FILL_DY)
+		CALL NEGHL
+		LD (FILL_PDY), HL
+		CALL QPUSH
+		
+FL_NXT2:	
+;x = x1+1;
+		LD HL, (FILL_X1) 				;COULD USE DE=X1 OR DE=X1-1 IF WE INCREASE IT
+		INC HL
+		LD (FILL_X), HL
+		
+FL_LP2:							; for (; x<=win->x1 && pixelread(x, y)==ov; x++)
+; pixelwrite(x, y, nv);
+		LD DE, LCD_WIDTH
+		AND A
+		EX DE, HL
+		SBC HL, DE 					;800-(X=DE)
+		JR C, FL_NXT3 				;C IF X>800
+		EX DE, HL 					;HL=X
+		PUSH HL
+		LD HL, (FILL_Y)
+		PUSH HL
+		CALL LCD_READPIXEL
+		LD DE, (FILL_OV)
+		AND A
+		SBC HL, DE 					;PIXELREAD=OV
+		JR NZ, FL_NXT3
+		LD DE, (FILL_X)
+		LD HL, (FILL_Y)
+		PUSH DE
+		CALL PLOTP
+		POP HL
+		INC HL
+		LD (FILL_X), HL
+		JR FL_LP2
+		
+FL_NXT3:							;PUSH(y, l, x-1, dy);
+		LD HL, (FILL_Y)
+		LD (FILL_PY), HL
+		LD HL, (FILL_L)
+		LD (FILL_PXL), HL
+		LD HL, (FILL_X)
+		DEC HL
+		LD (FILL_PXR), HL
+		LD HL, (FILL_DY)
+		LD (FILL_PDY), HL
+		CALL QPUSH
+;if (x>x2+1) PUSH(y, x2+1, x-1, -dy);	/* leak on right? */
+		LD HL, (FILL_X)
+		LD DE, (FILL_X2)
+		INC DE
+		AND A
+		SBC HL, DE 					;X-(X2+1) C IF X2+1>X
+		JR C, FL_NXT4
+		JR Z, FL_NXT4
+		LD HL, (FILL_Y)
+		LD (FILL_PY), HL
+		LD (FILL_PXL), DE
+		LD HL, (FILL_X)				;
+		DEC HL
+		LD (FILL_PXR), HL
+		LD HL, (FILL_DY)
+		CALL NEGHL
+		LD (FILL_PDY), HL
+		CALL QPUSH
+FL_NXT4:	
+FL_SKIP:							; for (x++; x<=x2 && pixelread(x, y)!=ov; x++);
+		LD HL, (FILL_X)
+		INC HL
+		LD (FILL_X), HL
+FL_LP3:	LD DE, (FILL_X2)
+		AND A
+		EX DE, HL 					;X2=HL X=DE
+		SBC HL, DE 					;C IF DE>HL X>X2
+		JR C, FL_NXT5
+		ADD HL, DE 					;
+		EX DE, HL 					;X=HL X2=DE
+		PUSH HL
+		LD HL, (FILL_Y)
+		PUSH HL
+		CALL LCD_READPIXEL
+		LD DE, (FILL_OV)
+		AND A
+		SBC HL, DE 					;CHK PIXELREAD!=OV ELSE EXIT LOOP
+		JR Z, FL_NXT5
+		LD HL, (FILL_X)
+		INC HL
+		LD (FILL_X), HL
+		JR FL_LP3
+		
+FL_NXT5:							;l = x
+		LD HL, (FILL_X)
+		LD (FILL_L), HL
+;} while (x<=x2);
+		LD DE, (FILL_X2)
+		AND A
+		EX DE, HL 					;X2=HL X=DE
+		SBC HL, DE 					;X2-X C IF X>X2
+		EX DE, HL 					;X=HL X2-X=DE
+		JP C, FL_LP0				; IF X>X2 THEN EXIT DO WHILE GOTO ;while (sp>stack)
+		JP FL_LP2 					;GOTO DO WHILE
+		
+		
+FL_EXIT:	LD HL, (MAXQ * 8) + 2			; RETREIVE SPACE FOR OUR QUEUE
+		ADD HL, SP
+		LD SP, HL 					;NEW SP
+		RET
