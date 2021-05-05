@@ -43,3 +43,4 @@ CPLD/Xilinx/MMU/xst/work/sub00/vhpl00.vho
 CPLD/Xilinx/MMU/MMU_Z80.xst
 CPLD/Xilinx/MMU/MMU_Z80_envsettings.html
 CPLD/Xilinx/MMU/MMU_Z80_summary.html
+*.png

@@ -1,0 +1,48 @@
+		NAME MMU
+;DEVMMU PORT
+        GLOBAL INITMMU
+        GLOBAL PUTPGINBANK
+        GLOBAL GETPGINBANK
+        
+		
+INITMMU:        LD HL,BANKS
+                LD B,8
+                XOR A
+INM_AGN:        LD (HL),A
+                INC A
+                DJNZ INM_AGN
+                RET                
+
+;C MMU PORT
+;B HAS THE BANK NO (0..7) EACH BANK IS 8K
+;A HAS THE PAGE TO PUT IN BANK EACH PAGE IS 8K PAGES (0..255) TOTAL 2MB MEMORY ACCESIBLE A0-A20 2^21
+PUTPGINBANK:	LD C, A 							;SAVE PAGE
+		LD A, B                                                         ;BANK IN A
+		CP 2
+		RET C 								;BANK 0,1 WILL NEVER CHANGE
+		CP 7
+		RET Z 								;BANK 7 WILL NEVER CHANGE
+		LD HL, BANKS
+		LD D, 0
+		LD E, A
+		ADD HL, DE
+		LD A, C 							;RESTORE PAGE
+		LD (HL), A 							;SAVE PG IN BANK B MEMORY
+		LD C, DEVMMU
+		SLA B 								;SHIFT BANK TO A15..A13 FROM A2..A0 WE USE THESE PINS ON THE CPLD FOR BANK INPUT
+		SLA B
+		SLA B
+		SLA B
+		SLA B 								;SET TO A15,A14,A13
+		OUT (C), A
+		RET
+
+;B BANK NO (0..7)
+;RET A THE PAGE IN BANK B
+GETPGINBANK     LD HL,BANKS
+                LD D,0
+                LD E,B
+                ADD HL,DE
+                LD A,(HL)
+                RET
+        

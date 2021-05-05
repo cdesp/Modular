@@ -64,7 +64,8 @@ ENTITY MMU2 IS
 	   nCE1		:  OUT STD_LOGIC;
       nCE2		:  OUT STD_LOGIC;
 	   nCE3		:  OUT STD_LOGIC;
-      nCE4		:  OUT STD_LOGIC		
+      nCE4		:  OUT STD_LOGIC;
+		nRSTO		:	OUT STD_LOGIC
 	);
 END MMU2;
 
@@ -97,7 +98,7 @@ ARCHITECTURE behavioral OF MMU2 IS
 	--SIGNAL nEnBANK0: STD_LOGIC;
 	signal BANKNUM:std_logic_vector(3-1 DOWNTO 0);
 	signal EXTADDR:std_logic_vector(21-1 downto 13);
-	
+	signal nRST: STD_LOGIC;
 	
 
 BEGIN
@@ -107,7 +108,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK0,
 	  Q => Bank0
 	);
@@ -115,7 +116,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK1,
 	  Q => Bank1
 	);
@@ -123,7 +124,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK2,
 	  Q => Bank2
 	);
@@ -131,7 +132,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK3,
 	  Q => Bank3
 	);
@@ -139,7 +140,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK4,
 	  Q => Bank4
 	);
@@ -147,7 +148,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK5,
 	  Q => Bank5
 	);
@@ -155,7 +156,7 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK6,
 	  Q => Bank6
 	);
@@ -163,12 +164,13 @@ BEGIN
 	generic map (  N => 8)
 	PORT MAP(
 	  D => DATA,
-	  Resetn => nRESET,
+	  Resetn => nRST,
 	  Clock => nSetBANK7,
 	  Q => Bank7
 	);
 
-	
+	nRST <= '1';
+	nRSTO <=nRST;
 
 	BANKNUM <= A15 & A14 & A13;
 	--BY USING OUT(C),A C GETS DECODED ON nINTMMU AND B GOES ON A8-A15 SO WE CAN CONTROL THIS WITH REGISTER B ON Z80
