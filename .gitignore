@@ -44,3 +44,7 @@ CPLD/Xilinx/MMU/MMU_Z80.xst
 CPLD/Xilinx/MMU/MMU_Z80_envsettings.html
 CPLD/Xilinx/MMU/MMU_Z80_summary.html
 *.png
+CPLD/RESET/incremental_db/
+CPLD/RESET/db/
+CPLD/VGA/ALTERA/db/
+CPLD/VGA/vga_with_hw_test_image_v1_1_restored/db/

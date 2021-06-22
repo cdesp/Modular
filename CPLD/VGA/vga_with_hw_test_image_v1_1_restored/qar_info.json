@@ -1,0 +1,7 @@
+{
+	"common_dir" : "C:/altera/playground2/cyclone/vga_with_hw_test_image/",
+	"acds_version" : "Version 17.0.0",
+	"platform" : "windows",
+	"os" : "Windows 10",
+	"qpf" : "vga_with_hw_test_image.qpf"
+}

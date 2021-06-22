@@ -169,7 +169,7 @@ BEGIN
 	  Q => Bank7
 	);
 
-	nRST <= '1';
+	nRST <= nRESET; --'1'
 	nRSTO <=nRST;
 
 	BANKNUM <= A15 & A14 & A13;

@@ -1,0 +1,84 @@
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 1991-2013 Altera Corporation
+# Your use of Altera Corporation's design tools, logic functions 
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
+# applicable agreement for further details.
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus II 64-Bit
+# Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
+# Date created = 12:51:09  May 09, 2021
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		VGA_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
+#		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus II software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
+
+
+set_global_assignment -name FAMILY MAX7000S
+set_global_assignment -name DEVICE "EPM7160SLC84-10"
+set_global_assignment -name TOP_LEVEL_ENTITY vga_controller
+set_global_assignment -name ORIGINAL_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name PROJECT_CREATION_TIME_DATE "12:51:09  MAY 09, 2021"
+set_global_assignment -name LAST_QUARTUS_VERSION "13.0 SP1"
+set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
+set_global_assignment -name OPTIMIZE_HOLD_TIMING OFF
+set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING OFF
+set_global_assignment -name FITTER_EFFORT "STANDARD FIT"
+set_global_assignment -name VHDL_FILE vga_controller.vhd
+set_global_assignment -name VHDL_FILE hw_image_generator.vhd
+set_global_assignment -name BDF_FILE BLKDSGN.bdf
+set_global_assignment -name MAX7000_DEVICE_IO_STANDARD TTL
+set_location_assignment PIN_74 -to rgbi[0]
+set_location_assignment PIN_73 -to rgbi[1]
+set_location_assignment PIN_70 -to rgbi[2]
+set_location_assignment PIN_69 -to rgbi[3]
+set_location_assignment PIN_80 -to v_sync
+set_location_assignment PIN_2 -to pixel_clk
+set_location_assignment PIN_77 -to istext
+set_location_assignment PIN_75 -to islowres
+set_location_assignment PIN_81 -to h_sync
+set_location_assignment PIN_58 -to datain[0]
+set_location_assignment PIN_56 -to datain[1]
+set_location_assignment PIN_61 -to datain[2]
+set_location_assignment PIN_63 -to datain[3]
+set_location_assignment PIN_64 -to datain[4]
+set_location_assignment PIN_65 -to datain[5]
+set_location_assignment PIN_67 -to datain[6]
+set_location_assignment PIN_68 -to datain[7]
+set_location_assignment PIN_27 -to addrout[0]
+set_location_assignment PIN_25 -to addrout[1]
+set_location_assignment PIN_24 -to addrout[2]
+set_location_assignment PIN_22 -to addrout[3]
+set_location_assignment PIN_21 -to addrout[4]
+set_location_assignment PIN_20 -to addrout[5]
+set_location_assignment PIN_18 -to addrout[6]
+set_location_assignment PIN_17 -to addrout[7]
+set_location_assignment PIN_16 -to addrout[8]
+set_location_assignment PIN_12 -to addrout[9]
+set_location_assignment PIN_15 -to addrout[10]
+set_location_assignment PIN_11 -to addrout[11]
+set_location_assignment PIN_10 -to addrout[12]
+set_location_assignment PIN_9 -to addrout[13]
+set_location_assignment PIN_8 -to addrout[14]

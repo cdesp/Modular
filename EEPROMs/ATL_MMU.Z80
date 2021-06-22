@@ -4,18 +4,21 @@
         GLOBAL PUTPGINBANK
         GLOBAL GETPGINBANK
         
-		
+
+;DEFAULT SETUP FOR BANKS		
 INITMMU:        LD HL,BANKS
                 LD B,8
                 XOR A
 INM_AGN:        LD (HL),A
                 INC A
+		INC HL
                 DJNZ INM_AGN
                 RET                
 
 ;C MMU PORT
 ;B HAS THE BANK NO (0..7) EACH BANK IS 8K
 ;A HAS THE PAGE TO PUT IN BANK EACH PAGE IS 8K PAGES (0..255) TOTAL 2MB MEMORY ACCESIBLE A0-A20 2^21
+;DESTROYS A,BC,HL,DE
 PUTPGINBANK:	LD C, A 							;SAVE PAGE
 		LD A, B                                                         ;BANK IN A
 		CP 2
@@ -39,7 +42,8 @@ PUTPGINBANK:	LD C, A 							;SAVE PAGE
 
 ;B BANK NO (0..7)
 ;RET A THE PAGE IN BANK B
-GETPGINBANK     LD HL,BANKS
+;DESTROYS HL,DE,A
+GETPGINBANK:    LD HL,BANKS
                 LD D,0
                 LD E,B
                 ADD HL,DE

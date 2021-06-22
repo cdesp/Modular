@@ -1,0 +1,247 @@
+280)   8000 CD EA 80    		 CALL CLS	;
+282)   8003 CD 9E 80    		 CALL COL0	;
+283)   8006 C3 04 00    		 JP 4	;
+284)   8009 3E 04       		 LD A,BLUE 	;
+285)   800B 21 00 00    		 LD HL,0	;
+286)   800E CD 44 80    		 CALL DRAWVLINE	;
+288)   8011 3E 01       		 LD A,RED  	;
+289)   8013 21 01 00    		 LD HL,1	;
+290)   8016 CD 44 80    		 CALL DRAWVLINE	;
+292)   8019 3E 01       		 LD A,RED  	;
+293)   801B 21 84 00    		 LD HL,132	;
+294)   801E CD 44 80    		 CALL DRAWVLINE	;
+296)   8021 3E 02       		 LD A,GREEN 	;
+297)   8023 21 85 00    		 LD HL,133	;
+298)   8026 CD 44 80    		 CALL DRAWVLINE	;
+300)   8029 3E 01       		 LD A,RED  	;
+301)   802B 21 3C 01    		 LD HL,316	;
+302)   802E CD 44 80    		 CALL DRAWVLINE	;
+304)   8031 3E 02       		 LD A,GREEN 	;
+305)   8033 21 3F 01    		 LD HL,319	;
+306)   8036 CD 44 80    		 CALL DRAWVLINE	;
+308)   8039 3E 04       		 LD A,BLUE 	;
+309)   803B 21 3E 01    		 LD HL,318	;
+310)   803E CD 44 80    		 CALL DRAWVLINE	;
+313)   8041 C3 04 00    		 JP 4	;
+318)   8044 11 00 00    		   LD DE,0 ;START ROW	;START ROW
+319)   8047 47          		          LD B,A	;
+320)   8048 C5          		DVLNXT:   PUSH BC	;
+321)   8049 E5          		   PUSH HL	;
+322)   804A D5          		          PUSH DE	;
+323)   804B 78          		          LD A,B	;
+324)   804C CD 2A 81    		   CALL PLOTPXL32	;
+325)   804F D1          		   POP DE	;
+326)   8050 E1          		   POP HL	;
+327)   8051 C1          		          POP BC	;
+328)   8052 1C          		          INC E	;
+329)   8053 7B          		          LD A,E	;
+330)   8054 FE C8       		          CP 200    	;
+331)   8056 C8          		   RET Z	;
+332)   8057 18 EF       		          JR DVLNXT	;
+336)   8059 CD A3 81    		 CALL PG8 	;
+338)   805C CD AB 81    		 CALL PG9	;
+339)   805F 11 00 A0    		 LD DE,$A000	;
+340)   8062 21 32 00    		 LD HL,50 ;50 ROWS	;50 ROWS
+341)   8065 01 A0 00    		 LD BC,160 ;160 BYTES =320 PIXELS	;160 BYTES =320 PIXELS
+342)   8068 3E 44       		 LD A,$44 ;RED - RED	;RED - RED
+343)   806A CD 91 81    		 CALL FILLBTS	;
+344)   806D 11 00 C0    		 LD DE,$C000	;
+345)   8070 21 32 00    		 LD HL,50 ;50 ROWS	;50 ROWS
+346)   8073 01 A0 00    		 LD BC,160 ;160 BYTES =320 PIXELS	;160 BYTES =320 PIXELS
+347)   8076 3E 22       		 LD A,$22 ;RED - RED	;RED - RED
+348)   8078 CD 91 81    		 CALL FILLBTS	;
+349)   807B CD B3 81    		 CALL PG10	;
+350)   807E CD BB 81    		 CALL PG11	;
+351)   8081 11 00 A0    		 LD DE,$A000	;
+352)   8084 21 32 00    		 LD HL,50 ;50 ROWS	;50 ROWS
+353)   8087 01 A0 00    		 LD BC,160 ;160 BYTES =320 PIXELS	;160 BYTES =320 PIXELS
+354)   808A 3E 11       		 LD A,$11 ;RED - RED	;RED - RED
+355)   808C CD 91 81    		 CALL FILLBTS	;
+356)   808F 11 00 C0    		 LD DE,$C000	;
+357)   8092 21 32 00    		 LD HL,50 ;50 ROWS	;50 ROWS
+358)   8095 01 A0 00    		 LD BC,160 ;160 BYTES =320 PIXELS	;160 BYTES =320 PIXELS
+359)   8098 3E 70       		 LD A,$70 ;RED - RED	;RED - RED
+360)   809A CD 91 81    		 CALL FILLBTS	;
+361)   809D C9          		 RET 	;
+364)   809E 21 00 00    		COL0:  LD HL,0  ;COLUMN	;COLUMN
+365)   80A1 3E 20       		 LD A,$20 ;COLOR	;COLOR
+366)   80A3 CD BF 80    		 CALL PAINTCOL	;
+367)   80A6 21 14 00    		 LD HL,20 ;COLUMN	;COLUMN
+368)   80A9 3E 10       		 LD A,$10 ;COLOR	;COLOR
+369)   80AB CD BF 80    		 CALL PAINTCOL	;
+370)   80AE 21 28 00    		 LD HL,40 ;COLUMN	;COLUMN
+371)   80B1 3E 02       		 LD A,$02 ;COLOR	;COLOR
+372)   80B3 CD BF 80    		 CALL PAINTCOL	;
+373)   80B6 21 9F 00    		 LD HL,159 ;COLUMN	;COLUMN
+374)   80B9 3E 41       		 LD A,$41 ;COLOR	;COLOR
+375)   80BB CD BF 80    		 CALL PAINTCOL	;
+376)   80BE C9          		 RET ;TO MENU 	;TO MENU
+378)   80BF E5          		PAINTCOL:PUSH HL	;
+379)   80C0 F5          		 PUSH AF	;
+381)   80C1 CD A3 81    		 CALL PG8 	;
+383)   80C4 CD AB 81    		 CALL PG9	;
+384)   80C7 11 00 A0    		 LD DE,$A000	;
+385)   80CA F1          		 POP AF	;
+386)   80CB E1          		 POP HL	;
+387)   80CC E5          		 PUSH HL	;
+388)   80CD F5          		 PUSH AF	;
+389)   80CE 01 66 00    		 LD BC,102 ;NOOF ROWS	;NOOF ROWS
+390)   80D1 CD 13 81    		 CALL FILLROW	;
+391)   80D4 CD B3 81    		 CALL PG10	;
+392)   80D7 CD BB 81    		 CALL PG11	;
+393)   80DA F1          		 POP AF	;
+394)   80DB E1          		 POP HL	;
+395)   80DC 11 60 00    		 LD DE,96	;
+396)   80DF 19          		 ADD HL,DE	;
+397)   80E0 11 00 A0    		 LD DE,$A000	;
+398)   80E3 01 62 00    		 LD BC,98 ;50 ROWS	;50 ROWS
+399)   80E6 CD 13 81    		 CALL FILLROW	;
+400)   80E9 C9          		 RET ;TO MENU	;TO MENU
+404)   80EA CD A3 81    		 CALL PG8 	;
+406)   80ED CD AB 81    		 CALL PG9	;
+407)   80F0 11 00 A0    		 LD DE,$A000 	;
+408)   80F3 01 00 40    		 LD BC,16384 ;BYTES ON 1ST 16K	;BYTES ON 1ST 16K
+409)   80F6 21 01 00    		 LD HL,1	;
+410)   80F9 3E 00       		 LD A,$00 ;RED - RED	;RED - RED
+411)   80FB CD 91 81    		 CALL FILLBTS	;
+412)   80FE CD B3 81    		 CALL PG10	;
+413)   8101 CD BB 81    		 CALL PG11	;
+414)   8104 11 00 A0    		 LD DE,$A000	;
+415)   8107 21 01 00    		 LD HL,1 	;
+416)   810A 01 00 3D    		 LD BC,15616 ;BYTES ON 2ND 16K	;BYTES ON 2ND 16K
+417)   810D 3E 00       		 LD A,$00 ;RED - RED	;RED - RED
+418)   810F CD 91 81    		 CALL FILLBTS	;
+419)   8112 C9          		 RET ;TO MENU 	;TO MENU
+425)   8113 E5          		 PUSH HL	;
+426)   8114 B7          		 OR A	;
+427)   8115 ED 5A       		 ADC HL,DE	;
+428)   8117 EB          		 EX DE,HL  ;DE IS AT THE RIGHT COLUMN	;DE IS AT THE RIGHT COLUMN
+429)   8118 E1          		 POP HL    ;	;
+430)   8119 67          		 LD H,A	;
+431)   811A EB          		 EX DE,HL  ;HL HAS THE COLUMN	;HL HAS THE COLUMN
+432)   811B C5          		 PUSH BC	;
+433)   811C D1          		 POP DE	;
+434)   811D 57          		 LD D,A	;
+435)   811E 01 A0 00    		 LD BC,160	;
+436)   8121 77          		FRAGN1: LD (HL),A 	;
+437)   8122 09          		 ADD HL,BC	;
+438)   8123 1D          		 DEC E	;
+439)   8124 7B          		 LD A,E	;
+440)   8125 B7          		 OR A	;
+441)   8126 7A          		 LD A,D	;
+442)   8127 20 F8       		 JR NZ,FRAGN1	;
+443)   8129 C9          		 RET	;
+449)   812A E5          		        PUSH HL 	;
+450)   812B F5          		 PUSH AF  	;
+451)   812C 7B          		 LD A,E	;
+452)   812D FE 66       		 CP 102	;
+453)   812F 38 2C       		 JR C,PPNXT0  ;LESS THAN 102	;LESS THAN 102
+454)   8131 20 16       		 JR NZ,NXTBNK ;MORE THAN 102	;MORE THAN 102
+455)   8133 E5          		 PUSH HL      ;ROW 102 IS SPLIT BETWEEN TWO 16K PAGES	;ROW 102 IS SPLIT BETWEEN TWO 16K PAGES
+456)   8134 01 80 00    		 LD BC,128	;
+457)   8137 B7          		 OR A	;
+458)   8138 ED 42       		 SBC HL,BC	;
+459)   813A 47          		 LD B,A	;
+460)   813B 7C          		 LD A,H	;
+461)   813C B7          		 OR A   ; IF H IS ZERO THEN GREATER THAN 128 ELSE LESS OR EQUAL TO 128	; IF H IS ZERO THEN GREATER THAN 128 ELSE LESS OR EQUAL TO 128
+462)   813D 78          		 LD A,B	;
+463)   813E E1          		        POP HL	;
+464)   813F 20 1C       		 JR NZ,PPNXT0	;
+466)   8141 3E 67       		 LD A,103 ;WE ARE AT LINE ZERO ON 2ND BANK	;WE ARE AT LINE ZERO ON 2ND BANK
+467)   8143 11 40 01    		 LD DE,129+191	;
+468)   8146 B7          		        OR A	;
+469)   8147 ED 52       		        SBC HL,DE ;	;
+470)   8149 D6 67       		NXTBNK: SUB 103 ;SKIP 102 ROWS	;SKIP 102 ROWS
+471)   814B 11 C0 00    		 LD DE,192  ;320-128	;320-128
+472)   814E B7          		 OR A	;
+473)   814F ED 5A       		 ADC HL,DE	;
+474)   8151 F5          		 PUSH AF	;
+475)   8152 E5          		 PUSH HL	;
+476)   8153 CD B3 81    		 CALL PG10	;
+477)   8156 CD BB 81    		 CALL PG11	;
+478)   8159 E1          		 POP HL  ;L HAS THE EXCESS OF 129  	;L HAS THE EXCESS OF 129
+479)   815A F1          		 POP AF  ;A HAS THE ROWS ON 2ND 16K	;A HAS THE ROWS ON 2ND 16K
+480)   815B 18 0A       		        JR PPNXT1	;
+481)   815D F5          		PPNXT0: PUSH AF ;A=E=ROW=Y	;A=E=ROW=Y
+482)   815E E5          		 PUSH HL	;
+483)   815F CD A3 81    		 CALL PG8	;
+484)   8162 CD AB 81    		 CALL PG9	;
+485)   8165 E1          		 POP HL  	;
+486)   8166 F1          		 POP AF 	;
+487)   8167 11 00 A0    		PPNXT1: LD DE,BASEADDR	;
+489)   816A CB 3C       		        SRL H	;
+490)   816C CB 1D       		 RR L	;
+491)   816E 19          		 ADD HL,DE  ;FIND COLUMN	;FIND COLUMN
+492)   816F 11 A0 00    		 LD DE,160	;
+493)   8172 B7          		DONXTROW: OR A    ;CHECK ROW=0	;CHECK ROW=0
+494)   8173 28 04       		 JR Z,DOPLOTPX 	;
+495)   8175 19          		        ADD HL,DE	;
+496)   8176 3D          		        DEC A	;
+497)   8177 18 F9       		 JR DONXTROW    	;
+498)   8179 C1          		DOPLOTPX:POP BC ;B HAS THE COLOR 	;B HAS THE COLOR
+499)   817A D1          		 POP DE ;DE=X CHECK IF IT IS EVEN OR ODD AND CHANGE THE PIXEL   	;DE=X CHECK IF IT IS EVEN OR ODD AND CHANGE THE PIXEL
+500)   817B 7E          		 LD A,(HL) ;GET PIXEL BYTE	;GET PIXEL BYTE
+501)   817C CB 43       		 BIT 0,E  ;CHECK X IS EVEN OR ODD	;CHECK X IS EVEN OR ODD
+502)   817E 28 04       		 JR Z,DOEVEN   ;EVEN	;EVEN
+504)   8180 E6 F0       		 AND $F0   ;CLEAR RIGHT 4 BITS	;CLEAR RIGHT 4 BITS
+505)   8182 18 0A       		 JR DPEXIT      	;
+507)   8184 CB 00       		DOEVEN: RLC B	;
+508)   8186 CB 00       		 RLC B	;
+509)   8188 CB 00       		        RLC B	;
+510)   818A CB 00       		        RLC B	;
+511)   818C E6 0F       		 AND $0F   ;ZERO LEFT	;ZERO LEFT
+512)   818E B0          		DPEXIT: OR B    ;MIX PIXELS	;MIX PIXELS
+513)   818F 77          		 LD (HL),A	;
+514)   8190 C9          		 RET	;
+517)   8191 C5          		FILLBTS: PUSH BC	;
+519)   8192 12          		AGN1:   LD (DE),A	;
+520)   8193 13          		 INC DE	;
+521)   8194 0B          		 DEC BC	;
+522)   8195 67          		 LD H,A	;
+523)   8196 78          		 LD A,B	;
+524)   8197 B1          		 OR C 	;
+525)   8198 7C          		 LD A,H	;
+526)   8199 20 F7       		 JR NZ,AGN1 	;
+527)   819B 2D          		 DEC L	;
+528)   819C 7D          		 LD A,L	;
+529)   819D B7          		 OR A	;
+530)   819E 7C          		 LD A,H	;
+531)   819F C1          		 POP BC	;
+532)   81A0 20 EF       		 JR NZ,FILLBTS	;
+533)   81A2 C9          		 RET	;
+537)   81A3 3E 08       		PG8: LD A,8	;
+538)   81A5 06 05       		 LD B,5	;
+539)   81A7 CD C3 81    		 CALL PUTPGINBANK2	;
+540)   81AA C9          		 RET	;
+543)   81AB 3E 09       		PG9: LD A,9	;
+544)   81AD 06 06       		 LD B,6	;
+545)   81AF CD C3 81    		 CALL PUTPGINBANK2	;
+546)   81B2 C9          		 RET	;
+549)   81B3 3E 0A       		PG10: LD A,10	;
+550)   81B5 06 05       		 LD B,5	;
+551)   81B7 CD C3 81    		 CALL PUTPGINBANK2	;
+552)   81BA C9          		 RET	;
+555)   81BB 3E 0B       		PG11: LD A,11	;
+556)   81BD 06 06       		 LD B,6	;
+557)   81BF CD C3 81    		 CALL PUTPGINBANK2	;
+558)   81C2 C9          		 RET	;
+562)   81C3 4F          		PUTPGINBANK2: LD C, A       ;SAVE PAGE	;SAVE PAGE
+563)   81C4 78          		 LD A, B                                                         ;BANK IN A	;BANK IN A
+564)   81C5 FE 02       		 CP 2	;
+565)   81C7 D8          		 RET C         ;BANK 0,1 WILL NEVER CHANGE	;BANK 0,1 WILL NEVER CHANGE
+566)   81C8 FE 07       		 CP 7	;
+567)   81CA C8          		 RET Z         ;BANK 7 WILL NEVER CHANGE	;BANK 7 WILL NEVER CHANGE
+568)   81CB 21 E7 FE    		 LD HL, BANKS	;
+569)   81CE 16 00       		 LD D, 0	;
+570)   81D0 5F          		 LD E, A	;
+571)   81D1 19          		 ADD HL, DE	;
+572)   81D2 79          		 LD A, C        ;RESTORE PAGE	;RESTORE PAGE
+573)   81D3 77          		 LD (HL), A        ;SAVE PG IN BANK B MEMORY	;SAVE PG IN BANK B MEMORY
+574)   81D4 0E 00       		 LD C, DEVMMU	;
+575)   81D6 CB 20       		 SLA B         ;SHIFT BANK TO A15..A13 FROM A2..A0 WE USE THESE PINS ON THE CPLD FOR BANK INPUT	;SHIFT BANK TO A15..A13 FROM A2..A0 WE USE THESE PINS ON THE CPLD FOR BANK INPUT
+576)   81D8 CB 20       		 SLA B	;
+577)   81DA CB 20       		 SLA B	;
+578)   81DC CB 20       		 SLA B	;
+579)   81DE CB 20       		 SLA B         ;SET TO A15,A14,A13	;SET TO A15,A14,A13
+580)   81E0 ED 79       		 OUT (C), A	;
+583)   81E2 C9          		 RET	;
