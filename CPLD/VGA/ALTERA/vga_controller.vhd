@@ -67,6 +67,7 @@ SIGNAL txfontline:INTEGER RANGE 0 TO 10-1 :=0; --WHICH LINE OF TEXT CHAR IS PRIN
 SIGNAL txfontpixel:INTEGER RANGE 0 TO 8-1 :=0; --WHICH PIXEL OF TEXT CHAR IS PRINTED
 SIGNAL charaddr:INTEGER RANGE 0 TO 800- 1:=0; --THE ADDRESS OF THE char
 SIGNAL fontaddr:INTEGER RANGE 0 TO 2560-1 :=0; --THE ADDRESS OF THE FONT ON MEMORY
+SIGNAL PXLOUT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL PXLLEFT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL PXLRIGHT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL memaddr:INTEGER RANGE 0 TO 32768-1 :=0;
@@ -74,6 +75,7 @@ SIGNAL RSTRT:STD_LOGIC;  --ROW START FOR MEMORY CHIP SETUP
 SIGNAL   disp_ena  : STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
 SIGNAL    column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
 SIGNAL row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
+SIGNAL SHOWLEFT:STD_LOGIC;
 
 function is_even(val : integer) return boolean is
     constant vec: signed(31 downto 0) := to_signed(val, 32);
@@ -168,13 +170,30 @@ BEGIN
 		ELSE
 	    MEMADDR<= MEMADDR;	
 		END IF;
+		IF (RSTRT='1') OR ( COLUMN MOD 4=3) THEN
+	     PXLRIGHT <= datain(3 DOWNTO  0); 
+        PXLLEFT  <= datain(7 DOWNTO  4); 
+		END IF;
+		
+		IF (COLUMN MOD 4=0) OR (COLUMN MOD 4=1) THEN
+		  PXLOUT <= PXLLEFT;
+		  --SHOWLEFT <= '1';
+		ELSE  
+		  PXLOUT <=PXLRIGHT;
+  		 --SHOWLEFT <= '0';
+		END IF;
+		
+		IF SHOWLEFT='1' THEN
+		  
+		ELSE
+        
+		END IF;  
 		
     END IF;
   END PROCESS;
 
   
-  PXLRIGHT <= datain(3 DOWNTO  0) WHEN (RSTRT='1') OR ( IS_even(COLUMNH) AND columnH>0) ELSE PXLRIGHT;
-  PXLLEFT  <= datain(7 DOWNTO  4) WHEN (RSTRT='1') OR ( IS_even(COLUMNH) AND columnH>0) ELSE PXLLEFT;
+
   --MEMADDR <= RowH*160 WHEN (RSTRT='1') ELSE
     --         MEMADDR+1 WHEN IS_even(COLUMNH)
 		--		 ELSE MEMADDR;
@@ -195,8 +214,7 @@ BEGIN
 			 -- PXLRIGHT WHEN COLUMN MOD 4=3 ELSE
 			  --"0000";	 
 	RGBI <= "0000" WHEN DISp_ena = '0' ELSE
-			  PXLLEFT WHEN IS_even(COLUMNH) ELSE
-           PXLRIGHT;
+			  PXLOUT;
 			  
 			  
 			  

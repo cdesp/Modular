@@ -1,5 +1,5 @@
 TimeQuest Timing Analyzer report for VGA
-Mon Jun 21 19:18:01 2021
+Thu Jun 24 17:57:11 2021
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -23,14 +23,12 @@ Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edit
  15. Hold Times
  16. Clock to Output Times
  17. Minimum Clock to Output Times
- 18. Propagation Delay
- 19. Minimum Propagation Delay
- 20. Setup Transfers
- 21. Hold Transfers
- 22. Report TCCS
- 23. Report RSKM
- 24. Unconstrained Paths
- 25. TimeQuest Timing Analyzer Messages
+ 18. Setup Transfers
+ 19. Hold Transfers
+ 20. Report TCCS
+ 21. Report RSKM
+ 22. Unconstrained Paths
+ 23. TimeQuest Timing Analyzer Messages
 
 
 
@@ -101,7 +99,7 @@ This panel reports FMAX for every clock in the design, regardless of the user-sp
 +-----------+---------+---------------+
 ; Clock     ; Slack   ; End Point TNS ;
 +-----------+---------+---------------+
-; pixel_clk ; -22.000 ; -661.000      ;
+; pixel_clk ; -22.000 ; -698.400      ;
 +-----------+---------+---------------+
 
 
@@ -131,7 +129,7 @@ No paths to report.
 +-----------+--------+---------------+
 ; Clock     ; Slack  ; End Point TNS ;
 +-----------+--------+---------------+
-; pixel_clk ; -3.500 ; -399.000      ;
+; pixel_clk ; -3.500 ; -420.000      ;
 +-----------+--------+---------------+
 
 
@@ -196,6 +194,8 @@ No paths to report.
 ; -19.400 ; h_count[9] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
 ; -19.400 ; h_count[8] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
 ; -19.400 ; h_count[7] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
+; -18.600 ; rowh[3]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[7]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[8] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[6] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[5] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
@@ -218,28 +218,26 @@ No paths to report.
 ; -18.600 ; h_count[2] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[1] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[0] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[4]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[6]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[2]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[0]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[5]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[5]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[6]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; rowh[4]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -17.800 ; v_count[5] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; column[0]  ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[3]    ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[7]    ; memaddr[14] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; rowh[6]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[1]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[1]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[3]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[2]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; rowh[0]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; v_count[4] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; v_count[3] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[2] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[1] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[0] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[7] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[9] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[8] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[7] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[6] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[6] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[5] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[4] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[3] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[2] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[1] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[0] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[1]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[2]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[0]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 +---------+------------+-------------+--------------+-------------+--------------+------------+------------+
 
 
@@ -356,30 +354,36 @@ No paths to report.
 +--------+--------------+----------------+------------------+-----------+------------+-------------+
 ; Slack  ; Actual Width ; Required Width ; Type             ; Clock     ; Clock Edge ; Target      ;
 +--------+--------------+----------------+------------------+-----------+------------+-------------+
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[0]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[0]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[1]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[1]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[2]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[2]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[3]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[3]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[1]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[1]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[2]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[2]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[3]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[3]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[0] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[0] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[1] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[1] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[2] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[2] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[3] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[3] ;
 ; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; RSTRT       ;
 ; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; RSTRT       ;
 ; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[0]   ;
 ; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[0]   ;
 ; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[1]   ;
 ; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[1]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[4]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[4]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[5]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[5]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[6]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[6]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[7]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[7]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; columnh[8]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; columnh[8]  ;
 ; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; disp_ena    ;
 ; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; disp_ena    ;
 ; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[0]  ;
@@ -450,31 +454,43 @@ No paths to report.
 ; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[6]     ;
 ; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[7]     ;
 ; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[7]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; v_count[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; v_count[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; v_count[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; v_count[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; v_count[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; v_count[2]  ;
 +--------+--------------+----------------+------------------+-----------+------------+-------------+
 
 
-+-----------------------------------------------------------------------+
-; Setup Times                                                           ;
-+-----------+------------+-------+-------+------------+-----------------+
-; Data Port ; Clock Port ; Rise  ; Fall  ; Clock Edge ; Clock Reference ;
-+-----------+------------+-------+-------+------------+-----------------+
-; reset_n   ; pixel_clk  ; 8.600 ; 8.600 ; Rise       ; pixel_clk       ;
-+-----------+------------+-------+-------+------------+-----------------+
++------------------------------------------------------------------------+
+; Setup Times                                                            ;
++------------+------------+-------+-------+------------+-----------------+
+; Data Port  ; Clock Port ; Rise  ; Fall  ; Clock Edge ; Clock Reference ;
++------------+------------+-------+-------+------------+-----------------+
+; datain[*]  ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[0] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[1] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[2] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[3] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[4] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[5] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[6] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+;  datain[7] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
+; reset_n    ; pixel_clk  ; 7.800 ; 7.800 ; Rise       ; pixel_clk       ;
++------------+------------+-------+-------+------------+-----------------+
 
 
-+-------------------------------------------------------------------------+
-; Hold Times                                                              ;
-+-----------+------------+--------+--------+------------+-----------------+
-; Data Port ; Clock Port ; Rise   ; Fall   ; Clock Edge ; Clock Reference ;
-+-----------+------------+--------+--------+------------+-----------------+
-; reset_n   ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
-+-----------+------------+--------+--------+------------+-----------------+
++--------------------------------------------------------------------------+
+; Hold Times                                                               ;
++------------+------------+--------+--------+------------+-----------------+
+; Data Port  ; Clock Port ; Rise   ; Fall   ; Clock Edge ; Clock Reference ;
++------------+------------+--------+--------+------------+-----------------+
+; datain[*]  ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[0] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[1] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[2] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[3] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[4] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[5] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[6] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+;  datain[7] ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
+; reset_n    ; pixel_clk  ; -2.000 ; -2.000 ; Rise       ; pixel_clk       ;
++------------+------------+--------+--------+------------+-----------------+
 
 
 +----------------------------------------------------------------------------+
@@ -482,7 +498,7 @@ No paths to report.
 +--------------+------------+--------+--------+------------+-----------------+
 ; Data Port    ; Clock Port ; Rise   ; Fall   ; Clock Edge ; Clock Reference ;
 +--------------+------------+--------+--------+------------+-----------------+
-; addrout[*]   ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+; addrout[*]   ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[0]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[1]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[2]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
@@ -493,17 +509,17 @@ No paths to report.
 ;  addrout[7]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[8]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[9]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[10] ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
-;  addrout[11] ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  addrout[10] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
+;  addrout[11] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[12] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[13] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[14] ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  addrout[14] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; h_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-; rgbi[*]      ; pixel_clk  ; 26.000 ; 26.000 ; Rise       ; pixel_clk       ;
-;  rgbi[0]     ; pixel_clk  ; 26.000 ; 26.000 ; Rise       ; pixel_clk       ;
-;  rgbi[1]     ; pixel_clk  ; 26.000 ; 26.000 ; Rise       ; pixel_clk       ;
-;  rgbi[2]     ; pixel_clk  ; 26.000 ; 26.000 ; Rise       ; pixel_clk       ;
-;  rgbi[3]     ; pixel_clk  ; 26.000 ; 26.000 ; Rise       ; pixel_clk       ;
+; rgbi[*]      ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  rgbi[0]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  rgbi[1]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  rgbi[2]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  rgbi[3]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ; v_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 +--------------+------------+--------+--------+------------+-----------------+
 
@@ -524,11 +540,11 @@ No paths to report.
 ;  addrout[7]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[8]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[9]  ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[10] ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
-;  addrout[11] ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  addrout[10] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
+;  addrout[11] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[12] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[13] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[14] ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
+;  addrout[14] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; h_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; rgbi[*]      ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ;  rgbi[0]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
@@ -539,44 +555,12 @@ No paths to report.
 +--------------+------------+--------+--------+------------+-----------------+
 
 
-+------------------------------------------------------+
-; Propagation Delay                                    ;
-+------------+-------------+--------+----+----+--------+
-; Input Port ; Output Port ; RR     ; RF ; FR ; FF     ;
-+------------+-------------+--------+----+----+--------+
-; datain[0]  ; rgbi[0]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[1]  ; rgbi[1]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[2]  ; rgbi[2]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[3]  ; rgbi[3]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[4]  ; rgbi[0]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[5]  ; rgbi[1]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[6]  ; rgbi[2]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[7]  ; rgbi[3]     ; 18.000 ;    ;    ; 18.000 ;
-+------------+-------------+--------+----+----+--------+
-
-
-+------------------------------------------------------+
-; Minimum Propagation Delay                            ;
-+------------+-------------+--------+----+----+--------+
-; Input Port ; Output Port ; RR     ; RF ; FR ; FF     ;
-+------------+-------------+--------+----+----+--------+
-; datain[0]  ; rgbi[0]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[1]  ; rgbi[1]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[2]  ; rgbi[2]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[3]  ; rgbi[3]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[4]  ; rgbi[0]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[5]  ; rgbi[1]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[6]  ; rgbi[2]     ; 18.000 ;    ;    ; 18.000 ;
-; datain[7]  ; rgbi[3]     ; 18.000 ;    ;    ; 18.000 ;
-+------------+-------------+--------+----+----+--------+
-
-
 +--------------------------------------------------------------------+
 ; Setup Transfers                                                    ;
 +------------+-----------+----------+----------+----------+----------+
 ; From Clock ; To Clock  ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
 +------------+-----------+----------+----------+----------+----------+
-; pixel_clk  ; pixel_clk ; 4102     ; 0        ; 0        ; 0        ;
+; pixel_clk  ; pixel_clk ; 4440     ; 0        ; 0        ; 0        ;
 +------------+-----------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
@@ -586,7 +570,7 @@ Entries labeled "false path" only account for clock-to-clock false paths and not
 +------------+-----------+----------+----------+----------+----------+
 ; From Clock ; To Clock  ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
 +------------+-----------+----------+----------+----------+----------+
-; pixel_clk  ; pixel_clk ; 4102     ; 0        ; 0        ; 0        ;
+; pixel_clk  ; pixel_clk ; 4440     ; 0        ; 0        ; 0        ;
 +------------+-----------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
@@ -611,9 +595,9 @@ No dedicated SERDES Receiver circuitry present in device or used in design
 ; Illegal Clocks                  ; 0     ; 0    ;
 ; Unconstrained Clocks            ; 0     ; 0    ;
 ; Unconstrained Input Ports       ; 9     ; 9    ;
-; Unconstrained Input Port Paths  ; 65    ; 65   ;
+; Unconstrained Input Port Paths  ; 68    ; 68   ;
 ; Unconstrained Output Ports      ; 21    ; 21   ;
-; Unconstrained Output Port Paths ; 69    ; 69   ;
+; Unconstrained Output Port Paths ; 25    ; 25   ;
 +---------------------------------+-------+------+
 
 
@@ -623,7 +607,7 @@ No dedicated SERDES Receiver circuitry present in device or used in design
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit TimeQuest Timing Analyzer
     Info: Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-    Info: Processing started: Mon Jun 21 19:18:00 2021
+    Info: Processing started: Thu Jun 24 17:57:09 2021
 Info: Command: quartus_sta VGA -c VGA
 Info: qsta_default_script.tcl version: #1
 Warning (20028): Parallel compilation is not licensed and has been disabled
@@ -634,36 +618,12 @@ Critical Warning (332012): Synopsys Design Constraints File file not found: 'VGA
 Info (332142): No user constrained base clocks found in the design. Calling "derive_clocks -period 1.0"
 Info (332105): Deriving Clocks
     Info (332105): create_clock -period 1.000 -name pixel_clk pixel_clk
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLLEFT[3]~30|[1]"
-    Warning (332126): Node "PXLLEFT[3]~30|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLRIGHT[3]~36|[1]"
-    Warning (332126): Node "PXLRIGHT[3]~36|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLLEFT[2]~26|[1]"
-    Warning (332126): Node "PXLLEFT[2]~26|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLRIGHT[2]~32|[1]"
-    Warning (332126): Node "PXLRIGHT[2]~32|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLLEFT[1]~22|[1]"
-    Warning (332126): Node "PXLLEFT[1]~22|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLRIGHT[1]~28|[1]"
-    Warning (332126): Node "PXLRIGHT[1]~28|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLLEFT[0]~18|[1]"
-    Warning (332126): Node "PXLLEFT[0]~18|dataout"
-Warning (332125): Found combinational loop of 2 nodes
-    Warning (332126): Node "PXLRIGHT[0]~24|[1]"
-    Warning (332126): Node "PXLRIGHT[0]~24|dataout"
 Info: Found TIMEQUEST_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS = ON
 Critical Warning (332148): Timing requirements not met
 Info (332146): Worst-case setup slack is -22.000
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
-    Info (332119):   -22.000      -661.000 pixel_clk 
+    Info (332119):   -22.000      -698.400 pixel_clk 
 Info (332146): Worst-case hold slack is 5.000
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
@@ -673,14 +633,14 @@ Info (332140): No Removal paths to report
 Info (332146): Worst-case minimum pulse width slack is -3.500
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
-    Info (332119):    -3.500      -399.000 pixel_clk 
+    Info (332119):    -3.500      -420.000 pixel_clk 
 Info (332001): The selected device family is not supported by the report_metastability command.
 Info (332102): Design is not fully constrained for setup requirements
 Info (332102): Design is not fully constrained for hold requirements
-Info: Quartus II 64-Bit TimeQuest Timing Analyzer was successful. 0 errors, 28 warnings
+Info: Quartus II 64-Bit TimeQuest Timing Analyzer was successful. 0 errors, 4 warnings
     Info: Peak virtual memory: 4507 megabytes
-    Info: Processing ended: Mon Jun 21 19:18:01 2021
-    Info: Elapsed time: 00:00:01
+    Info: Processing ended: Thu Jun 24 17:57:11 2021
+    Info: Elapsed time: 00:00:02
     Info: Total CPU time (on all processors): 00:00:01
 
 
