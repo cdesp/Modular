@@ -1,5 +1,5 @@
 Assembler report for VGA
-Thu Jun 24 17:57:08 2021
+Mon Jun 28 20:16:30 2021
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -37,7 +37,7 @@ applicable agreement for further details.
 +---------------------------------------------------------------+
 ; Assembler Summary                                             ;
 +-----------------------+---------------------------------------+
-; Assembler Status      ; Successful - Thu Jun 24 17:57:08 2021 ;
+; Assembler Status      ; Successful - Mon Jun 28 20:16:30 2021 ;
 ; Revision Name         ; VGA                                   ;
 ; Top-level Entity Name ; vga_controller                        ;
 ; Family                ; MAX7000S                              ;
@@ -89,7 +89,7 @@ applicable agreement for further details.
 +----------------+------------------------------------------------------------------------------------------+
 ; Device         ; EPM7160SLC84-10                                                                          ;
 ; JTAG usercode  ; 0x00000000                                                                               ;
-; Checksum       ; 0x0021872B                                                                               ;
+; Checksum       ; 0x001ED407                                                                               ;
 +----------------+------------------------------------------------------------------------------------------+
 
 
@@ -99,12 +99,12 @@ applicable agreement for further details.
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit Assembler
     Info: Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-    Info: Processing started: Thu Jun 24 17:57:07 2021
+    Info: Processing started: Mon Jun 28 20:16:29 2021
 Info: Command: quartus_asm --read_settings_files=off --write_settings_files=off VGA -c VGA
 Info (115030): Assembler is generating device programming files
 Info: Quartus II 64-Bit Assembler was successful. 0 errors, 0 warnings
-    Info: Peak virtual memory: 4498 megabytes
-    Info: Processing ended: Thu Jun 24 17:57:08 2021
+    Info: Peak virtual memory: 4502 megabytes
+    Info: Processing ended: Mon Jun 28 20:16:30 2021
     Info: Elapsed time: 00:00:01
     Info: Total CPU time (on all processors): 00:00:01
 

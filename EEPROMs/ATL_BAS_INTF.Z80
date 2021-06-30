@@ -78,7 +78,7 @@
 @MYOS_GETCSR:									; GETCSR: return cursor position in x=DE, y=HL
 		LD D, 0
 		LD A, (CURSORX)
-		;LD A,(VGATX_X)
+		;LD A,(VGATX_X) ; CAN'T RETURN BOTH CAUSE DIFFERENT SCREEN FORMAT
 		LD E, A
 		LD H, 0
 ; LD A,(CURSORY)
@@ -463,15 +463,18 @@ COPYPAL:	LD HL, COL_PALET
 		RET
 ;PRINT MYOS MESSAGE HERE
 OSFINSH:	CALL OS_CLRSCR
-		CALL TELL
-		DEFM "CDesp Modular Z80 Computer 2020-21"
-		DEFB 0AH, 0DH
-		DEFM "ATLAS Operating System Version "
-		DEFB MJVER
-		DEFB 46
-		DEFB MNVER1,MNVER2
-		DEFB 0AH,0DH,0AH,0DH
-		DEFB 00H
+		; CALL TELL
+		; DEFM "ATLAS Modular Z80 Computer"
+		; DEFB 0AH, 0DH
+		; DEFM "Operating System Version "		
+		; DEFB MJVER
+		; DEFB 46
+		; DEFB MNVER1,MNVER2
+		; DEFB 0AH, 0DH
+		; DEFM "CDesp 2020-21"
+		; DEFB 0AH, 0DH		
+		; DEFB 0AH, 0DH
+		; DEFB 00H
 		XOR A
 		LD DE, STACKP - 0x100						;DE = HIMEM
 		LD E, A 							;PAGE BOUNDARY

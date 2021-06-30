@@ -94,9 +94,9 @@ RESERVED                     : 30        :        :                   :         
 RESERVED                     : 31        :        :                   :         :           :                
 GND                          : 32        : gnd    :                   :         :           :                
 RESERVED                     : 33        :        :                   :         :           :                
-datace                       : 34        : output : TTL               :         :           : N              
-n_sync                       : 35        : output : TTL               :         :           : N              
-n_blank                      : 36        : output : TTL               :         :           : N              
+RESERVED                     : 34        :        :                   :         :           :                
+RESERVED                     : 35        :        :                   :         :           :                
+RESERVED                     : 36        :        :                   :         :           :                
 RESERVED                     : 37        :        :                   :         :           :                
 VCCIO                        : 38        : power  :                   : 5.0V    :           :                
 NC                           : 39        :        :                   :         :           :                
@@ -109,9 +109,9 @@ RESERVED                     : 45        :        :                   :         
 NC                           : 46        :        :                   :         :           :                
 GND                          : 47        : gnd    :                   :         :           :                
 RESERVED                     : 48        :        :                   :         :           :                
-RESERVED                     : 49        :        :                   :         :           :                
-RESERVED                     : 50        :        :                   :         :           :                
-RESERVED                     : 51        :        :                   :         :           :                
+datace                       : 49        : output : TTL               :         :           : N              
+n_blank                      : 50        : output : TTL               :         :           : N              
+n_sync                       : 51        : output : TTL               :         :           : N              
 RESERVED                     : 52        :        :                   :         :           :                
 VCCIO                        : 53        : power  :                   : 5.0V    :           :                
 RESERVED                     : 54        :        :                   :         :           :                

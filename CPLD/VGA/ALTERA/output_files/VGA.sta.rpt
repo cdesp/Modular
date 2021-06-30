@@ -1,5 +1,5 @@
 TimeQuest Timing Analyzer report for VGA
-Thu Jun 24 17:57:11 2021
+Mon Jun 28 20:16:32 2021
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -89,7 +89,7 @@ Parallel compilation was disabled, but you have multiple processors available. E
 +-----------+-----------------+------------+------+
 ; Fmax      ; Restricted Fmax ; Clock Name ; Note ;
 +-----------+-----------------+------------+------+
-; 43.48 MHz ; 43.48 MHz       ; pixel_clk  ;      ;
+; 24.15 MHz ; 24.15 MHz       ; pixel_clk  ;      ;
 +-----------+-----------------+------------+------+
 This panel reports FMAX for every clock in the design, regardless of the user-specified clock periods.  FMAX is only computed for paths where the source and destination registers or ports are driven by the same clock.  Paths of different clocks, including generated clocks, are ignored.  For paths between a clock and its inversion, FMAX is computed as if the rising and falling edges are scaled along with FMAX, such that the duty cycle (in terms of a percentage) is maintained. Altera recommends that you always use clock constraints and other slack reports for sign-off analysis.
 
@@ -99,7 +99,7 @@ This panel reports FMAX for every clock in the design, regardless of the user-sp
 +-----------+---------+---------------+
 ; Clock     ; Slack   ; End Point TNS ;
 +-----------+---------+---------------+
-; pixel_clk ; -22.000 ; -698.400      ;
+; pixel_clk ; -40.400 ; -2032.400     ;
 +-----------+---------+---------------+
 
 
@@ -129,7 +129,7 @@ No paths to report.
 +-----------+--------+---------------+
 ; Clock     ; Slack  ; End Point TNS ;
 +-----------+--------+---------------+
-; pixel_clk ; -3.500 ; -420.000      ;
+; pixel_clk ; -3.500 ; -637.000      ;
 +-----------+--------+---------------+
 
 
@@ -138,106 +138,106 @@ No paths to report.
 +---------+------------+-------------+--------------+-------------+--------------+------------+------------+
 ; Slack   ; From Node  ; To Node     ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
 +---------+------------+-------------+--------------+-------------+--------------+------------+------------+
-; -22.000 ; rowh[7]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 21.000     ;
-; -22.000 ; rowh[5]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 21.000     ;
-; -19.400 ; v_count[5] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[5] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[5] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[5] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[4] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[3] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[2] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[1] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[0] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[7] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[9] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[8] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[7] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[6] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[6] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[5] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[4] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[3] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[2] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[1] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[0] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[8] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[7] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[6] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[4] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[3] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[2] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[1] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[0] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[9] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[8] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[7] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[8] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[7] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[6] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[4] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[3] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[2] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[1] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[0] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[9] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[8] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[7] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[8] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[7] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[6] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[4] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[3] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[2] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[1] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[0] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[9] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[8] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[7] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -18.600 ; rowh[3]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[7]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[8] ; rowh[5]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[6] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[5] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[4] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[3] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[2] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[1] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[0] ; rowh[4]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[6] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[5] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[4] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[3] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[2] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[1] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[0] ; rowh[2]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[6] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[5] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[4] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[3] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[2] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[1] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[0] ; rowh[1]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[4]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[6]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[2]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[0]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[5]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[5]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[6]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; rowh[4]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -17.800 ; v_count[5] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; column[0]  ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[3]    ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[7]    ; memaddr[14] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[6]    ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[1]    ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[1]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[3]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[2]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; rowh[0]    ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[4] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[3] ; rowh[7]     ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -40.400 ; h_count[3] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[2] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[7] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[6] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[1] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[0] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[5] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -40.400 ; h_count[4] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 39.400     ;
+; -38.000 ; h_count[3] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[3] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[6] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[2] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[1] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[0] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[5] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -38.000 ; h_count[7] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 37.000     ;
+; -35.400 ; h_count[8] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.400     ;
+; -35.400 ; h_count[9] ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.400     ;
+; -35.000 ; v_count[8] ; disp_ena    ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[6] ; disp_ena    ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; v_count[7] ; disp_ena    ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; v_count[6] ; disp_ena    ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[4] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[5] ; disp_ena    ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -35.000 ; h_count[7] ; disp_ena    ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 34.000     ;
+; -33.000 ; h_count[8] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[1]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[2]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[3]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[4]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[5]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[6]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[7]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[8] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[9] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -33.000 ; h_count[4] ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 32.000     ;
+; -32.400 ; h_count[3] ; CHARaddr[5] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 31.400     ;
+; -32.400 ; column[3]  ; CHARaddr[3] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 31.400     ;
+; -32.400 ; h_count[2] ; CHARaddr[5] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 31.400     ;
+; -32.400 ; h_count[7] ; CHARaddr[5] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 31.400     ;
 +---------+------------+-------------+--------------+-------------+--------------+------------+------------+
 
 
@@ -246,68 +246,29 @@ No paths to report.
 +-------+------------+------------+--------------+-------------+--------------+------------+------------+
 ; Slack ; From Node  ; To Node    ; Launch Clock ; Latch Clock ; Relationship ; Clock Skew ; Data Delay ;
 +-------+------------+------------+--------------+-------------+--------------+------------+------------+
-; 5.000 ; h_count[1] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[0] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[2] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[1] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[0] ; h_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[3] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[2] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[1] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[0] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[3] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[4] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[3] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[2] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[1] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[4] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[3] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[2] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[1] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[0] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[5] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[8] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[4] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[3] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[2] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[1] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[0] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[4] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[3] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[2] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[1] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[9] ; h_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[7] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[8] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[6] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[5] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[4] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
@@ -315,164 +276,203 @@ No paths to report.
 ; 5.000 ; h_count[2] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[1] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[0] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[9] ; h_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[8] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[5] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[9] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[4] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[7] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[6] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[3] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[2] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 ; 5.000 ; h_count[1] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; h_count[0] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; v_count[1] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; v_count[0] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[9] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[8] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[5] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[4] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[3] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[2] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[1] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[0] ; v_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; v_count[2] ; v_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[7] ; v_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
-; 5.000 ; h_count[6] ; v_count[2] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[0] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[4] ; h_count[9] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[9] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[8] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[5] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[7] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[6] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[3] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[2] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[1] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[0] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[4] ; h_count[8] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[6] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[8] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[5] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[4] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[3] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[2] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[1] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[0] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[9] ; h_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[0] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[1] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[6] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[8] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[9] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[5] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; h_count[7] ; h_count[1] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[4] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[8] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[3] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[2] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[1] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[0] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[7] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[6] ; v_count[4] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[5] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[8] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[4] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[3] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[2] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[1] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[0] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[7] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[6] ; v_count[5] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[6] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[8] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[7] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[5] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[4] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[3] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[2] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[1] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[0] ; v_count[6] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[7] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[8] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[6] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[5] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[4] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[3] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
+; 5.000 ; v_count[2] ; v_count[7] ; pixel_clk    ; pixel_clk   ; 0.000        ; 0.000      ; 8.000      ;
 +-------+------------+------------+--------------+-------------+--------------+------------+------------+
 
 
-+--------------------------------------------------------------------------------------------------+
-; Minimum Pulse Width: 'pixel_clk'                                                                 ;
-+--------+--------------+----------------+------------------+-----------+------------+-------------+
-; Slack  ; Actual Width ; Required Width ; Type             ; Clock     ; Clock Edge ; Target      ;
-+--------+--------------+----------------+------------------+-----------+------------+-------------+
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLLEFT[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLLEFT[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[0]   ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[0]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[1]   ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[1]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[2]   ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[2]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[3]   ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[3]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[0] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[0] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[1] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[1] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[2] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[2] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLRIGHT[3] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLRIGHT[3] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; RSTRT       ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; RSTRT       ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[0]   ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[0]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[1]   ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[1]   ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; disp_ena    ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; disp_ena    ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[4]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[4]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[5]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[5]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[6]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[6]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[7]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[7]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[8]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[8]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[9]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[9]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_sync~reg0 ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_sync~reg0 ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[0]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[10] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[10] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[11] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[11] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[12] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[12] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[13] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[13] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[14] ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[14] ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[1]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[2]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[3]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[4]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[4]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[5]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[5]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[6]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[6]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[7]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[7]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[8]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[8]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; memaddr[9]  ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; memaddr[9]  ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[0]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[0]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[1]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[1]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[2]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[2]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[3]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[3]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[4]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[4]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[5]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[5]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[6]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[6]     ;
-; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; rowh[7]     ;
-; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; rowh[7]     ;
-+--------+--------------+----------------+------------------+-----------+------------+-------------+
++---------------------------------------------------------------------------------------------------+
+; Minimum Pulse Width: 'pixel_clk'                                                                  ;
++--------+--------------+----------------+------------------+-----------+------------+--------------+
+; Slack  ; Actual Width ; Required Width ; Type             ; Clock     ; Clock Edge ; Target       ;
++--------+--------------+----------------+------------------+-----------+------------+--------------+
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[0]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[0]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[10] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[10] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[1]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[1]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[2]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[2]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[3]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[3]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[4]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[4]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[5]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[5]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[6]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[6]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[7]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[7]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[8]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[8]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; CHARaddr[9]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; CHARaddr[9]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLFORE[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLFORE[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[0]    ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[0]    ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLOUT[1]    ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLOUT[1]    ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[1]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[1]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[2]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[2]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[3]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[3]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[4]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[4]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[5]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[5]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[6]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[6]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXT[7]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXT[7]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[0] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[0] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[1] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[1] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[2] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[2] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[3] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[3] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[4] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[4] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[5] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[5] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[6] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[6] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; PXLTEXTnx[7] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; PXLTEXTnx[7] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; SETUPCHAR[0] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; SETUPCHAR[0] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; SETUPCHAR[1] ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; SETUPCHAR[1] ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[0]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[0]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[1]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[1]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[2]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[2]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[3]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[3]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[4]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[4]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[5]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[5]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[6]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[6]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; TEXTCHAR[7]  ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; TEXTCHAR[7]  ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[0]    ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[0]    ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[1]    ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[1]    ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[2]    ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[2]    ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; column[3]    ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; column[3]    ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; disp_ena     ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; disp_ena     ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[0]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[1]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[1]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[2]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[2]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[3]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[3]   ;
+; -3.500 ; 0.500        ; 4.000          ; High Pulse Width ; pixel_clk ; Rise       ; h_count[4]   ;
+; -3.500 ; 0.500        ; 4.000          ; Low Pulse Width  ; pixel_clk ; Rise       ; h_count[4]   ;
++--------+--------------+----------------+------------------+-----------+------------+--------------+
 
 
-+------------------------------------------------------------------------+
-; Setup Times                                                            ;
-+------------+------------+-------+-------+------------+-----------------+
-; Data Port  ; Clock Port ; Rise  ; Fall  ; Clock Edge ; Clock Reference ;
-+------------+------------+-------+-------+------------+-----------------+
-; datain[*]  ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[0] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[1] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[2] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[3] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[4] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[5] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[6] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-;  datain[7] ; pixel_clk  ; 7.000 ; 7.000 ; Rise       ; pixel_clk       ;
-; reset_n    ; pixel_clk  ; 7.800 ; 7.800 ; Rise       ; pixel_clk       ;
-+------------+------------+-------+-------+------------+-----------------+
++--------------------------------------------------------------------------+
+; Setup Times                                                              ;
++------------+------------+--------+--------+------------+-----------------+
+; Data Port  ; Clock Port ; Rise   ; Fall   ; Clock Edge ; Clock Reference ;
++------------+------------+--------+--------+------------+-----------------+
+; datain[*]  ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[0] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[1] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[2] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[3] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[4] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[5] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[6] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+;  datain[7] ; pixel_clk  ; 7.000  ; 7.000  ; Rise       ; pixel_clk       ;
+; reset_n    ; pixel_clk  ; 12.000 ; 12.000 ; Rise       ; pixel_clk       ;
++------------+------------+--------+--------+------------+-----------------+
 
 
 +--------------------------------------------------------------------------+
@@ -512,14 +512,10 @@ No paths to report.
 ;  addrout[10] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[11] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[12] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[13] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[14] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; h_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; rgbi[*]      ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ;  rgbi[0]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ;  rgbi[1]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
-;  rgbi[2]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
-;  rgbi[3]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ; v_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 +--------------+------------+--------+--------+------------+-----------------+
 
@@ -543,14 +539,10 @@ No paths to report.
 ;  addrout[10] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[11] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ;  addrout[12] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[13] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
-;  addrout[14] ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; h_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 ; rgbi[*]      ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ;  rgbi[0]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ;  rgbi[1]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
-;  rgbi[2]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
-;  rgbi[3]     ; pixel_clk  ; 13.000 ; 13.000 ; Rise       ; pixel_clk       ;
 ; v_sync       ; pixel_clk  ; 5.000  ; 5.000  ; Rise       ; pixel_clk       ;
 +--------------+------------+--------+--------+------------+-----------------+
 
@@ -560,7 +552,7 @@ No paths to report.
 +------------+-----------+----------+----------+----------+----------+
 ; From Clock ; To Clock  ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
 +------------+-----------+----------+----------+----------+----------+
-; pixel_clk  ; pixel_clk ; 4440     ; 0        ; 0        ; 0        ;
+; pixel_clk  ; pixel_clk ; 33137    ; 0        ; 0        ; 0        ;
 +------------+-----------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
@@ -570,7 +562,7 @@ Entries labeled "false path" only account for clock-to-clock false paths and not
 +------------+-----------+----------+----------+----------+----------+
 ; From Clock ; To Clock  ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
 +------------+-----------+----------+----------+----------+----------+
-; pixel_clk  ; pixel_clk ; 4440     ; 0        ; 0        ; 0        ;
+; pixel_clk  ; pixel_clk ; 33137    ; 0        ; 0        ; 0        ;
 +------------+-----------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
@@ -595,9 +587,9 @@ No dedicated SERDES Receiver circuitry present in device or used in design
 ; Illegal Clocks                  ; 0     ; 0    ;
 ; Unconstrained Clocks            ; 0     ; 0    ;
 ; Unconstrained Input Ports       ; 9     ; 9    ;
-; Unconstrained Input Port Paths  ; 68    ; 68   ;
-; Unconstrained Output Ports      ; 21    ; 21   ;
-; Unconstrained Output Port Paths ; 25    ; 25   ;
+; Unconstrained Input Port Paths  ; 115   ; 115  ;
+; Unconstrained Output Ports      ; 17    ; 17   ;
+; Unconstrained Output Port Paths ; 19    ; 19   ;
 +---------------------------------+-------+------+
 
 
@@ -607,7 +599,7 @@ No dedicated SERDES Receiver circuitry present in device or used in design
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit TimeQuest Timing Analyzer
     Info: Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-    Info: Processing started: Thu Jun 24 17:57:09 2021
+    Info: Processing started: Mon Jun 28 20:16:31 2021
 Info: Command: quartus_sta VGA -c VGA
 Info: qsta_default_script.tcl version: #1
 Warning (20028): Parallel compilation is not licensed and has been disabled
@@ -620,10 +612,10 @@ Info (332105): Deriving Clocks
     Info (332105): create_clock -period 1.000 -name pixel_clk pixel_clk
 Info: Found TIMEQUEST_REPORT_SCRIPT_INCLUDE_DEFAULT_ANALYSIS = ON
 Critical Warning (332148): Timing requirements not met
-Info (332146): Worst-case setup slack is -22.000
+Info (332146): Worst-case setup slack is -40.400
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
-    Info (332119):   -22.000      -698.400 pixel_clk 
+    Info (332119):   -40.400     -2032.400 pixel_clk 
 Info (332146): Worst-case hold slack is 5.000
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
@@ -633,14 +625,14 @@ Info (332140): No Removal paths to report
 Info (332146): Worst-case minimum pulse width slack is -3.500
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
-    Info (332119):    -3.500      -420.000 pixel_clk 
+    Info (332119):    -3.500      -637.000 pixel_clk 
 Info (332001): The selected device family is not supported by the report_metastability command.
 Info (332102): Design is not fully constrained for setup requirements
 Info (332102): Design is not fully constrained for hold requirements
 Info: Quartus II 64-Bit TimeQuest Timing Analyzer was successful. 0 errors, 4 warnings
-    Info: Peak virtual memory: 4507 megabytes
-    Info: Processing ended: Thu Jun 24 17:57:11 2021
-    Info: Elapsed time: 00:00:02
+    Info: Peak virtual memory: 4518 megabytes
+    Info: Processing ended: Mon Jun 28 20:16:32 2021
+    Info: Elapsed time: 00:00:01
     Info: Total CPU time (on all processors): 00:00:01
 
 
