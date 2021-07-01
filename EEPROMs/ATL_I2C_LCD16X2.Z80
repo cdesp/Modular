@@ -318,3 +318,30 @@ ROWOFFSET:	DB $00,$40,$14,$54
 @LCD16_MOVRIGHT:	LD A, LCD_CURSORSHIFT OR LCD_CURSORMOVE OR LCD_MOVERIGHT
 		CALL LCD16_COMMD
 		RET
+
+
+@LCD16_SETBKLIGHT:
+
+
+		RET
+
+; void LiquidCrystal_I2C::setBacklight( uint8_t value ) 
+; {
+;    // Check if backlight is available
+;    // ----------------------------------------------------
+;    if ( _backlightPinMask != 0x0 )
+;    {
+;       // Check for polarity to configure mask accordingly
+;       // ----------------------------------------------------------
+;       if  (((_polarity == POSITIVE) && (value > 0)) || 
+;            ((_polarity == NEGATIVE ) && ( value == 0 )))
+;       {
+;          _backlightStsMask = _backlightPinMask & LCD_BACKLIGHT;
+;       }
+;       else 
+;       {
+;          _backlightStsMask = _backlightPinMask & LCD_NOBACKLIGHT;
+;       }
+;       _i2cio.write( _backlightStsMask );
+;    }
+; }

@@ -229,7 +229,7 @@ BEGIN
 		  ELSIF SETUPCHAR=2 THEN		  
 		   --PXLFORE<=datain(3 DOWNTO  0); 
 		   --PXLBACK<=datain(7 DOWNTO  4); 		  
-		   MEMADDR<=2048+TEXTCHAR+(txfontline*256);
+		   MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT AT ADDR 4096 
 		  ELSIF SETUPCHAR=3 THEN
 		   PXLTEXT<=DATAIN;
 			--PXLTEXTnx<=DATAIN;

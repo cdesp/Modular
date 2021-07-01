@@ -1,0 +1,12 @@
+org 9000
+
+
+ld a,a
+ld b,b
+defb 10,10,10
+
+
+	@FONT_ADDR EQU $3600						; LAST ON OUR ROM
+	;ADD THE CHARSET TO MY OS ROM
+	DEFS FONT_ADDR-$
+	INCLUBIN charset2.chr

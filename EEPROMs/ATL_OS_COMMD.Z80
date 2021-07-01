@@ -1,0 +1,493 @@
+NAME OSCOMMAND
+
+
+		CR EQU 0DH
+		LF EQU 0AH
+		ES EQU 1BH
+		BS EQU 08H		
+
+
+
+@OS_COMMAND:   	LD A, VGA_WHITE
+		LD (VGAFCOL), A
+		LD A, VGA_NAVY
+		LD (VGABCOL), A
+
+
+OS_CMDGET:      LD A,(CURSORX)
+                LD H,A
+                LD A,(CURSORY)
+                ADD H
+                CP 0
+                JR Z,CGSKP
+                LD A,CR
+                CALL OS_PRINTCHAR
+                XOR A
+		LD (CURSORX), A
+		LD (VGATX_X), A
+CGSKP:          LD A,'#'        ;PROMPT
+                CALL OS_PRINTCHAR
+                LD HL,COMDBUF
+CGNXCHAR:       PUSH HL
+                CALL GET_CHAR
+                POP HL
+                CP 0
+                JR Z,CGNXCHAR 
+                CP 32
+                JR NC,CGSVCHAR
+                PUSH HL
+                PUSH AF
+                CALL OS_RMVCURS         ;REMOVE CURSOR
+                POP AF
+                POP HL
+;TEST CONTROL CHARS
+                CP 6                    ;BACKSPACE
+                JR NZ,CGTSTCH1                
+                ;DO BACKSPACE
+                DEC HL                
+                LD A,(VGATX_X)
+                CP 1                  ;CHECK START OF LINE
+                JR NZ,CGBS
+                LD HL,COMDBUF           ;WE AR AT START
+                JR CGNXCHAR
+
+CGBS:           LD A,8
+                CALL CGDOPRNCH
+                LD A,0
+                LD (HL),A
+                JR CGNXCHAR
+CGTSTCH1:       CP CR                   ;ENTER
+                JR Z,CGDOCMD            ;EXECUTE THE COMMAND
+                JR CGNXCHAR             ;NO MORE TESTING NO PRINATBLE CHARS
+CGSVCHAR:       CALL CGDOPRNCH          ;SAVE CHAR TO BUFFER
+                LD (HL),A
+                INC HL
+                JR CGNXCHAR
+CGDOPRNCH:      PUSH HL
+                PUSH AF
+                CALL OS_PRINTCHAR
+                POP AF
+                POP HL
+                RET
+CGDOCMD:        CALL CGDOPRNCH
+                XOR A
+                LD (HL),A
+                LD HL,COMDBUF
+                
+
+;
+;OSCLI - Process an "operating system" command
+;HL POINTS TO THE STRING
+OSCLI:	
+		CALL SKIPSP
+		CP CR
+		RET Z
+		CP '|'
+		RET Z
+		;CP '.'
+		;JP Z, DOT 							;*.
+		EX DE, HL
+		LD HL, COMDS
+OSCLI0:		LD A, (DE)
+		CALL UPPRC
+		CP (HL)
+		JR Z, OSCLI2
+		JR C, HUH
+OSCLI1:		BIT 7, (HL)
+		INC HL
+		JR Z, OSCLI1
+		INC HL
+		INC HL
+		JR OSCLI0
+;
+OSCLI2:		PUSH DE
+OSCLI3:		INC DE
+		INC HL
+		LD A, (DE)
+		CALL UPPRC
+		CP '.' 								;ABBREVIATED?
+		JR Z, OSCLI4
+		XOR (HL)
+		JR Z, OSCLI3
+		CP 80H
+		JR Z, OSCLI4
+		POP DE
+		JR OSCLI1
+;
+OSCLI4:		POP AF
+		INC DE
+OSCLI5:		BIT 7, (HL)
+		INC HL
+		JR Z, OSCLI5
+		LD A, (HL)
+		INC HL
+		LD H, (HL)
+		LD L, A
+		PUSH HL								;CALL COMMAND
+		EX DE, HL
+		PUSH HL
+		POP IY
+		JP SKIPSP
+		
+HUH:		LD A, 254 							
+		CALL OSERROR
+		DEFM 'Bad command'
+		DEFB    0
+		
+SKIPSP:		LD A, (HL)
+		CP ' '
+		RET NZ
+		INC HL
+		JR SKIPSP
+		
+UPPRC:		AND 7FH
+		CP '`'
+		RET C
+		AND 5FH 							;CONVERT TO UPPER CASE
+		RET
+		
+		
+;ALPHABETICALLY
+COMDS:		DEFM  "BY"
+		DEFB    'E'+80H
+		DEFW BYE
+		DEFM  "C"
+		DEFB    'D'+80H
+		DEFW DRV_CD
+                DEFM "CL"
+                DEFB 'S'+80H
+                DEFW DOCLS
+		DEFM "DI"
+		DEFB 'R'+80H
+		DEFW DRV_DIR
+                DEFM "EXE"
+                DEFB 'C'+80H
+                DEFW DOEXEC
+		DEFM  "LCD_BLINKOF"
+		DEFB 'F' + 80H
+		DEFW LCD_BLINKOF
+		DEFM  "LCD_BLINKO"
+		DEFB 'N' + 80H
+		DEFW LCD_BLINKON
+		DEFM  "LCD_CLEA"
+		DEFB 'R' + 80H
+		DEFW LCD_CLR
+		DEFM  "LCD_CURSORA"
+		DEFB 'T' + 80H
+		DEFW LCD_CURSAT
+		DEFM  "LCD_CURSOF"
+		DEFB 'F' + 80H
+		DEFW LCD_CURSOF
+		DEFM  "LCD_CURSO"
+		DEFB 'N' + 80H
+		DEFW LCD_CURSON
+		DEFM  "LCD_DISPOF"
+		DEFB 'F' + 80H
+		DEFW LCD_DISPOF
+		DEFM  "LCD_DISPO"
+		DEFB 'N' + 80H
+		DEFW LCD_DISPON
+		DEFM  "LCD_HOM"
+		DEFB 'E' + 80H
+		DEFW LCD16_HOME
+		DEFM  "LCD_MOVLEF"
+		DEFB 'T' + 80H
+		DEFW LCD_MOVLFT
+		DEFM  "LCD_MOVRIGH"
+		DEFB 'T' + 80H
+		DEFW LCD_MOVRGT
+		DEFM  "LCD_PRIN"
+		DEFB 'T' + 80H
+		DEFW LCD_PRN
+		DEFM  "LCD_SCRLEF"
+		DEFB 'T' + 80H
+		DEFW LCD_SCRLFT
+		DEFM  "LCD_SCRRIGH"
+		DEFB 'T' + 80H
+		DEFW LCD_SCRRGT
+		DEFM  "PW"
+		DEFB    'D'+80H
+		DEFW NIMP
+		DEFM  "RESE"
+		DEFB    'T'+80H
+		DEFW DORESET
+		DEFM  "RTC_ADJUS"
+		DEFB    'T'+80H                
+		DEFW RTC_ADJUST
+		DEFM  "RTC_GE"
+		DEFB    'T'+80H
+		DEFW RTC_GET
+		DEFM  "TYP"
+		DEFB    'E'+80H
+		DEFW DRV_TYPFILE
+		
+		DEFB 0FFH
+
+;COMMAND IMPLEMENTATION
+
+
+
+OSCMDFIN:       JP OS_CMDGET
+
+OSERROR:        POP HL
+                CALL OS_PRINTTEXT
+                JP OS_CMDGET
+
+SNTX_ERROR:	CALL OSERROR
+		DEFM  "Syntax error"
+		DEFB    0
+
+NIMP            JP OSCMDFIN
+
+BYE:		JP MENU
+
+DOCLS:          CALL OS_CLRSCR
+                JP OSCMDFIN
+
+;RESET OPSYS
+DORESET:	JP 0
+
+
+HEXERROR:       CALL OSERROR
+                DEFM "NOT A VALID HEX ADDRESS"
+                DEFB 0
+
+;PARSES A STRING IN HL FOR A HEX ADDRESS .XXXX
+;ON RETURN HL HAS THE ADDRESS
+PRSADDR:        LD A,(HL)
+                CP 0
+                JR Z,PSADEX
+                CP '.'
+                JR Z,PSADGTIT
+                INC HL
+                JR PRSADDR
+
+;GET THE HEXSTRING AS INTEGER
+PSADGTIT:       INC HL
+                CALL IsStrHex   ;CHECK IF VALID HEX
+                JR NZ,HEXERROR
+                ;CONVERT STRING ON HL TO INTEGER ON HL
+                CALL Read16bit
+                LD H,B
+                LD L,C
+                XOR A           ;CLEAR CARRY FLAG
+                RET
+PSADEX:         SCF             ;SET CARRY FLAG ON ERROR
+                RET                
+
+;EXECUTE A FILE NAMED NAME.XXXX WHERE XXXX IS THE HEXADECIMAL ADDRESS TO LOAD THE FILE
+;LOAD A FILE AT THE SPECIFIED ADDRESS AND EXECUTE IT
+DOEXEC:         CALL DRV_GETFNPRM
+                DEC HL
+                DEC HL
+                DEC HL
+                DEC HL
+                DEC HL
+                CALL PRSADDR
+                JP C,OSCMDFIN           ;ERROR ON PARSING HEX ADDRESS
+                PUSH HL                 ;SAVE HEX ADDR
+		CALL STRG_OPNFILE
+                POP HL
+		JR C, DRV_ERROR	        ;ERROR ON FILE OPENING
+                PUSH HL                 ;SAVE HEX ADDR TO STACK = EXECUTE ON RETURN
+                LD D,H
+                LD E,L
+                LD BC,0                 ;LOAD ALL BYTES
+                CALL STRG_BLKREAD
+		LD A, (FID)
+		CALL STRG_CLSFILE       ;CLOSE FILE
+                RET                     ;EXECUTE CODE AT HEX ADDR
+
+
+;IY AT THE COMD LINE
+;E NO OF BYTES OF THE WORD
+;HL AT THE START OF THE WORD
+PARSCMD:        PUSH IY
+                POP HL
+                CALL SKIPSP
+                PUSH HL
+                LD E,0
+PCNXT:          LD A,(HL)
+                CP ' '
+                JR Z,PCEXT
+                CP ','
+                JR Z,PCEXT
+                CP 13
+                JR Z,PCEXT
+                CP 0
+                JR Z,PCEXT
+                INC HL
+                INC E
+                JR PCNXT
+PCEXT:          PUSH HL
+                POP IY          ;IY AT THE END OF PARAM
+                POP HL          ;HL AT THE START OF PARAM
+                RET                
+
+
+PARSCMDI:       CALL PARSCMD
+                ;CONVERT STRING ON HL WITH E BYTES TO INTEGER ON HL                
+                CALL STRTOB     ;CONVERT TO BYTE ON A
+                LD L,A
+                RET
+
+
+
+
+
+;DRV_ STORAGE COMMANDS
+		
+DRV_ERROR:	CALL OSERROR
+		DEFM  "STORAGE ERROR"
+		DEFB    0
+		
+		
+		
+;PRINT THE CURRENT DIRECTORY ON SCREEN
+DRV_DIR:	CALL STRG_DIRLIST 						;DIRECTLY PRINTS THE DIRECTORY ON SCREEN
+		JP NC, OSCMDFIN
+		JR DRV_ERROR
+		
+DRV_GETFNPRM:	CALL PARSCMD 							
+		LD B, 0
+		LD C, E
+		LD DE, STRGBUFF
+		LDIR
+		XOR A
+		LD (DE), A
+		RET
+		
+;CHANGE TO A SUBDIR OF THE CURRENT DIR
+DRV_CD:		CALL DRV_GETFNPRM
+		CALL STRG_DIRCHG
+		JP NC, OSCMDFIN
+		JR DRV_ERROR
+		
+		
+DRV_TYPFILE:	CALL DRV_GETFNPRM
+		CALL STRG_OPNFILE
+		JR C, DRV_ERROR
+		CALL STRG_TPFILE 						;DIRECTLY PRINTS THE FILE ON SCREEN NO BUFFER
+		LD A, (FID)
+		CALL STRG_CLSFILE
+		JP OSCMDFIN
+		
+		
+;RTC_ REAL TIME CLOCK VIA I2C COMMANDS====================================================================
+		
+;GETS A PARAM FROM BASIC CMD LINE CONVERTS IT IN BCD
+;ON RETURN A HAS THE BCD NUM, ZERO FLAG IF THERE IS ANOTHER PARAM NOT Z MEANS NO PARAM
+RTC_GETPARBCD:	CALL PARSCMDI
+		CALL BN2BCD							;CONVERT IT IN BCD RESULT ON L
+		LD A, (IY)
+		CP ','
+		INC IY
+		LD A, L
+		RET
+		
+		
+		
+;GET 7 PARAMS CONVERT TO BCD AND PLACE THEM ON BUFFER
+RTC_ADJUST:	LD C, 0
+		LD DE, BUFFER
+		XOR A 								;CMD ADJUST TIME
+		LD (BUFFER), A
+		INC DE
+RTCADJ_NXT:	PUSH BC
+		PUSH DE
+		CALL RTC_GETPARBCD
+		POP DE
+		POP BC
+		JR Z, RTCADJ_PAROK
+;NO MORE PARAMS
+		DEC IY
+		LD B, A								;SAVE A
+		LD A, C
+		CP 6
+		JR Z, RTCADJ_EXEC
+;ERROR NOT ENOUGH PARAMS OR TOO MANY
+		JP SNTX_ERROR
+RTCADJ_PAROK:	INC C
+		LD (DE), A
+		INC DE
+		JR RTCADJ_NXT
+RTCADJ_EXEC:	LD A, B
+		LD (DE), A							;LAST BYTE YEAR LOW
+		INC DE
+		XOR A
+		LD (DE), A							;YEAR HI DEFAULT
+		CALL DS1307_ADJUST
+		JP OSCMDFIN
+		
+RTC_GET:	CALL DS1307_GETNOW
+;GET TIME IN BUFFER CONVERT FROM BCD AND RETURN AS STRING
+		LD HL, TSTSTR
+		LD DE, BUFFER
+		LD BC, 20
+		PUSH BC
+		LDIR
+		POP BC
+		RET
+		
+		TSTSTR DEFM "17/03/2021 17:52:03"
+		DEFB 0,0x0D
+		
+		
+;LCD 16X2 COMMANDS =======================================================================================                
+LCD_BLINKOF:	CALL LCD16_BLINKOFF
+		JP OSCMDFIN
+		
+LCD_BLINKON:	CALL LCD16_BLINKON
+		JP OSCMDFIN
+		
+LCD_CLR:	CALL LCD16_CLR
+		JP OSCMDFIN
+		
+LCD_CURSAT:	CALL PARSCMDI						;TAKE PARAMS D COL E ROW		
+		LD D, L
+		PUSH DE                                                 ;SAVE PARAM D
+		LD A, (IY)
+		CP ', '
+		JR Z, LCDCA_OK
+		POP DE
+		JP SNTX_ERROR
+LCDCA_OK:	INC IY
+		CALL PARSCMDI
+                POP DE                                                  ;RESTORE PARAM D
+		LD E, L
+		CALL LCD16_SETCURS
+		JP OSCMDFIN
+		
+LCD_CURSOF:	CALL LCD16_CURSOFF
+		JP OSCMDFIN
+		
+LCD_CURSON:	CALL LCD16_CURSON
+		JP OSCMDFIN
+		
+LCD_DISPOF:	CALL LCD16_NODISP
+		JP OSCMDFIN
+		
+LCD_DISPON:	CALL LCD16_DISP
+		JP OSCMDFIN
+		
+LCD_HOME:	CALL LCD16_HOME
+		JP OSCMDFIN
+		
+LCD_MOVLFT:	CALL LCD16_MOVLEFT
+		JP OSCMDFIN
+		
+LCD_MOVRGT:	CALL LCD16_MOVRIGHT
+		JP OSCMDFIN
+		
+LCD_PRN:	CALL PARSCMD
+                CALL LCD16_PRINT
+                JP OSCMDFIN
+		
+		
+LCD_SCRLFT:	CALL LCD16_SCRLEFT
+		JP OSCMDFIN
+		
+LCD_SCRRGT:	CALL LCD16_SCRRIGHT
+		JP OSCMDFIN
+		
+		
