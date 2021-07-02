@@ -4,4 +4,7 @@ exec.z80
 eval.z80
 fpp.z80
 patch.z80
+ATL_BAS_INTF.Z80
+ATL_BAS_GRAPH.Z80
+ATL_BAS_LDSV.Z80
 ram.z80

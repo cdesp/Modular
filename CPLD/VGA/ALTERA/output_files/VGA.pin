@@ -100,18 +100,18 @@ RESERVED                     : 36        :        :                   :         
 RESERVED                     : 37        :        :                   :         :           :                
 VCCIO                        : 38        : power  :                   : 5.0V    :           :                
 NC                           : 39        :        :                   :         :           :                
-RESERVED                     : 40        :        :                   :         :           :                
+datace                       : 40        : output : TTL               :         :           : N              
 RESERVED                     : 41        :        :                   :         :           :                
 GND                          : 42        : gnd    :                   :         :           :                
 VCCINT                       : 43        : power  :                   : 5.0V    :           :                
-RESERVED                     : 44        :        :                   :         :           :                
-RESERVED                     : 45        :        :                   :         :           :                
+n_sync                       : 44        : output : TTL               :         :           : N              
+n_blank                      : 45        : output : TTL               :         :           : N              
 NC                           : 46        :        :                   :         :           :                
 GND                          : 47        : gnd    :                   :         :           :                
 RESERVED                     : 48        :        :                   :         :           :                
-datace                       : 49        : output : TTL               :         :           : N              
-n_blank                      : 50        : output : TTL               :         :           : N              
-n_sync                       : 51        : output : TTL               :         :           : N              
+RESERVED                     : 49        :        :                   :         :           :                
+RESERVED                     : 50        :        :                   :         :           :                
+RESERVED                     : 51        :        :                   :         :           :                
 RESERVED                     : 52        :        :                   :         :           :                
 VCCIO                        : 53        : power  :                   : 5.0V    :           :                
 RESERVED                     : 54        :        :                   :         :           :                
