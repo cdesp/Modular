@@ -1,0 +1,278 @@
+;struct Sprites
+;nosprites byte 1
+;blendaddr: word ;maxwid maxhei 64x64x2 bytes
+		
+		
+;struct sprite
+;PosX word    2  0 position X in Screen
+;PosY word    2  2 position Y in Screen
+;NewX word    2  4 new position X in Screen
+;NewY word    2  6 new position Y in Screen
+;wid:byte     1  8 width of sprite
+;hei:byte     1  9 height of sprite
+;curpic:byte  1  10 current picture no
+;npics:byte   1  11 number of sprite pics
+;graddr:word  2  12 address in memory graphics are stored
+;scraddr:word 2  14 address in memory screen background is stored
+;
+;
+;total bytes needed in struct 16
+;bytes needed for graphics (wid*hei)*npics*2
+;
+;routines
+;getScreenBG sprno  puts data from screen to memory
+;setScreenBG sprno  puts data from memory to screenBG
+;setScreenSPR sprno,memaddr  puts data from blend memory to screen
+;blendSprite sprno
+;createSprite returns sprno IN A
+;getSpriteStruct sprno returns addr of start of struct
+
+		
+		
+
+		MAXSPR EQU 20
+		MAXSPRW EQU 30
+		MAXSPRH EQU 30
+		SPRSTRCSIZE EQU 16
+
+;TEMP VARS FOR WIDTH AND HEIGHT
+@TEMW		DB 0
+@TEMH		DB 0	
+
+		
+		
+;creates a new sprite
+@createSprite:	LD A, (NOSPRITES)
+		CP MAXSPR
+		JR NC, CSERROR
+		INC A
+		LD (NOSPRITES), A
+		DEC A
+		RET
+CSERROR:	LD A, 255
+		RET
+		
+@getSpriteStruct: LD HL, 0
+		LD DE, SPRSTRCSIZE
+		LD B, A
+		CP 0
+		JR Z, GSSEXIT
+GSSAGN:		ADD HL, DE
+		DJNZ GSSAGN
+GSSEXIT:	EX DE, HL
+		LD HL, SPRT
+		ADD HL, DE
+		PUSH HL
+		POP IX
+		RET
+			
+;COPIES THE SCREEN BACKGROUND BEFORE WE COPY THE BLENDED GRAPH	
+;IX SHOULD POINT TO SPRITE STRUCT	
+@getScreenBG:	CALL getSpriteStruct 	
+		LD H,(IX)							;GET X
+		LD L,(IX+1)
+		LD D,(IX+2)							;GET Y
+		LD E,(IX+3)
+		LD B, (IX + 14) 						;SCRADDRESS
+		LD C, (IX + 15)
+		LD A,(IX+9)
+		DEC A
+		LD (TEMH),A
+GSBGDOROW:	LD A,(IX+8)
+		DEC A
+		LD (TEMW),A
+GSBGNXPXL:	PUSH HL
+		PUSH DE
+		PUSH BC
+		;CALL VGA_GETPXL32
+		XOR A
+		;A THE COLOR
+		POP BC
+		LD (BC),A
+		;NEXT PIXEL
+		LD HL,TEMW
+		LD A,(HL)
+		CP 0
+		JR Z, GSBGNXROW
+		DEC (HL)
+		INC BC
+		POP DE
+		POP HL
+		INC HL
+		JR GSBGNXPXL
+GSBGNXROW:	LD HL,TEMH
+		LD A,(HL)
+		DEC (HL)
+		CP 0
+		JR Z,GSBGDOEXIT
+		INC BC
+		POP DE
+		POP HL
+		LD H,(IX)							;GET X
+		LD L,(IX+1)
+		INC DE
+		JR GSBGDOROW
+GSBGDOEXIT:	POP DE
+		POP HL
+		RET
+		
+;SETS THE SCREEN BACKGROUND BACK TO SCREEN TO ERASE THE SPRITE
+;IX SHOULD POINT TO SPRITE STRUCT
+;A THE SPRITE NO		
+@SetScreenBG: 	CALL getSpriteStruct
+		LD H,(IX)							;GET X
+		LD L,(IX+1)
+		LD D,(IX+2)							;GET Y
+		LD E,(IX+3)
+		LD B, (IX + 14) 						;SCRADDRESS
+		LD C, (IX + 15)
+		LD A,(IX+9)
+		DEC A			;ZERO BASED
+		LD (TEMH),A
+SSBGDOROW:	LD A,(IX+8)
+		DEC A
+		LD (TEMW),A
+SSBGNXPXL:	PUSH HL
+		PUSH DE
+		PUSH BC
+		LD A,(BC)
+		CALL VGA_PLOTPIXEL
+		POP BC
+		;NEXT PIXEL
+		LD HL,TEMW
+		LD A,(HL)
+		CP 0
+		JR Z, SSBGNXROW
+		DEC (HL)
+		INC BC
+		POP DE
+		POP HL
+		INC HL
+		JR SSBGNXPXL
+SSBGNXROW:	LD HL,TEMH
+		LD A,(HL)
+		DEC (HL)
+		CP 0
+		JR Z,SSBGDOEXIT
+		INC BC
+		POP DE
+		POP HL
+		LD H,(IX)							;GET X
+		LD L,(IX+1)
+		INC DE
+		JR SSBGDOROW
+SSBGDOEXIT:	POP DE
+		POP HL
+		RET
+		
+;PUTS THE BLENDED GRAPH TO SCREEN
+;IX SHOULD POINT TO SPRITE STRUCT
+;A THE SPRITE NO
+@setScreenSPR:	CALL getSpriteStruct   								
+		LD H,(IX)							;GET X
+		LD L,(IX+1)
+		LD D,(IX+2)							;GET Y
+		LD E,(IX+3)
+		LD BC, (BLENDADDR) 						;SCRADDRESS
+		LD A,(IX+9)
+		DEC A
+		LD (TEMH),A
+		JP SSBGDOROW
+
+;BLEND THE SPRITE GRAPHICS WITH THE BACKGROUND 	
+;A THE SPRITE NO	
+@blendSprite:	PUSH IY
+		CALL getSpriteStruct
+;COPY FROM graddr TO BLENDADDR
+		LD H,(IX+8)	;SPR WIDTH
+		LD E,(IX+9)	;SPR HEIGHT
+		CALL MULT8	;SPR SIZE WIDTH*HEIGHT
+		;HL THE SIZE IN BYTES
+		LD B,H
+		LD C,L
+		LD H, (IX + 12) 						;GRADDR TODO GRADDR*curpic
+		LD L, (IX + 13)
+		LD D, (IX + 14)							;SCRADDR 
+		LD E, (IX + 15)
+		PUSH DE
+		POP IY								;SCRADDR
+		LD DE, (BLENDADDR)
+BSAGN:		LD A, (HL) 							;GET COLOR
+		PUSH AF
+		RRA
+		RRA
+		RRA
+		RRA
+		AND $0F
+		CALL BSLFRG	;LEFT PIXEL
+		POP AF
+		AND $0F		;RIGHT PIXEL	
+		CALL BSLFRG    
+		INC HL		;NEXT 2 PIXELS
+		DEC BC		;CHECK FOR END
+		DEC BC		;MINUS 2 PIXELS
+		LD A, B
+		OR C
+		JR NZ,BSAGN
+		POP IY
+		RET 
+BSLFRG:		;A HAS THE COLOR
+		PUSH HL
+		CP 0		;0 IF BACKGROUND
+		JR NZ, BSNOBLEND
+		LD A, (IY) 	;COLOR FROM BACKGROUND
+									;GET SCREEN COLOR WHEN BLACK ON SPRITE
+BSNOBLEND:	EX DE, HL
+		LD (HL), A
+		INC HL		;NEXT BLEND PIXEL
+		EX DE, HL
+		POP HL
+		INC IY		;NEXT SCREEN COPY PIXEL
+		RET
+	
+;PLOTPIXEL AT 320X200
+;HL=X , DE=Y  A=COLOR
+@VGA_PLOTPIXEL:									;CHECK BOUNDS
+		PUSH HL
+		PUSH AF
+		LD A,E
+		LD DE,$6000
+;HALVE HL=X CAUSE 2 PIXELS ONE BYTE
+		SRL H
+		RR L
+		ADD HL, DE 							;FIND COLUMN
+		LD DE, 160
+PP_DONXTROW:	OR A 								;CHECK ROW=0
+		JR Z, PP_DOPLOTPX
+		ADD HL, DE
+		DEC A
+		JR PP_DONXTROW
+PP_DOPLOTPX:	POP BC 								;B HAS THE COLOR
+		POP DE 								;DE=X CHECK IF IT IS EVEN OR ODD AND CHANGE THE PIXEL
+		LD A, (HL) 							;GET PIXEL BYTE
+		BIT 0, E 							;CHECK X IS EVEN OR ODD
+		JR Z, PP_DOEVEN 							;EVEN
+;SET RIGHT 4 BITS
+		AND $F0 							;CLEAR RIGHT 4 BITS
+		JR PP_DPEXIT
+;SET LEFT 4BITS
+PP_DOEVEN:	RLC B
+		RLC B
+		RLC B
+		RLC B
+		AND $0F 							;ZERO LEFT
+PP_DPEXIT:	OR B 								;MIX PIXELS
+		LD (HL), A
+		RET			
+		
+		
+		
+		SPRITES EQU $
+		NOSPRITES DB 0
+		BLENDADDR DEFW BLENDAREA
+		
+		
+		SPRT EQU $ 							;STRUCT SPRITE ARRAY
+		DS MAXSPR * SPRSTRCSIZE
+		
+		BLENDAREA DS MAXSPRW * MAXSPRH  				;1 BYTE PER PIXEL

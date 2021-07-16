@@ -1,0 +1,292 @@
+		ORG $4000
+		
+		
+		INCLUDE \..\MYOS_2_0000.SYM
+
+		LOGRAPH EQU 00B
+		
+		
+		SPRSPD EQU 6
+		
+		DI
+		LD A, 4								;PAGE 4
+		LD B, 2 							;4000h
+		CALL PUTPGINBANK
+		JP SWITCHBANK
+SWITCHBANK:	LD A, 8								;PAGE 8
+		LD B, 3 							;6000h
+		CALL PUTPGINBANK
+		LD A, 9								;PAGE 9
+		LD B, 4 							;8000h
+		CALL PUTPGINBANK
+		LD A, 10							;PAGE 10
+		LD B, 5 							;A000h
+		CALL PUTPGINBANK
+		LD A, 11							;PAGE 11
+		LD B, 6 							;C000h
+		CALL PUTPGINBANK		
+
+		LD A, 10
+		LD (CURSORX), A
+		LD A, 20
+		LD (CURSORY), A
+		LD HL, MYMSG1
+		CALL LCD_MSG
+		
+AGN:		
+		CALL GET_CHAR 							;TAKE A CHAR FROM RS232 OR PS2 KEYB
+		CP 'S'
+		CALL Z, MAINSETUP
+		CP 'P'
+		CALL Z, PRINTSPR
+		CP 'D'
+		CALL Z, DOMOVE
+		CP 'R'
+		CALL Z, MOVESPR
+		CP 'G'
+		CALL Z, STARTGAME
+		CP 'C'
+		CALL Z, CLEARSCREEN
+		
+		CP 'M'
+		JP Z, MENU
+		JR AGN
+		
+MYMSG1:		DEFM "S:CREATE P:PRINT D:MOVE R:REFRESH | M=MENU "
+		DB 0
+		
+		
+CLEARSCREEN:				; SET FCOLOR AND BCOLOR DEFAULT VALUES
+		LD C, LOGRAPH 							;LOW RES graph SCREEN
+		CALL VGA_SETCONF
+		
+		LD A, 10
+		LD (CURSORX), A
+		LD A, 20
+		LD (CURSORY), A
+		LD HL, MYMSG1
+		CALL LCD_MSG
+		LD A, 10
+		LD (CURSORX), A
+		LD A, 10
+		LD (CURSORY), A
+		LD HL, MYMSG1
+		CALL LCD_MSG
+		XOR A
+		RET
+		
+
+WAITFORTE:	LD HL, INT2TE	;TIMECTR
+		XOR A
+		LD (HL), A
+		EI
+WFTEAGN1:	LD A, (TIMECTR)
+		BIT 2, A
+		JR Z, WFTEAGN1 	
+WFTEAGN2:	LD A, (TIMECTR)
+		BIT 2, A
+		JR NZ, WFTEAGN2
+
+WFTEAGN:	LD A, (HL)
+		CP 1
+		JR NZ, WFTEAGN
+
+		DI
+		RET
+		
+		
+		
+STARTGAME:	CALL MAINSETUP
+		CALL PRINTSPR
+GAMELOOP:	LD HL, SHPNT
+		LD A, (HL)
+		CP 1
+		CALL Z, MOVESPR
+		CALL GET_CHARNW
+		CP 0
+		JR Z, GAMELOOP
+		CP 'W'
+		JR NZ, NXTBUT1
+		CALL SPRMOVEUP
+		JR GAMELOOP
+NXTBUT1:	CP 'S'
+		JR NZ, NXTBUT2
+		CALL SPRMOVEDN
+		JR GAMELOOP
+NXTBUT2:	CP 'A'
+		JR NZ, NXTBUT3
+		CALL SPRMOVELF
+		JR GAMELOOP
+NXTBUT3:	CP 'D'
+		JR NZ, NXTBUT4
+		CALL SPRMOVERG
+		JR GAMELOOP
+NXTBUT4:	JR GAMELOOP
+		
+SPRMOVEUP:	LD A, 0
+		CALL getSpriteStruct
+		LD H, (IX + 2)
+		LD L, (IX + 3)
+		LD BC, 10
+		XOR A
+		SBC HL, BC
+		RET C 								; NO MOVE
+		ADD HL, BC
+		LD BC, SPRSPD
+		SBC HL, BC
+		LD (IX + 6), H
+		LD (IX + 7), L
+		LD HL, SHPNT
+		LD A, 1
+		LD (HL), A
+		RET
+		
+SPRMOVEDN:	LD A, 0
+		CALL getSpriteStruct
+		LD H, (IX + 2)
+		LD L, (IX + 3)
+		LD BC, 400
+		XOR A
+		SBC HL, BC
+		RET NC 								; NO MOVE
+		ADD HL, BC
+		LD BC, SPRSPD
+		ADD HL, BC
+		LD (IX + 6), H
+		LD (IX + 7), L
+		LD HL, SHPNT
+		LD A, 1
+		LD (HL), A
+		RET
+		
+SPRMOVELF:	LD A, 0
+		CALL getSpriteStruct
+		LD H, (IX)
+		LD L, (IX + 1)
+		LD BC, 10
+		XOR A
+		SBC HL, BC
+		RET C 								; NO MOVE
+		ADD HL, BC
+		LD BC, SPRSPD
+		SBC HL, BC
+		LD (IX + 4), H
+		LD (IX + 5), L
+		LD HL, SHPNT
+		LD A, 1
+		LD (HL), A
+		RET
+		
+SPRMOVERG:	LD A, 0
+		CALL getSpriteStruct
+		LD H, (IX)
+		LD L, (IX + 1)
+		LD BC, 600
+		XOR A
+		SBC HL, BC
+		RET NC 								; NO MOVE
+		ADD HL, BC
+		LD BC, SPRSPD
+		ADD HL, BC
+		LD (IX + 4), H
+		LD (IX + 5), L
+		LD HL, SHPNT
+		LD A, 1
+		LD (HL), A
+		RET
+
+PRINTSPR:	LD A, 0
+		CALL getScreenBG
+		LD A, 0
+		CALL blendSprite
+		LD A, 0
+		CALL setScreenSPR
+		RET
+		
+MOVESPR:	;CALL WAITFORTE 							;WAITFOR TEARING EFFECT
+		;OUT ($38), A							;Y7
+		LD A, 0
+		CALL setScreenBG 						;erase sprite
+		CALL getSpriteStruct
+		LD A, (IX + 4)							;NEWX
+		LD (IX), A
+		LD A, (IX + 5)
+		LD (IX + 1), A 							;POSX=NEWPOSX
+		LD A, (IX + 6)							;NEWY
+		LD (IX + 2), A
+		LD A, (IX + 7)
+		LD (IX + 3), A 							;POSY=NEWPOSY
+		CALL PRINTSPR
+		;OUT ($38), A
+		LD HL, SHPNT
+		XOR A
+		LD (HL), A
+		RET
+		
+		
+DOMOVE:		LD A, 0
+		CALL getSpriteStruct
+		LD H, (IX)
+		LD L, (IX + 1)
+		LD BC, 600
+		XOR A
+		SBC HL, BC
+		JR NC, NOMOVE
+		ADD HL, BC
+		INC HL
+		LD (IX + 4), H
+		LD (IX + 5), L
+		LD HL, SHPNT
+		LD A, 1
+		LD (HL), A
+NOMOVE:		RET
+		
+		
+		
+MAINSETUP:	CALL CLEARSCREEN
+		CALL createSprite
+		RLC A
+		JR C, GENERROR
+		RRA
+		CALL getSpriteStruct
+		LD HL, 9 							; POSX=100
+		LD (IX), H
+		LD (IX + 1), L
+		LD (IX + 4), H 							;NEWPOS
+		LD (IX + 5), L
+		LD HL, 48 							;POSY=100
+		LD (IX + 2), H
+		LD (IX + 3), L
+		LD (IX + 6), H 							;NEWPOS
+		LD (IX + 7), L
+		LD H, SPW 							;WIDTH
+		LD (IX + 8), H
+		LD H, SPH 							;HEIGHT
+		LD (IX + 9), H
+		LD H, 1 							;CURPIC
+		LD (IX + 10), H
+		LD H, 1 							;NO OF PICS
+		LD (IX + 11), H
+		LD HL, PIRAV 							;GRADDR
+		LD (IX + 12), H
+		LD (IX + 13), L
+		LD HL, PIRAVSCR 						;scraddr
+		LD (IX + 14), H
+		LD (IX + 15), L
+		CALL getScreenBG
+		XOR A
+		RET
+		
+		
+GENERROR:									;TODO:PRINT ERROR
+		RET
+
+	
+
+		SHPNT DB 0
+		INCLUDE SPRITE.Z80
+		PIRAV EQU $
+		SPW EQU 20
+		SPH EQU 20
+		INCLUBIN GALAGA_20.BIN
+		PIRAVSCR DS SPW * SPH
