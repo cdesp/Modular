@@ -56,8 +56,6 @@ set_location_assignment PIN_70 -to rgbi[2]
 set_location_assignment PIN_69 -to rgbi[3]
 set_location_assignment PIN_80 -to v_sync
 set_location_assignment PIN_2 -to pixel_clk
-set_location_assignment PIN_77 -to istext
-set_location_assignment PIN_75 -to islowres
 set_location_assignment PIN_81 -to h_sync
 set_location_assignment PIN_58 -to datain[0]
 set_location_assignment PIN_56 -to datain[1]
@@ -82,3 +80,4 @@ set_location_assignment PIN_11 -to addrout[11]
 set_location_assignment PIN_10 -to addrout[12]
 set_location_assignment PIN_9 -to addrout[13]
 set_location_assignment PIN_8 -to addrout[14]
+set_location_assignment PIN_28 -to scrend

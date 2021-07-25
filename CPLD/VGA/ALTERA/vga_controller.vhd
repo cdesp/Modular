@@ -49,10 +49,9 @@ ENTITY vga_controller IS
     n_blank   : OUT  STD_LOGIC;  --direct blacking output to DAC
     n_sync    : OUT  STD_LOGIC; --sync-on-green output to DAC
   	 rgbi	    :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --red,green,blue,intensity magnitude output to DAC
-	 istext	 :  IN   STD_LOGIC;  -- '1' IF WE DISPLAY TEXT or graphics
-	 islowres :  IN   STD_LOGIC;  -- '1' IF WE DISPLAY lowres or hires
+	 scrend	 :  OUT   STD_LOGIC;  -- '0' IF DISPLAY FINISHED
 	 datain	 :  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
-	 datace   :  OUT  STD_LOGIC := '1'; --'0' enables memory chip --maybe let it always on
+	 --datace   :  OUT  STD_LOGIC := '0'; --'0' enables memory chip --maybe let it always on
 	 addrout  :  OUT  STD_LOGIC_VECTOR(14 DOWNTO 0) -- A0 - A14 for addressing the 32k of memory chip
 	 );
 END vga_controller;
@@ -85,7 +84,7 @@ SIGNAL RSTRT:STD_LOGIC;  --ROW START FOR MEMORY CHIP SETUP
 SIGNAL   disp_ena  : STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
 SIGNAL    column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
 SIGNAL row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
-SIGNAL vidset:STD_LOGIC_VECTOR(1 DOWNTO 0) := "10";  --video settings bit 1 graph=0/text=1 ,  bit 0 320=0,640=1
+SIGNAL vidset:STD_LOGIC_VECTOR(1 DOWNTO 0) := "00";  --video settings bit 1 graph=0/text=1 ,  bit 0 320=0,640=1
 
 function is_even(val : integer) return boolean is
     constant vec: signed(31 downto 0) := to_signed(val, 32);
@@ -166,6 +165,14 @@ BEGIN
       ELSE                                                --blanking time
         disp_ena <= '0';                                    --disable display
       END IF;
+		
+		--set display finished
+		IF (v_count = v_pixels) THEN
+		  SCREND<='0';
+		ELSE
+		  SCREND<='1';
+		END IF;  
+		
 		
 		IF h_count>h_pixels-5 THEN	
 	    SETUPCHAR<=SETUPCHAR+1;

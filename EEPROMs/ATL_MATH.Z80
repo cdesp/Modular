@@ -2,7 +2,7 @@
 ; Multiply 8-bit values
 ; In:  Multiply H with E
 ; Out: HL = result
-;
+;DESTROYS B,D,L
 @Mult8:
     ld d,0
     ld l,d
@@ -18,7 +18,7 @@ Mult8_NoAdd:
 ; Multiply 8-bit value with a 16-bit value
 ; In: Multiply A with DE
 ; Out: HL = result
-;
+;DESTROYS B
 @Mult12:
     ld l,0
     ld b,8

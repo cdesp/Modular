@@ -1,5 +1,5 @@
 Flow report for VGA
-Fri Jul 02 12:50:28 2021
+Thu Jul 22 14:25:11 2021
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -40,15 +40,15 @@ applicable agreement for further details.
 +-----------------------------------------------------------------------------+
 ; Flow Summary                                                                ;
 +---------------------------+-------------------------------------------------+
-; Flow Status               ; Successful - Fri Jul 02 12:50:25 2021           ;
+; Flow Status               ; Successful - Thu Jul 22 14:25:08 2021           ;
 ; Quartus II 64-Bit Version ; 13.0.1 Build 232 06/12/2013 SP 1 SJ Web Edition ;
 ; Revision Name             ; VGA                                             ;
 ; Top-level Entity Name     ; vga_controller                                  ;
 ; Family                    ; MAX7000S                                        ;
 ; Device                    ; EPM7160SLC84-10                                 ;
 ; Timing Models             ; Final                                           ;
-; Total macrocells          ; 155 / 160 ( 97 % )                              ;
-; Total pins                ; 40 / 64 ( 63 % )                                ;
+; Total macrocells          ; 130 / 160 ( 81 % )                              ;
+; Total pins                ; 38 / 64 ( 59 % )                                ;
 +---------------------------+-------------------------------------------------+
 
 
@@ -57,7 +57,7 @@ applicable agreement for further details.
 +-------------------+---------------------+
 ; Option            ; Setting             ;
 +-------------------+---------------------+
-; Start date & time ; 07/02/2021 12:50:02 ;
+; Start date & time ; 07/22/2021 14:25:00 ;
 ; Main task         ; Compilation         ;
 ; Revision Name     ; VGA                 ;
 +-------------------+---------------------+
@@ -68,7 +68,7 @@ applicable agreement for further details.
 +--------------------------+---------------------------------+---------------+-------------+------------+
 ; Assignment Name          ; Value                           ; Default Value ; Entity Name ; Section Id ;
 +--------------------------+---------------------------------+---------------+-------------+------------+
-; COMPILER_SIGNATURE_ID    ; 150461139342647.162521940107940 ; --            ; --          ; --         ;
+; COMPILER_SIGNATURE_ID    ; 150461139342647.162695310001452 ; --            ; --          ; --         ;
 ; FITTER_EFFORT            ; Standard Fit                    ; Auto Fit      ; --          ; --         ;
 ; OPTIMIZE_HOLD_TIMING     ; Off                             ; --            ; --          ; --         ;
 ; PROJECT_OUTPUT_DIRECTORY ; output_files                    ; --            ; --          ; --         ;
@@ -81,11 +81,11 @@ applicable agreement for further details.
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 ; Module Name               ; Elapsed Time ; Average Processors Used ; Peak Virtual Memory ; Total CPU Time (on all processors) ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
-; Analysis & Synthesis      ; 00:00:19     ; 1.0                     ; 4618 MB             ; 00:00:15                           ;
-; Fitter                    ; 00:00:03     ; 1.0                     ; 4685 MB             ; 00:00:02                           ;
+; Analysis & Synthesis      ; 00:00:05     ; 1.0                     ; 4617 MB             ; 00:00:05                           ;
+; Fitter                    ; 00:00:01     ; 1.0                     ; 4685 MB             ; 00:00:01                           ;
 ; Assembler                 ; 00:00:01     ; 1.0                     ; 4497 MB             ; 00:00:01                           ;
-; TimeQuest Timing Analyzer ; 00:00:02     ; 1.0                     ; 4518 MB             ; 00:00:01                           ;
-; Total                     ; 00:00:25     ; --                      ; --                  ; 00:00:19                           ;
+; TimeQuest Timing Analyzer ; 00:00:02     ; 1.0                     ; 4507 MB             ; 00:00:01                           ;
+; Total                     ; 00:00:09     ; --                      ; --                  ; 00:00:08                           ;
 +---------------------------+--------------+-------------------------+---------------------+------------------------------------+
 
 

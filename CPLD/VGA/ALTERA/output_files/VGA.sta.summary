@@ -3,8 +3,8 @@ TimeQuest Timing Analyzer Summary
 ------------------------------------------------------------
 
 Type  : Setup 'pixel_clk'
-Slack : -40.400
-TNS   : -2032.400
+Slack : -22.000
+TNS   : -709.600
 
 Type  : Hold 'pixel_clk'
 Slack : 5.000
@@ -12,6 +12,6 @@ TNS   : 0.000
 
 Type  : Minimum Pulse Width 'pixel_clk'
 Slack : -3.500
-TNS   : -637.000
+TNS   : -427.000
 
 ------------------------------------------------------------

@@ -88,7 +88,7 @@ addrout[2]                   : 24        : output : TTL               :         
 addrout[1]                   : 25        : output : TTL               :         :           : Y              
 VCCIO                        : 26        : power  :                   : 5.0V    :           :                
 addrout[0]                   : 27        : output : TTL               :         :           : Y              
-RESERVED                     : 28        :        :                   :         :           :                
+scrend                       : 28        : output : TTL               :         :           : Y              
 RESERVED                     : 29        :        :                   :         :           :                
 RESERVED                     : 30        :        :                   :         :           :                
 RESERVED                     : 31        :        :                   :         :           :                
@@ -100,18 +100,18 @@ RESERVED                     : 36        :        :                   :         
 RESERVED                     : 37        :        :                   :         :           :                
 VCCIO                        : 38        : power  :                   : 5.0V    :           :                
 NC                           : 39        :        :                   :         :           :                
-datace                       : 40        : output : TTL               :         :           : N              
+RESERVED                     : 40        :        :                   :         :           :                
 RESERVED                     : 41        :        :                   :         :           :                
 GND                          : 42        : gnd    :                   :         :           :                
 VCCINT                       : 43        : power  :                   : 5.0V    :           :                
-n_sync                       : 44        : output : TTL               :         :           : N              
-n_blank                      : 45        : output : TTL               :         :           : N              
+RESERVED                     : 44        :        :                   :         :           :                
+RESERVED                     : 45        :        :                   :         :           :                
 NC                           : 46        :        :                   :         :           :                
 GND                          : 47        : gnd    :                   :         :           :                
 RESERVED                     : 48        :        :                   :         :           :                
 RESERVED                     : 49        :        :                   :         :           :                
-RESERVED                     : 50        :        :                   :         :           :                
-RESERVED                     : 51        :        :                   :         :           :                
+n_blank                      : 50        : output : TTL               :         :           : N              
+n_sync                       : 51        : output : TTL               :         :           : N              
 RESERVED                     : 52        :        :                   :         :           :                
 VCCIO                        : 53        : power  :                   : 5.0V    :           :                
 RESERVED                     : 54        :        :                   :         :           :                
@@ -135,9 +135,9 @@ TDO                          : 71        : output : TTL               :         
 GND                          : 72        : gnd    :                   :         :           :                
 rgbi[1]                      : 73        : output : TTL               :         :           : Y              
 rgbi[0]                      : 74        : output : TTL               :         :           : Y              
-islowres                     : 75        : input  : TTL               :         :           : Y              
+RESERVED                     : 75        :        :                   :         :           :                
 RESERVED                     : 76        :        :                   :         :           :                
-istext                       : 77        : input  : TTL               :         :           : Y              
+RESERVED                     : 77        :        :                   :         :           :                
 VCCIO                        : 78        : power  :                   : 5.0V    :           :                
 NC                           : 79        :        :                   :         :           :                
 v_sync                       : 80        : output : TTL               :         :           : Y              
