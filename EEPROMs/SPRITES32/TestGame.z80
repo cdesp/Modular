@@ -6,7 +6,7 @@
 		LOGRAPH EQU 00B
 		
 		
-		SPRSPD EQU 3
+		SPRSPD EQU 1
 		
 		DI
 		LD A, 4								;PAGE 4
@@ -94,19 +94,23 @@ WFTEAGN:	LD A, (HL)
 		RET
 		
 		
-		
+LASTKEY:	DB 0								;LAST KEY PRESSED
+
 STARTGAME:	CALL MAINSETUP
 		CALL PRINTSPR
 GAMELOOP:	LD HL, SHPNT
 		LD A, (HL)
 		CP 1
-		CALL Z, MOVESPR
-		CALL GET_CHARNW
+		JR NZ,CHKKEY
+		CALL MOVESPR				
+CHKKEY:		CALL GET_CHARNW
 		;CALL RS_KEYRD							;CHAR IN RS232?
 		;JR Z, GAMELOOP
 		;CALL RS_RX
 		CP 0
-		JR Z, GAMELOOP
+		JR NZ, NEWKEY 
+		LD A,(LASTKEY)							;GET OLD KEY
+NEWKEY:		LD (LASTKEY),A
 		CP 'W'
 		JR NZ, NXTBUT1
 		CALL SPRMOVEUP
@@ -129,7 +133,7 @@ SPRMOVEUP:	LD A, 0
 		CALL getSpriteStruct
 		LD H, (IX + 2)
 		LD L, (IX + 3)
-		LD BC, 10
+		LD BC, 2
 		XOR A
 		SBC HL, BC
 		RET C 								; NO MOVE
@@ -145,11 +149,15 @@ SPRMOVEUP:	LD A, 0
 		
 SPRMOVEDN:	LD A, 0
 		CALL getSpriteStruct
-		LD H, (IX + 2)
-		LD L, (IX + 3)
-		LD BC, 400
 		XOR A
-		SBC HL, BC
+		LD HL, 200
+		LD BC, SPH+2
+		SBC HL,BC
+		LD B,H
+		LD C,L		
+		LD H, (IX + 2)
+		LD L, (IX + 3)	
+		SBC HL,BC	
 		RET NC 								; NO MOVE
 		ADD HL, BC
 		LD BC, SPRSPD
@@ -165,7 +173,7 @@ SPRMOVELF:	LD A, 0
 		CALL getSpriteStruct
 		LD H, (IX)
 		LD L, (IX + 1)
-		LD BC, 10
+		LD BC,2
 		XOR A
 		SBC HL, BC
 		RET C 								; NO MOVE
@@ -181,10 +189,14 @@ SPRMOVELF:	LD A, 0
 		
 SPRMOVERG:	LD A, 0
 		CALL getSpriteStruct
-		LD H, (IX)
-		LD L, (IX + 1)
-		LD BC, 600
+		LD HL, 160
+		LD BC, (SPW/2)+2
 		XOR A
+		SBC HL,BC
+		LD B,H
+		LD C,L								;160-SPW-2
+		LD H, (IX)							;CURRENT X POS	
+		LD L, (IX + 1)
 		SBC HL, BC
 		RET NC 								; NO MOVE
 		ADD HL, BC
@@ -200,11 +212,13 @@ SPRMOVERG:	LD A, 0
 PRINTSPR:	LD A, 0
 		CALL getScreenBG
 		OUT ($38), A	
-		LD A, 0
-		CALL blendSprite
-		OUT ($38), A	
-		LD A, 0
-		CALL setScreenSPR
+		;LD A, 0
+		;CALL blendSprite
+		;OUT ($38), A	
+		;LD A, 0
+		;CALL setScreenSPR
+		LD A,0
+		CALL SPRBLDTOSCR						;PUT SPRITE BLENDED TO SCREEN
 		RET
 		
 MOVESPR:	CALL WAITFORTE 							;WAITFOR TEARING EFFECT
