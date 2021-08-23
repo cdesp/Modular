@@ -1,0 +1,40 @@
+//Copyright (C)2014-2021 Gowin Semiconductor Corporation.
+//All rights reserved.
+//File Title: Physical Constraints file of ports
+//GOWIN Version: V1.9.8
+//Part Number: GW1N-LV1QN48C6/I5
+//Device: GW1N-1
+//Created Time: Mon Aug 23 13:09:26 2021
+
+IO_LOC "pixel_clk"   19;
+IO_LOC "datain[0]"   34;
+IO_LOC "datain[1]"   33;
+IO_LOC "datain[2]"   32;
+IO_LOC "datain[3]"   31;
+IO_LOC "datain[4]"   30;
+IO_LOC "datain[5]"   29;
+IO_LOC "datain[6]"   28;
+IO_LOC "datain[7]"   27;
+IO_LOC "h_sync"      10;
+IO_LOC "v_sync"      11;
+IO_LOC "rgbi[0]"     46;
+IO_LOC "rgbi[1]"     13;
+IO_LOC "rgbi[2]"     9;
+IO_LOC "rgbi[3]"     8;
+IO_LOC "scrend"      5;
+IO_LOC "scrst"       14;
+IO_LOC "addrout[0]"  45;
+IO_LOC "addrout[1]"  44;
+IO_LOC "addrout[2]"  43;
+IO_LOC "addrout[3]"  42;
+IO_LOC "addrout[4]"  41;
+IO_LOC "addrout[5]"  40;
+IO_LOC "addrout[6]"  39;
+IO_LOC "addrout[7]"  38;
+IO_LOC "addrout[8]"  23;
+IO_LOC "addrout[9]"  24;
+IO_LOC "addrout[10]" 22;
+IO_LOC "addrout[11]" 21;
+IO_LOC "addrout[12]" 20;
+IO_LOC "addrout[13]" 18;
+IO_LOC "addrout[14]" 17;

@@ -1,0 +1,14 @@
+[
+ {
+  "InstFile" : "C:/MyDocuments/fpga_project/src/vga.vhd",
+  "InstLine" : 35,
+  "InstName" : "vga_controller",
+  "Mode" : 1,
+  "ModuleFile" : "C:/MyDocuments/fpga_project/src/vga.vhd",
+  "ModuleLine" : 35,
+  "ModuleName" : "vga_controller",
+  "Process" : 0,
+  "SetMode" : false,
+  "SetProcess" : false
+ }
+]

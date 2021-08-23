@@ -1,0 +1,13 @@
+-d C:\MyDocuments\fpga_project\impl\gwsynthesis\fpga_project.vg
+-p GW1N-1-QFN48-6
+-pn GW1N-LV1QN48C6/I5
+-cst C:\MyDocuments\fpga_project\src\fpga_project.cst
+-cfg C:\MyDocuments\fpga_project\impl\pnr\device.cfg
+-sdc C:\MyDocuments\fpga_project\src\fpga_project.sdc
+-bit
+-tr
+-ph
+-oc
+-timing
+-cst_error
+-no_cst_warning

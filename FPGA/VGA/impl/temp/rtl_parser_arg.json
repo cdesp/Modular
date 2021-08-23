@@ -1,0 +1,17 @@
+{
+ "Files" : [
+  {
+   "Library" : "work",
+   "Path" : "C:/MyDocuments/fpga_project/src/vga.vhd",
+   "Type" : "vhdl"
+  }
+ ],
+ "IncludePath" : [
+
+ ],
+ "LoopLimit" : 2000,
+ "ResultFile" : "C:/MyDocuments/fpga_project/impl/temp/rtl_parser.result",
+ "Top" : "vga_controller",
+ "VerilogStd" : "verilog_2001",
+ "VhdlStd" : "vhdl_2008"
+}
