@@ -2,7 +2,7 @@
  "Files" : [
   {
    "Library" : "work",
-   "Path" : "C:/MyDocuments/fpga_project/src/vga.vhd",
+   "Path" : "G:/_Programming/_DOCS/Schematics/MyModular/FPGA/VGA/src/vga.vhd",
    "Type" : "vhdl"
   }
  ],
@@ -10,7 +10,7 @@
 
  ],
  "LoopLimit" : 2000,
- "ResultFile" : "C:/MyDocuments/fpga_project/impl/temp/rtl_parser.result",
+ "ResultFile" : "G:/_Programming/_DOCS/Schematics/MyModular/FPGA/VGA/impl/temp/rtl_parser.result",
  "Top" : "vga_controller",
  "VerilogStd" : "verilog_2001",
  "VhdlStd" : "vhdl_2008"

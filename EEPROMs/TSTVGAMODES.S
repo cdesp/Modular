@@ -17,6 +17,9 @@ AGN:
 		CP '3'
 		CALL Z,TST3
 
+		CP '2'
+		CALL Z,TST2
+
 		
 		
 		CP 'M'
@@ -52,6 +55,33 @@ TST02:		LD A,8
 		LDIR
 		RET
 		
+
+TST2:		LD A,11
+		LD B,4
+		CALL PUTPGINBANK
+
+		LD HL,$9FF9
+		LD B,VGA_GREEN		;FORE
+		LD A,VGA_BLACK		;BACK
+		SLA A
+		SLA A
+		SLA A
+		SLA A
+		OR B
+		LD (HL),A
+
+		LD A,8
+		LD B,4
+		CALL PUTPGINBANK
+
+		LD B,0
+		LD HL,$8000
+		XOR A
+TST2_AGN:	LD (HL),A
+		INC A
+		INC HL
+		DJNZ TST2_AGN		
+		RET
 
 
 TST3:		LD A,8

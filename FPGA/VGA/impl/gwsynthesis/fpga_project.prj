@@ -4,13 +4,13 @@
     <Version>beta</Version>
     <Device id="GW1N-1" package="QFN48" speed="6" partNumber="GW1N-LV1QN48C6/I5"/>
     <FileList>
-        <File path="C:\MyDocuments\fpga_project\src\vga.vhd" type="vhdl"/>
+        <File path="G:\_Programming\_DOCS\Schematics\MyModular\FPGA\VGA\src\vga.vhd" type="vhdl"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="dsp_balance" value="0"/>
         <Option type="looplimit" value="2000"/>
-        <Option type="output_file" value="C:\MyDocuments\fpga_project\impl\gwsynthesis\fpga_project.vg"/>
+        <Option type="output_file" value="G:\_Programming\_DOCS\Schematics\MyModular\FPGA\VGA\impl\gwsynthesis\fpga_project.vg"/>
         <Option type="print_all_synthesis_warning" value="1"/>
         <Option type="ram_rw_check" value="1"/>
         <Option type="top_module" value="vga_controller"/>
