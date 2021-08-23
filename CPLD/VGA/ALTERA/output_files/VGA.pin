@@ -64,8 +64,8 @@ Pin Name/Usage               : Location  : Dir.   : I/O Standard      : Voltage 
 reset_n                      : 1         : input  : TTL               :         :           : N              
 pixel_clk                    : 2         : input  : TTL               :         :           : Y              
 VCCINT                       : 3         : power  :                   : 5.0V    :           :                
-RESERVED                     : 4         :        :                   :         :           :                
-RESERVED                     : 5         :        :                   :         :           :                
+n_blank                      : 4         : output : TTL               :         :           : N              
+n_sync                       : 5         : output : TTL               :         :           : N              
 NC                           : 6         :        :                   :         :           :                
 GND                          : 7         : gnd    :                   :         :           :                
 addrout[14]                  : 8         : output : TTL               :         :           : Y              
@@ -91,7 +91,7 @@ addrout[0]                   : 27        : output : TTL               :         
 scrend                       : 28        : output : TTL               :         :           : Y              
 RESERVED                     : 29        :        :                   :         :           :                
 RESERVED                     : 30        :        :                   :         :           :                
-RESERVED                     : 31        :        :                   :         :           :                
+scrst                        : 31        : output : TTL               :         :           : Y              
 GND                          : 32        : gnd    :                   :         :           :                
 RESERVED                     : 33        :        :                   :         :           :                
 RESERVED                     : 34        :        :                   :         :           :                
@@ -110,8 +110,8 @@ NC                           : 46        :        :                   :         
 GND                          : 47        : gnd    :                   :         :           :                
 RESERVED                     : 48        :        :                   :         :           :                
 RESERVED                     : 49        :        :                   :         :           :                
-n_blank                      : 50        : output : TTL               :         :           : N              
-n_sync                       : 51        : output : TTL               :         :           : N              
+RESERVED                     : 50        :        :                   :         :           :                
+RESERVED                     : 51        :        :                   :         :           :                
 RESERVED                     : 52        :        :                   :         :           :                
 VCCIO                        : 53        : power  :                   : 5.0V    :           :                
 RESERVED                     : 54        :        :                   :         :           :                

@@ -1,5 +1,5 @@
 TimeQuest Timing Analyzer report for VGA
-Thu Jul 22 14:25:11 2021
+Tue Aug 03 14:41:20 2021
 Quartus II 64-Bit Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
 
 
@@ -99,7 +99,7 @@ This panel reports FMAX for every clock in the design, regardless of the user-sp
 +-----------+---------+---------------+
 ; Clock     ; Slack   ; End Point TNS ;
 +-----------+---------+---------------+
-; pixel_clk ; -22.000 ; -709.600      ;
+; pixel_clk ; -22.000 ; -708.000      ;
 +-----------+---------+---------------+
 
 
@@ -140,73 +140,56 @@ No paths to report.
 +---------+------------+-------------+--------------+-------------+--------------+------------+------------+
 ; -22.000 ; row[8]     ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 21.000     ;
 ; -22.000 ; row[6]     ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 21.000     ;
-; -19.400 ; h_count[7] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[9] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[6] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[5] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[4] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[3] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[2] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[1] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[8] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; h_count[0] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[8] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
-; -19.400 ; v_count[7] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 18.400     ;
 ; -18.600 ; v_count[5] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[5] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[5] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[5] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[5] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[4]     ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[8]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[5] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[2] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[6] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[4] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[3] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[8] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[7] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[6] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[4] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; h_count[7] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[3] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[2] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[1] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[0] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[9] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[8] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[7] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[8] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[7] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[6] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[4] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; h_count[7] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[3] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[2] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[1] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[0] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[9] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[8] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[7] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[8] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[7] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[6] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[4] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[3] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[2] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[1] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; v_count[0] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[9] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[8] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[7] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[8] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[7] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[6] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[4] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; h_count[7] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[3] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[2] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[1] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; v_count[0] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[9] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; h_count[8] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
-; -18.600 ; h_count[7] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[8] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[7] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[6] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[4] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; h_count[7] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[3] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[2] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[1] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; v_count[0] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; h_count[9] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -18.600 ; h_count[8] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[5]     ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[7]     ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[3]     ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
@@ -215,29 +198,46 @@ No paths to report.
 ; -18.600 ; row[6]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[7]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
 ; -18.600 ; row[5]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 17.600     ;
+; -17.800 ; h_count[7] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; column[0]  ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; row[4]     ; memaddr[10] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; row[8]     ; memaddr[14] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; row[7]     ; memaddr[12] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[1] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; v_count[0] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[6] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[5] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[4] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[6] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[5] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[4] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[6] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[5] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[4] ; row[3]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[6] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[5] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[4] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; row[2]     ; memaddr[11] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; row[2]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; row[4]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; row[3]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; row[1]     ; memaddr[13] ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[6] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[5] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[4] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[3] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; h_count[2] ; scrend~reg0 ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[3] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[2] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[1] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 ; -17.800 ; h_count[0] ; row[6]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[6] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[5] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[4] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[3] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[2] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[1] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[0] ; row[5]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[6] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[5] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
-; -17.800 ; h_count[4] ; row[2]      ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[9] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[8] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[7] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[6] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[5] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[4] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[3] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[2] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
+; -17.800 ; memaddr[1] ; memaddr[9]  ; pixel_clk    ; pixel_clk   ; 1.000        ; 0.000      ; 16.800     ;
 +---------+------------+-------------+--------------+-------------+--------------+------------+------------+
 
 
@@ -562,7 +562,7 @@ No paths to report.
 +------------+-----------+----------+----------+----------+----------+
 ; From Clock ; To Clock  ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
 +------------+-----------+----------+----------+----------+----------+
-; pixel_clk  ; pixel_clk ; 6390     ; 0        ; 0        ; 0        ;
+; pixel_clk  ; pixel_clk ; 4290     ; 0        ; 0        ; 0        ;
 +------------+-----------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
@@ -572,7 +572,7 @@ Entries labeled "false path" only account for clock-to-clock false paths and not
 +------------+-----------+----------+----------+----------+----------+
 ; From Clock ; To Clock  ; RR Paths ; FR Paths ; RF Paths ; FF Paths ;
 +------------+-----------+----------+----------+----------+----------+
-; pixel_clk  ; pixel_clk ; 6390     ; 0        ; 0        ; 0        ;
+; pixel_clk  ; pixel_clk ; 4290     ; 0        ; 0        ; 0        ;
 +------------+-----------+----------+----------+----------+----------+
 Entries labeled "false path" only account for clock-to-clock false paths and not path-based false paths. As a result, actual path counts may be lower than reported.
 
@@ -609,7 +609,7 @@ No dedicated SERDES Receiver circuitry present in device or used in design
 Info: *******************************************************************
 Info: Running Quartus II 64-Bit TimeQuest Timing Analyzer
     Info: Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
-    Info: Processing started: Thu Jul 22 14:25:09 2021
+    Info: Processing started: Tue Aug 03 14:41:18 2021
 Info: Command: quartus_sta VGA -c VGA
 Info: qsta_default_script.tcl version: #1
 Warning (20028): Parallel compilation is not licensed and has been disabled
@@ -625,7 +625,7 @@ Critical Warning (332148): Timing requirements not met
 Info (332146): Worst-case setup slack is -22.000
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
-    Info (332119):   -22.000      -709.600 pixel_clk 
+    Info (332119):   -22.000      -708.000 pixel_clk 
 Info (332146): Worst-case hold slack is 5.000
     Info (332119):     Slack End Point TNS Clock 
     Info (332119): ========= ============= =====================
@@ -641,8 +641,8 @@ Info (332102): Design is not fully constrained for setup requirements
 Info (332102): Design is not fully constrained for hold requirements
 Info: Quartus II 64-Bit TimeQuest Timing Analyzer was successful. 0 errors, 4 warnings
     Info: Peak virtual memory: 4507 megabytes
-    Info: Processing ended: Thu Jul 22 14:25:11 2021
+    Info: Processing ended: Tue Aug 03 14:41:20 2021
     Info: Elapsed time: 00:00:02
-    Info: Total CPU time (on all processors): 00:00:01
+    Info: Total CPU time (on all processors): 00:00:02
 
 

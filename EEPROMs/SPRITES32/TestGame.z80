@@ -6,7 +6,7 @@
 		LOGRAPH EQU 00B
 		
 		
-		SPRSPD EQU 1
+		SPRSPD EQU 2
 		
 		DI
 		LD A, 4								;PAGE 4
@@ -97,13 +97,19 @@ WFTEAGN:	LD A, (HL)
 LASTKEY:	DB 0								;LAST KEY PRESSED
 
 STARTGAME:	CALL MAINSETUP
+		CALL PRINTENEMY
 		CALL PRINTSPR
-GAMELOOP:	LD HL, SHPNT
-		LD A, (HL)
-		CP 1
-		JR NZ,CHKKEY
-		CALL MOVESPR				
-CHKKEY:		CALL GET_CHARNW
+GAMELOOP:	;LD HL, SHPNT
+		;LD A, (HL)
+		;CP 1
+		;JR NZ,CHKKEY
+		CALL MOVENEXTSPRIT				
+CHKKEY:		;LD A,0
+		;CALL SPRNXTPIC	; CHANGE PIC? AND GET STRUCT
+		;JR Z,NOPRN
+		;LD A,1
+		;LD (SHPNT),A	;PRINT NEXT TIME
+NOPRN:		CALL GET_CHARNW
 		;CALL RS_KEYRD							;CHAR IN RS232?
 		;JR Z, GAMELOOP
 		;CALL RS_RX
@@ -151,7 +157,7 @@ SPRMOVEDN:	LD A, 0
 		CALL getSpriteStruct
 		XOR A
 		LD HL, 200
-		LD BC, SPH+2
+		LD BC, SPH+12
 		SBC HL,BC
 		LD B,H
 		LD C,L		
@@ -209,24 +215,28 @@ SPRMOVERG:	LD A, 0
 		LD (HL), A
 		RET
 
-PRINTSPR:	LD A, 0
+PRINTENEMY:	LD A, 1
+		CALL PRINTSPR
+		RET
+
+;A = SPRITE NO TO PRINT
+PRINTSPR:	PUSH AF
 		CALL getScreenBG
 		OUT ($38), A	
-		;LD A, 0
-		;CALL blendSprite
-		;OUT ($38), A	
-		;LD A, 0
-		;CALL setScreenSPR
-		LD A,0
+		POP AF
 		CALL SPRBLDTOSCR						;PUT SPRITE BLENDED TO SCREEN
+		EI
 		RET
 		
-MOVESPR:	CALL WAITFORTE 							;WAITFOR TEARING EFFECT
+MOVESPR:	PUSH AF
+		CALL WAITFORTE 							;WAITFOR TEARING EFFECT
 		OUT ($38), A							;Y7
-		LD A, 0
+		POP AF
+		PUSH AF
 		CALL setScreenBG 						;erase sprite
-		OUT ($38), A	
-		LD A, 0
+		OUT ($38), A			
+		POP AF
+		PUSH AF
 		CALL getSpriteStruct
 		LD A, (IX + 4)							;NEWX
 		LD (IX), A
@@ -236,14 +246,62 @@ MOVESPR:	CALL WAITFORTE 							;WAITFOR TEARING EFFECT
 		LD (IX + 2), A
 		LD A, (IX + 7)
 		LD (IX + 3), A 							;POSY=NEWPOSY
+		POP AF
 		CALL PRINTSPR
 		OUT ($38), A
 		LD HL, SHPNT							;PRINT TO SCREEN SIGNAL RESET
 		XOR A
 		LD (HL), A
 		RET
+
+;A SPRITE NO
+;C IS SET IF SPRITE HAS MOVED
+SPRITEMOVED:	CALL getSpriteStruct	
+		LD H, (IX)
+		LD L, (IX+1)
+		LD D, (IX+4)
+		LD E, (IX+5)
+		OR A
+		SBC HL,DE
+		LD A,H
+		OR L
+		JR NZ,SPRMOVED
+		LD H, (IX+2)
+		LD L, (IX+3)
+		LD D, (IX+6)
+		LD E, (IX+7)
+		OR A
+		SBC HL,DE
+		LD A,H
+		OR L
+		JR NZ,SPRMOVED
+		XOR A
+		RET
+SPRMOVED:	SCF	
+		RET
+CURSPRIT	DB 0		
+;MOVES AND PRINTS A SPRITE EACH TIME IT IS CALLED
+MOVENEXTSPRIT:	LD A,(CURSPRIT)			
+		CALL SPRNXTPIC
+		JR NZ, DOTHEMOVE		;NZ IF PIC CHANGED
+		LD A,(CURSPRIT)
+		CALL SPRITEMOVED
+		JR NC,MNSNEXT
+		;NO MOVE  NO PRINT		
+DOTHEMOVE:	LD A,(CURSPRIT)
+		CALL MOVESPR	
+		;SET NEXT
+MNSNEXT:	LD A,(CURSPRIT)
+		INC A
+		LD HL,NOSPRITES
+		CP (HL)		;1 BASED
+		JR NZ,MNSEXIT
+		XOR A
+MNSEXIT:	LD (CURSPRIT),A
+		RET
 		
-		
+
+
 DOMOVE:		LD A, 0
 		CALL getSpriteStruct
 		LD H, (IX)
@@ -264,17 +322,15 @@ NOMOVE:		RET
 		
 		
 MAINSETUP:	CALL CLEARSCREEN
-		CALL createSprite
-		RLC A
-		JR C, GENERROR
-		RRA
+		CALL createSprite		
+		JP Z, GENERROR
 		CALL getSpriteStruct
-		LD HL, 9 							; POSX=100
+		LD HL, 9 							; POSX
 		LD (IX), H
 		LD (IX + 1), L
 		LD (IX + 4), H 							;NEWPOS
 		LD (IX + 5), L
-		LD HL, 48 							;POSY=100
+		LD HL, 110 							;POSY
 		LD (IX + 2), H
 		LD (IX + 3), L
 		LD (IX + 6), H 							;NEWPOS
@@ -283,9 +339,9 @@ MAINSETUP:	CALL CLEARSCREEN
 		LD (IX + 8), H
 		LD H, SPH 							;HEIGHT
 		LD (IX + 9), H
-		LD H, 1 							;CURPIC
+		LD H, 1 							;CURPIC (NO OF PICS-1 TO WRAP AT ONCE)
 		LD (IX + 10), H
-		LD H, 1 							;NO OF PICS
+		LD H, 2 							;NO OF PICS
 		LD (IX + 11), H
 		LD HL, PIRAV 							;GRADDR
 		LD (IX + 12), H
@@ -293,8 +349,37 @@ MAINSETUP:	CALL CLEARSCREEN
 		LD HL, PIRAVSCR 						;scraddr
 		LD (IX + 14), H
 		LD (IX + 15), L
-		LD A,0
 		CALL getScreenBG
+
+		CALL createSprite		
+		JP Z, GENERROR
+		CALL getSpriteStruct
+		LD HL, 70 							; POSX
+		LD (IX), H
+		LD (IX + 1), L
+		LD (IX + 4), H 							;NEWPOS
+		LD (IX + 5), L
+		LD HL, 16 							;POSY
+		LD (IX + 2), H
+		LD (IX + 3), L
+		LD (IX + 6), H 							;NEWPOS
+		LD (IX + 7), L
+		LD H, ENW 							;WIDTH
+		LD (IX + 8), H
+		LD H, ENH 							;HEIGHT
+		LD (IX + 9), H
+		LD H, 0 							;CURPIC (NO OF PICS-1 TO WRAP AT ONCE)
+		LD (IX + 10), H
+		LD H, 1 							;NO OF PICS
+		LD (IX + 11), H
+		LD HL, ENEMY 							;GRADDR
+		LD (IX + 12), H
+		LD (IX + 13), L
+		LD HL, ENEMYSCR 						;scraddr
+		LD (IX + 14), H
+		LD (IX + 15), L		
+		CALL getScreenBG
+
 		XOR A
 		RET
 		
@@ -308,10 +393,17 @@ GENERROR:									;TODO:PRINT ERROR
 	
 
 		SHPNT DB 0
-		INCLUDE SPRITE.Z80
-		PIRAV EQU $
+		INCLUDE SPRITE.Z80		
 		SPW EQU 12
 		SPH EQU 12
 		;INCLUBIN GALAGA_20.BIN
-		INCLUBIN pirav12.bin
-		PIRAVSCR DS SPW * SPH
+		PIRAVSCR DS SPW * SPH		;SPACE TO SAVE THE SCREEN IMAGE
+		PIRAV EQU $			;ALL IMAGES OF PIRAV AFTER THIS
+		INCLUBIN pirav12.bin		
+		INCLUBIN pirav12a.bin
+		
+		ENW EQU 16
+		ENH EQU 16
+		ENEMYSCR DS ENW * ENH 
+		ENEMY EQU $
+		INCLUBIN enemy16.bin		

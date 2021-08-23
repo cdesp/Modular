@@ -81,3 +81,4 @@ set_location_assignment PIN_10 -to addrout[12]
 set_location_assignment PIN_9 -to addrout[13]
 set_location_assignment PIN_8 -to addrout[14]
 set_location_assignment PIN_28 -to scrend
+set_location_assignment PIN_31 -to scrst

@@ -50,6 +50,7 @@ ENTITY vga_controller IS
     n_sync    : OUT  STD_LOGIC; --sync-on-green output to DAC
   	 rgbi	    :  OUT  STD_LOGIC_VECTOR(3 DOWNTO 0) := (OTHERS => '0');  --red,green,blue,intensity magnitude output to DAC
 	 scrend	 :  OUT   STD_LOGIC;  -- '0' IF DISPLAY FINISHED
+	 scrst    :  OUT STD_LOGIC;  -- '0' IF DISPLAY START
 	 datain	 :  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
 	 --datace   :  OUT  STD_LOGIC := '0'; --'0' enables memory chip --maybe let it always on
 	 addrout  :  OUT  STD_LOGIC_VECTOR(14 DOWNTO 0) -- A0 - A14 for addressing the 32k of memory chip
@@ -167,11 +168,18 @@ BEGIN
       END IF;
 		
 		--set display finished
-		IF (v_count = v_pixels) THEN
+		IF (v_count = v_pixels-30)  THEN
 		  SCREND<='0';
 		ELSE
 		  SCREND<='1';
 		END IF;  
+--
+--		IF (v_count <2 ) THEN
+--		  SCRST<='0';
+--		ELSE
+--		  SCRST<='1';
+--		END IF;  
+
 		
 		
 		IF h_count>h_pixels-5 THEN	
