@@ -24,8 +24,8 @@
 
 LIBRARY ieee;
 USE ieee.std_logic_1164.all;
-USE ieee.numeric_std.all;
---use ieee.math_real.all;
+USE ieee.numeric_std.all; 
+--use ieee.math_real.all; 
 
 
 
@@ -74,6 +74,8 @@ SIGNAL txfontpixel:INTEGER RANGE 0 TO 8-1 :=0; --WHICH PIXEL OF TEXT CHAR IS PRI
 SIGNAL PXLOUT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL PXLLEFT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL PXLRIGHT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
+SIGNAL PXLBYTE:STD_LOGIC_VECTOR(7 DOWNTO 0) ;  --DATA FROM VIDEO MEM
+SIGNAL PXLBYTEnx:STD_LOGIC_VECTOR(7 DOWNTO 0) ;  --DATA FROM VIDEO MEM
 SIGNAL memaddr:INTEGER RANGE 0 TO 32768-1 :=0;
 SIGNAL FONTaddr:INTEGER RANGE 0 TO 8192-1 :=0;
 SIGNAL CHARaddr:INTEGER RANGE 0 TO 4096-1 :=0;
@@ -224,7 +226,7 @@ BEGIN
         --VIDSET<="01";
      IF READREGISTER=0 AND  READREGISTER2=0 THEN   
 	  IF vidset="00" THEN  --GRAPHICS 320X200X4
-        	IF (h_count > h_period - 3)  THEN
+        IF (h_count > h_period - 3)  THEN
 		  RSTRT <= '1';		  
 		ELSE
 		  RSTRT <= '0';
@@ -249,9 +251,9 @@ BEGIN
 		  PXLOUT <=PXLRIGHT;
 		END IF;
 
-        IF ROW>200 THEN
-            PXLOUT <= "0001";
-        END IF;
+--        IF ROW>200 THEN
+--            PXLOUT <= "0001";
+--        END IF;
 		
 	  ELSIF vidset="01" THEN  --TEXT 320X200X4 DOUBLE PIXELS
 	    TXFontline<=TXFontline;
@@ -333,7 +335,35 @@ BEGIN
        -- END IF;        
 
 	  ELSIF vidset="10" THEN  --GRAPHICS 640X400X1
-        PXLOUT <= "0100";
+
+        IF (h_count > h_period - 3)  THEN
+		  RSTRT <= '1';		  
+		ELSE
+		  RSTRT <= '0';
+		END IF;
+		
+		
+		IF RSTRT='1' THEN
+		  MEMADDR <= ROW*80; --640/8 PIXELS PER BYTE
+		ELSIF COLUMN MOD 8=1 THEN
+		 MEMADDR<= MEMADDR +1;
+		ELSE
+	     MEMADDR<= MEMADDR;	
+		END IF;
+		
+        IF (RSTRT='1') OR ( COLUMN MOD 8=3) THEN
+	      PXLBYTEnx <= datain; 
+        ELSIF COLUMN MOD 8=7 THEN
+          PXLBYTE<=PXLBYTEnx;
+        END IF;
+
+        IF PXLBYTE(7-COLUMN MOD 8)='0' THEN
+		  PXLOUT <= PXLBACK; 
+        ELSE
+          PXLOUT <= PXLFORE;
+        END IF;
+
+        
 	  ELSE  -- "11" TEXT 640X400X1 
         --8 PIXELS PER BYTE
 	    TXFontline<=TXFontline;
