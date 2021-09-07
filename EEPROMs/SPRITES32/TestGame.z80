@@ -6,7 +6,7 @@
 		LOGRAPH EQU 00B
 		
 		
-		SPRSPD EQU 2
+		SPRSPD EQU 1
 		
 		DI
 		LD A, 4								;PAGE 4

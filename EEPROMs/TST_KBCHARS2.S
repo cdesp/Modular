@@ -60,7 +60,7 @@ READCH:
        CP 0
        POP DE 
        JR Z,READCH
-
+       CALL OS_PRINTCHAR
        RET
 
 

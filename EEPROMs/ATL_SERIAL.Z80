@@ -137,13 +137,19 @@ RS_NOCHAR:	XOR A 								;RETURN ZERO
 ; RETurns when UART has received data
 		
 		
-RSRXRD:		DI
+RSRXRD:		;DI		
 		PUSH AF
-RSRXLP:		IN A, (LSR) 							; fetch the conrtol register
+		;PUSH BC
+		;LD BC,2000							;TIMEOUT 
+RSRXLP:		;LD A,B
+		;OR C
+		;JR Z,RSRXEX
+		IN A, (LSR) 							; fetch the control register
 		BIT 0, A 							; bit will be set if UART has data
 		JR Z, RSRXLP
+RSRXEX:		;POP BC
 		POP AF
-		EI
+		;EI
 		RET
 		
 ; ZF=1 IF NO CHAR SENT
