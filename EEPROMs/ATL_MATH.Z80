@@ -74,6 +74,104 @@ Mult32_NoAdd:
 		POP DE
 		ret
 		
+;
+; Divide 8-bit values
+; In: Divide E by divider C
+; Out: A = result, B = rest
+;
+@Div8:
+    xor a
+    ld b,8
+Div8_Loop:
+    rl e
+    rla
+    sub c
+    jr nc,Div8_NoAdd
+    add a,c
+Div8_NoAdd:
+    djnz Div8_Loop
+    ld b,a
+    ld a,e
+    rla
+    cpl
+    ret
+
+; Divide 8-bit values
+;DIVIDE D BY E RESULT IN D REMAINDER IN A
+@DIV8_8:
+@div_d_e:
+   xor	a
+   ld	b, 8
+
+DIV8_8_loop:
+   sla	d
+   rla
+   cp	e
+   jr	c, $+4
+   sub	e
+   inc	d
+   
+   djnz	DIV8_8_loop
+   
+   ret
+     
+;DIVIDE 16-BIT BY 8-BIT
+;divides hl by c and places the quotient in hl and the remainder in a 
+@DIV16_8:    
+@div_hl_c:
+   xor	a
+   ld	b, 16
+
+DIV16_8_loop:
+   add	hl, hl
+   rla
+   jr	c, $+5
+   cp	c
+   jr	c, $+4
+
+   sub	c
+   inc	l
+   
+   djnz	DIV16_8_loop
+   
+   ret
+
+;
+; Divide 16-bit values (with 16-bit result)
+; In: Divide BC by divider DE
+; Out: BC = result, HL = rest
+;
+@Div16:
+    ld hl,0
+    ld a,b
+    ld b,8
+Div16_Loop1:
+    rla
+    adc hl,hl
+    sbc hl,de
+    jr nc,Div16_NoAdd1
+    add hl,de
+Div16_NoAdd1:
+    djnz Div16_Loop1
+    rla
+    cpl
+    ld b,a
+    ld a,c
+    ld c,b
+    ld b,8
+Div16_Loop2:
+    rla
+    adc hl,hl
+    sbc hl,de
+    jr nc,Div16_NoAdd2
+    add hl,de
+Div16_NoAdd2:
+    djnz Div16_Loop2
+    rla
+    cpl
+    ld b,c
+    ld c,a
+    ret		
 ;==================================================
 ; ADD ROUTINE 32+32BIT=32BIT
 ; H'L'HL = H'L'HL + D'E'DE
