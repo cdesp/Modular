@@ -213,3 +213,35 @@ Sqr16_Skip:
 		adc hl, hl
 		djnz Sqr16_Loop
 		ret
+
+
+;RANDOM
+; Fast RND
+;
+; An 8-bit pseudo-random number generator,
+; using a similar method to the Spectrum ROM,
+; - without the overhead of the Spectrum ROM.
+;
+; R = random number seed
+; an integer in the range [1, 256]
+;
+; R -> (33*R) mod 257
+;
+; S = R - 1
+; an 8-bit unsigned integer
+;DESTROYS B
+;RETURNS A THE NUMBER
+@RND8:
+ ld a, (RNDseed)
+ ld b, a 
+
+ rrca ; multiply by 32
+ rrca
+ rrca
+ xor 0x1f
+
+ add a, b
+ sbc a, 255 ; carry
+
+ ld (RNDseed), a
+ ret
