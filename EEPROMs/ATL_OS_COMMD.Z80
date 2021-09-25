@@ -65,6 +65,7 @@ CGSVCHAR:       CALL CGDOPRNCH          ;SAVE CHAR TO BUFFER
                 JR CGNXCHAR
 CGDOPRNCH:      PUSH HL
                 PUSH AF
+		SCF
                 CALL OS_PRINTCHAR
                 POP AF
                 POP HL

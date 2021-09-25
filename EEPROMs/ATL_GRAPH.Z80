@@ -1,36 +1,42 @@
 ;GRAPHICS MODULE
-;PRIMITIVE COMMANDS
+;PRIMITIVE COMMANDS FOR VGA & LCD MODULE
 
 ;PLOTS A PIXEL
+;HL=X, DE=Y
 ;DE 1ST PARAM HL 2ND PARAM
-@PLOTP:		PUSH BC 							;SAVE BC
+@PLOTP:	        PUSH BC 							;SAVE BC
 		PUSH IX
 		
                 PUSH DE
                 PUSH HL
                 ;FOR LCD1963
                 ;SET VIEWPORT
-		PUSH DE
 		PUSH HL
 		PUSH DE
 		PUSH HL
+		PUSH DE
 		CALL LCD_SETXY
                 ;SET PIXEL
 		LD HL, (FCOLOR)
 		CALL LCD_SETPIXEL
 
-                POP HL
-                POP DE	
                 ;FOR VGA
-                
+                POP HL
+                POP DE	                
+                LD A,(VGAFCOL)
+                CALL VGA_PLTPXL
 
 		POP IX
 		POP BC 								;RESTORE BC
 		RET
 
 
+@CLEARGRAPH:    CALL LCD_CLRSCR
+		CALL VGA_GRCLS
+                RET
 
-LCD_DRAWHLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
+
+@GR_DRAWHLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
 ;X , Y , LENGTH
 		LD IX, 2
 		ADD IX, SP
@@ -43,10 +49,10 @@ LCD_DRAWHLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
 		
 		
 		PUSH HL
-		LD HL, 0
+		LD HL, $8000
 		OR A 								;CLEAR CARRY
 		SBC HL, BC 							;CHECK IF LENGTH<0
-		JR C, POSH1
+		JR NC, POSH1
 		XOR A 								;l=-l
 		SUB C
 		LD C, A
@@ -56,15 +62,15 @@ LCD_DRAWHLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
 		POP HL
 		SBC HL, BC 							;x -= l;
 		PUSH HL
-POSH1:		POP HL
-		PUSH HL
-		PUSH DE
-		ADD HL, BC
-		PUSH HL
-		PUSH DE
-		CALL LCD_SETXY 							;setXY(x, y, x+l, y);
-		LD HL, (FCOLOR)
-NXTH1:		CALL LCD_SETPIXEL
+POSH1:		POP HL	
+NXTH1:		PUSH HL
+                PUSH DE
+                ;HL X,DE Y                
+                CALL PLOTP
+                
+                POP DE
+                POP HL                
+                INC HL
 		DEC BC
 		LD A, C
 		OR B
@@ -79,21 +85,21 @@ NXTH1:		CALL LCD_SETPIXEL
 		
 		
 		
-LCD_DRAWVLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
+@GR_DRAWVLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
 ;X , Y , LENGTH
 		LD IX, 2
 		ADD IX, SP
-		LD D, (IX + 5) 							;X
-		LD E, (IX + 4) 							;X
-		LD H, (IX + 3) 							;Y
-		LD L, (IX + 2) 							;Y
+		LD H, (IX + 5) 							;X
+		LD L, (IX + 4) 							;X
+		LD D, (IX + 3) 							;Y
+		LD E, (IX + 2) 							;Y
 		LD B, (IX + 1) 							;LENGTH
 		LD C, (IX) 							;LENGTH
 		PUSH HL
-		LD HL, 0
+		LD HL, $8000
 		OR A 								;CLEAR CARRY
 		SBC HL, BC 							;CHECK IF LENGTH<0
-		JR C, POSV1
+		JR NC, POSV1
 		XOR A 								;l=-l
 		SUB C
 		LD C, A
@@ -104,14 +110,12 @@ LCD_DRAWVLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
 		SBC HL, BC 							;Y -= l;
 		PUSH HL
 POSV1:		POP HL
-		PUSH DE
-		PUSH HL
-		PUSH DE
-		ADD HL, BC
-		PUSH HL
-		CALL LCD_SETXY 							;setXY(x, y, x, y+l);
-		LD HL, (FCOLOR)
-NXTV1:		CALL LCD_SETPIXEL
+NXTV1:		PUSH HL
+                PUSH DE
+                CALL PLOTP
+                POP DE
+                POP HL
+                INC DE
 		DEC BC
 		LD A, C
 		OR B
@@ -124,7 +128,7 @@ NXTV1:		CALL LCD_SETPIXEL
 		EX DE, HL
 		JP (HL)
 		
-@LCD_DRAWLINE:									;4 PARAMS 2-BYTES EACH TOTAL 8 BYTES
+@GR_DRAWLINE:									;4 PARAMS 2-BYTES EACH TOTAL 8 BYTES
 ;X1 , Y1 , X2, Y2
 		LD IX, 2
 		ADD IX, SP
@@ -153,7 +157,7 @@ NXTV1:		CALL LCD_SETPIXEL
 		LD L, (IX + 2) 							;X2
 		SBC HL, BC 							;X2-X1 = LENGTH OF HORIZ LINE
 		PUSH HL 							;LENGTH 3RD PARAM ON STACK
-		CALL LCD_DRAWHLINE
+		CALL GR_DRAWHLINE
 		JP DLNEX
 YNOTEQ:		
 		LD H, (IX + 7) 							;X1
@@ -172,7 +176,7 @@ YNOTEQ:
 		LD L, (IX) 							;Y2
 		SBC HL, BC 							;Y2-Y1 = LENGTH OF VERT LINE
 		PUSH HL 							;LENGTH 3RD PARAM ON STACK
-		CALL LCD_DRAWVLINE
+		CALL GR_DRAWVLINE
 		JP DLNEX
 XNOTEQ:		
 ;LINE ALGORITHM
@@ -268,13 +272,14 @@ DLAGN1:
 		LD L, (IX + 6) 							;COL=X1
 		PUSH DE
 		PUSH IX
-		PUSH HL
-		PUSH DE
-		PUSH HL
-		PUSH DE
-		CALL LCD_SETXY
-		LD HL, (FCOLOR)
-		CALL LCD_SETPIXEL
+
+
+                PUSH HL
+                PUSH DE
+                CALL PLOTP
+                POP DE
+                POP HL
+
 		POP IX
 		POP DE
 		LD H, (IX + 1) 							;Y2
@@ -332,13 +337,13 @@ DLAGN2:
 		LD L, (IX + 6) 							;COL=X1
 		PUSH HL 							;SAVE COL
 		PUSH IX
+
 		PUSH HL
 		PUSH DE
-		PUSH HL
-		PUSH DE
-		CALL LCD_SETXY
-		LD HL, (FCOLOR)
-		CALL LCD_SETPIXEL
+                CALL PLOTP
+                POP DE
+                POP HL
+
 		POP IX
 		POP DE 								;RETRIEVE COL
 		LD H, (IX + 3) 							;X2
@@ -393,7 +398,7 @@ DLNEX:		POP DE 								;RET ADDR
 
 
 ;int x, int y, int radius
-@LCD_CIRCLE:	
+@GR_CIRCLE:	
 		POP HL 								;GET THE RETURN ADDRESS
 		PUSH DE 							;F VAR
 		PUSH DE 							;DDF_X

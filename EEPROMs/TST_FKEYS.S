@@ -1,4 +1,4 @@
-org $4000
+org $C000
 
 INCLUDE MYOS_2_0000.SYM
 
