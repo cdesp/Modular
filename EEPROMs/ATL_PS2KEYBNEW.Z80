@@ -1,0 +1,297 @@
+               
+	       ;USE PS2ISK TO CHECK IF A KEY IS AVAILABLE
+	       ;USE READCHAR TO GET THE KEY TRANSLATED TO CHAR
+	       
+	        GLOBAL PS2KBINIT	        
+                GLOBAL PS2ISK		
+		GLOBAL READCHAR                
+		GLOBAL PS2SETKEYAV
+		GLOBAL PS2NOKEYAV
+		
+
+;SETS A FLAG THAT WE HAVE A KEY AVAILABLE FROM KEYBOARD
+;FOR USE FROM THE INTERRUPT SERVICE
+PS2SETKEYAV:  	LD HL,KBDFLAG
+		LD (HL),1
+		RET
+
+;RESET THE KEYB FLAG
+PS2NOKEYAV:	LD HL,KBDFLAG
+		LD (HL),0
+		RET	
+
+
+;RETURNS THE KEY PRESSED TRANSLATED TO CHAR
+;SAVES THE LAST KEYCODE
+READCHAR:	CALL GTKEY
+		OR A
+                RET Z                                                           ;NO KEY IF A=0
+		LD (LASTKEY),A                
+                CALL PS2LOK                                                     ;LOOK UP TABLE TRANSLATION
+                RET
+
+;CHECKS IF A KEY IS AVAILABLE
+;RETURN  ZERO FLAG SET IF NO KEY AVAILABLE
+PS2ISK:         LD A,(KBDFLAG)	
+                OR A
+                RET     
+
+;RETURNS THE KEY CODE PRESSED ALSO CHECKS THE EXTENDED KEYS AND SETS SHIFT CONTROL ETC
+@GTKEY:		CALL NGETKEY							;GET A KEY FROM PS2 HARDWARE
+		OR A
+		RET Z		
+                CALL CHECKEXT                                                   ;CHECK FOR EXTDED KEYS
+                RET
+
+;ACCESS THE BOARD
+;------------------------------------------------------------------------------------
+PS2KBINIT:	CALL KBDISABLE 							;RESET KB
+                CALL KBENABLE
+                CALL KBENABLE
+		XOR A
+		LD (LASTKEY),A   
+		RET
+		
+@KBDISABLE:	LD A, 2
+		OUT (DEVKBI), A
+		RET
+		
+@KBENABLE:	XOR A
+		OUT (DEVKBI), A
+		RET
+		
+;PS2KEYB BOARD SETS A Z80 HARDWARE INTERRUPT WHEN A KEY IS AVAILABLE
+;GETS A KEY FROM THE PS2KEYB BOARD & CLEARS THE FLIP FLOP TO BE ABLE TO RECEIVE ANOTHER ONE
+;RETURN THE KEY PRESSED ON A,C
+;DESTROYS A,B,L,C
+@NGETKEY:	DI
+		LD A,2
+		OUT (DEVKBI), A 
+		IN A, (DEVKBI) 							;GET KEY
+		CALL REVBITS                                                    ;remove this when hardware fixed
+		LD C, A
+		XOR A
+		OUT (DEVKBI), A 						;RESET FOR NEXT KEY
+		OUT (DEVKBI), A 						;RESET FOR NEXT KEY		
+		LD A, C
+		EI								;CLEAR INTERRUPT
+		;DELAY
+		LD B,30
+AGME:		DJNZ AGME		
+		DI
+		CALL PS2NOKEYAV							;READY FOR NEXT KEY	
+		RET
+		
+
+
+
+;----------------- KEY TRANSLATION
+CHECKEXT:     	CP $E1 								;BREAK KEY
+		RET Z								;JUST SAVE IT		
+		CP $F0 								;240 KEY RELEASED
+		RET Z								;JUST SAVE IT		
+		CP $E0 								;224 EXTENDED KEYS
+		RET Z								;JUST SAVE IT
+		
+		LD C,A								;SAVE KEY
+		LD A,(LASTKEY)
+		CP $E1
+		JR Z, GTBRK
+		CP $F0
+		JR Z, GTREL
+		CP $E0
+		JR Z, GTEXT
+		LD A,C
+
+		CP 18 								;LEFT SHIFT
+		CALL Z, SHFTOG
+		CP 89 								;RIGHT SHIFT
+		CALL Z, SHFTOG
+		CP 20 								;RIGHT CONTROL
+		CALL Z, CTRTOG
+		CP 17 								;LEFT ALT
+		CALL Z, ALTTOG
+		CP $58 								;CAPS LOCK
+		CALL Z, CAPSTOG
+                RET
+
+GTBRK:		LD A,C							;$14 OR $F0
+		CP $F0
+		RET Z		
+		XOR A								
+		RET
+		
+GTEXT:		LD A,C							; THIS IS THE EXTENDED KEY
+		CP $6B 								;LEFT
+		RET Z
+		CP $72								;DOWN
+		RET Z
+		CP $74								;RIGHT
+		RET Z
+		CP $75								;UP
+		RET Z
+		CP $70								;INSERT
+		RET Z
+		CP $6C								;HOME
+		RET Z
+		CP $7D								;PG UP
+		RET Z
+		CP $7A								;PG DN
+		RET Z
+		CP $69								;END
+		RET Z
+		CP $71								;DEL
+		RET Z
+		CP $66 								;BACKSPACE
+		RET Z
+		CP $5A								;ENTER NUM
+		RET Z
+		CP $11								;RIGHT ALT
+		RET Z
+		CP $14								;LEFT ALT
+		RET Z
+		CP $4A 								;NUMLOCK /
+		RET Z
+		CP $F0
+		JR NZ, EXGTEX							;GTREL ;EXTENDED KEY RELEASED $E0 $F0 $KEY		
+		
+EXGTEX:		XOR A								;NOT VALID EXTENDED KEY
+		RET
+		
+		
+GTREL:		LD A,C							; THIS IS THE RELEASED KEY
+		CP 18 								; LSHIFT RELEASED
+		CALL Z, SHFRES							; RESET SHIFT
+		CP 20 								; LCTRL RELEASED
+		CALL Z, CTRRES							; RESET CONTROL
+		CP 17 								; LALT RELEASED
+		CALL Z, ALTRES							; RESET ALT
+		CP 89 								; RSHIFT RELEASED
+		CALL Z, SHFRES							; RESET SHIFT		
+		LD (LASTKEY),A   						; SET LAST KEY
+		XOR A 								; NO KEY		
+		RET
+		
+SHFRES:		LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
+		RES 6, (HL) 							; BIT 6 IS SHIFT $40=64
+		RET
+		
+CTRRES:		LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
+		RES 7, (HL)							; BIT 7 IS CTRL $80=128
+		RET
+		
+ALTRES:		LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
+		RES 5, (HL)							; BIT 5 IS SHIFT $20=32
+		RET
+		
+SHFTOG:		LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
+		LD A, $40							; MASK
+		XOR (HL) 							; BIT 6 IS SHIFT $40=64
+		LD (HL), A							; SAVE
+		XOR A 								; NO KEY
+		RET
+		
+CTRTOG:		LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
+		LD A, $80							; MASK
+		XOR (HL)							; BIT 7 IS CTRL $80=128
+		LD (HL), A							; SAVE
+		XOR A 								; NO KEY
+		RET
+		
+ALTTOG:		LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH
+		LD A, $20
+		XOR (HL)							; BIT 5 IS ALT $20=32
+		LD (HL), A							; SAVE
+		XOR A 								; NO KEY
+		RET
+		
+CAPSTOG:	LD HL, KEYCTR							;KEYBOARD FLAGS SHFT,CONTROL,GRAPH,CAPS
+		LD A, $10
+		XOR (HL)							; BIT 4 IS CAPS $10=16
+		LD (HL), A							; SAVE
+		XOR A 								; NO KEY
+		RET
+		
+
+		
+@PS2LOK:	CP $AA
+		JR C,DOTRANS							;ONLY 0-170
+		;CLEAR AND EXIT
+		XOR A
+		RET
+DOTRANS:	LD HL, PS2TAB1							;UNSHIFTED
+		LD D,A								;SAVE KEY CODE
+		CALL PLK1							;GET CHAR NO SHIFT NO CAPS
+		LD B,A								;SAVE CHAR
+		CP 'a'
+		JR C,PS2CHKCAPS
+PS2SGT:		CP 'z'+1		
+		JR C, PS2CPSF;ITS A LETTER CAPS AND SHIFT MATTERS
+		;WE DON'T HAVE A LETTER CHECK ONLY SHIFT
+PS2CHKCAPS:	LD A, (KEYCTR)							; GET KEYBFLAGS ON A SHIFT		
+		BIT 6, A
+		LD A,B
+		RET Z								;IF NO SHIFT RETURN TAB1 CHAR
+		;SHIFTED NOT LETTER
+		JR PS2SHIFT
+;IT'S A LETTER COULD BE SHIFTED CAPS OR BOTH
+PS2CPSF:	LD A, (KEYCTR)							; GET KEYBFLAGS ON A SHIFT
+		LD C, A 							;CAPS ON C
+		RR A
+		RR A 								;2 ROTATIONS RIGHT SHIFT BECOMES BIT 4 FROM 6
+		XOR C 								;XOR SHIFT WITH CAPS
+		BIT 4, A 							;CHECK IF BIT 4 IS 0 = UNSHIFTED						
+		JR NZ,PS2SHIFT
+		;NOT NEEDED WE ALREADY GOT IT ON B=A
+	;	LD HL, PS2TAB1							;UNSHIFTED
+	;	CALL PLK1							;GET CHAR
+		LD A,B				
+		RET
+PS2SHIFT:	LD A, D 							;RESTORE A KEYCODE
+		LD HL, PS2TAB2							;SHIFTED
+		CALL PLK1							;GET CHAR
+		RET
+PLK1:		LD B, 0
+		LD C, A
+		ADD HL, BC
+		LD A, (HL)							;GET THE CHAR
+		RET
+		
+		ESC EQU $1B
+;SCAN CODES
+PS2TAB1:	DB 0,0,0,165,0,0,0,0,0,0
+		DB 168,166,0,0,'`',0,0,0,0,0
+		DB 0,'q','1',0,0,0,'z','s','a','w'
+		DB '2',0,0,'c','x','d','e','4','3',0
+		DB 0,' ','v','f','t','r','5',0,0,'n' 				;40-49
+		DB 'b','h','g','y','6',0,0,44,'m','j' 				;50-59
+		DB 'u','7','8',0,0,',','k','i','o','0' 				;60-69
+		DB '9',0,0,'.','/','l',59,'p','-',0      			;70-79
+		DB 0,0,39,0,'[','=',0,0,0,0              			;80-89
+		DB 13,']',0,'\',0,0,0,0,0,0              			;90-99
+		DB 0,0,6,0,0,8,0,4,9,0                   			;100-109
+		DB 0,0,1,7,10,0,3,11,ESC,0               			;110-119
+		DB 0,0,'+','-','*','9',0,0,0,0           			;120-129
+		DB 0,167,0,0,0,0,0,0,0,0 					;130-139
+		DB 0,0,0,0,0,0,0,0,0,0                   			;140-149
+		DB 0,0,0,0,0,0,0,0,0,0 						;150-159
+		DB 0,0,0,0,0,0,0,0,0,0                   			;160-169
+		
+		
+PS2TAB2:	DB 0,0,0,165,0,0,0,0,0,0
+		DB 168,166,0,0,'~',0,0,0,0,0
+		DB 0,'Q','!',0,0,0,'Z','S','A','W'
+		DB '@',0,0,'C','X','D','E','$','#',0
+		DB 0,' ','V','F','T','R','%',0,0,'N' 				;40-49
+		DB 'B','H','G','Y','^',0,0,34,'M','J' 				;50-59 34=""
+		DB 'U','&','*',0,0,'<','K','I','O',')' 				;60-69
+		DB '(',0,0,'>','?','L',':','P','_',0     			;70-79
+		DB 0,0,34,0,'{','+',0,0,0,0              			;80-89
+		DB 13,'}',0,'|',0,0,0,0,0,0              			;90-99
+		DB 0,0,6,0,0,8,0,4,9,0                   			;100-109
+		DB 0,0,1,7,10,0,3,11,ESC,0               			;110-119
+		DB 0,0,'+','-','*','9',0,0,0,0           			;120-129
+		DB 0,167,0,0,0,0,0,0,0,0 					;130-139
+		DB 0,0,0,0,0,0,0,0,0,0                   			;140-149
+		DB 0,0,0,0,0,0,0,0,0,0 						;150-159
+		DB 0,0,0,0,0,0,0,0,0,0                   			;160-169

@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' standalone='yes'?>
 <WORKSPACE>
  <FRAME activewindow="0">
-  <PLACEMENT>2c00000002000000030000000083ffff0083ffffffffffffffffffffff01000068000000fd0500003e030000</PLACEMENT>
+  <PLACEMENT>2c0000000200000003000000ffffffffffffffffffffffffffffffffff01000068000000fd0500003e030000</PLACEMENT>
   <WINDOW type="default" module="ISIS"/>
  </FRAME>
  <MODULE name="VSMDEBUG">
@@ -31,6 +31,9 @@
      <ITEM name="Watch Expression Column Width">83</ITEM>
      <ITEM name="nItems">0</ITEM>
     </PROPERTIES>
+   </POPUP>
+   <POPUP w="695" x="183" flags="00000000" y="289" h="453" pid="0" iid="8">
+    <PROPERTIES/>
    </POPUP>
   </PWI>
  </MODULE>

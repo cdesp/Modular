@@ -552,3 +552,13 @@ AppendB2D:
 	ret nz
 	inc hl
 	jr SkipWhitespace	
+
+;REVERSE BITS ON A
+;DESTROYS B,L
+@REVBITS:	ld b, 8
+		ld l, a
+REVLOOP:	
+		rl l
+		rra
+		djnz REVLOOP
+		RET	
