@@ -21,6 +21,8 @@
 		
 		
 		LCDADDR EQU $27							;$3F
+		BACKLIGHTPIN EQU 3
+		BACKLIGHTPINMASK EQU 1.SHL.BACKLIGHTPIN 		
 		
 		LCD_NOBACKLIGHT EQU 0x00
 		LCD_BACKLIGHT EQU 0xFF
@@ -53,11 +55,11 @@
 		
 ;// flags for display on/off and cursor control
 ;// ---------------------------------------------------------------------------
-		LCD_DISPLAYON EQU 0x04
+		LCD_DISPLAYON EQU 2;0x04
 		LCD_DISPLAYOFF EQU 0x00
-		LCD_CURSORON EQU 0x02
+		LCD_CURSORON EQU 1;0x02
 		LCD_CURSOROFF EQU 0x00
-		LCD_BLINKON EQU 0x01
+		LCD_BLINKON EQU 0;0x01
 		LCD_BLINKOFF EQU 0x00
 		
 ;// flags for display/cursor shift
@@ -101,10 +103,9 @@
 		
 		BACKLIGHT_ON EQU 255
 		
-		
-		LCD_DSPMODE  DB 0
-		LCD_DSPCTRL  DB 0
-		
+		BACKLIGHTPIN EQU 3
+		BACKLIGHTPINMASK EQU 1.SHL.BACKLIGHTPIN 
+					
 		
 ;A HAS THE VALUE FOR THE 4 BITS
 ;E HAS THE COMMAND OR DATA SIGNAL E=1 MEANS DATA
@@ -127,6 +128,9 @@ LWNXT4:		LD A, E
 		JR NC, LWNXT5
 		SET RS, D
 LWNXT5:										;HERE WE HAVE ALL BITS SET TO DRIVE 8574 PINS
+		LD A,(LCD_STSMASK)							;ADD THE BACKLIGHT MASKS 	
+		OR D
+		LD D,A
 ;WE SEND A PULSE TO WRITE THE 4BITS TO LCD
 		SET EN, D 							;EN=HIGH
 		LD A, D
@@ -149,6 +153,12 @@ LCD16_I2CSEND:	PUSH DE
 		POP DE
 		RET
 		
+;A HAS THE COMMAND TO SEND
+LCD16_COMMD:	LD E, COMMAND
+		JR LCD16_SEND
+		
+;A HAS THE DATA TO SEND
+LCD16_DATA:	LD E, LCD_DATA		
 ;A HAS THE VALUE FOR THE 4 BITS
 ;E HAS THE COMMAND OR DATA SIGNAL E=1 MEANS DATA E=0 MEANS COMMAND E=2 IS FOUR_BITS
 LCD16_SEND:	LD D, A 							;SAVE A FOR LATER USE
@@ -172,18 +182,6 @@ LCSD_4BIT:	LD A, D
 		AND $0F
 		CALL LCD16_WR4BITS						;LOW 4 BITS NEXT
 		RET
-		
-		
-		
-;A HAS THE COMMAND TO SEND
-LCD16_COMMD:	LD E, COMMAND
-		JP LCD16_SEND
-		
-;A HAS THE DATA TO SEND
-LCD16_DATA:	LD E, LCD_DATA
-		JP LCD16_SEND
-		
-		
 		
 @LCD16_INIT:	LD A, 3 							;SET LCD TO 4BIT MODE
 		LD E, FOUR_BITS
@@ -216,6 +214,9 @@ LCD16_DATA:	LD E, LCD_DATA
 		LD (LCD_DSPMODE), A
 		OR LCD_ENTRYMODESET
 		CALL LCD16_COMMD
+		LD BC, $3000
+		CALL PAUSE_LOOP 						;DELAY 4,5ms
+		CALL LCD16_BKLTON						;BACKLIGHT ON BY DEFAULT
 		RET
 		
 @LCD16_NODISP:	LD A, (LCD_DSPCTRL)
@@ -225,7 +226,7 @@ LCD16_DATA:	LD E, LCD_DATA
 		CALL LCD16_COMMD
 		RET
 @LCD16_DISP:	LD A, (LCD_DSPCTRL)
-		OR LCD_DISPLAYON
+		SET LCD_DISPLAYON, A
 		LD (LCD_DSPCTRL), A
 		OR LCD_DISPLAYCONTROL
 		CALL LCD16_COMMD
@@ -282,7 +283,7 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		
 		
 @LCD16_CURSON:	LD A, (LCD_DSPCTRL)
-		OR LCD_CURSORON
+		SET LCD_CURSORON, A
 		LD (LCD_DSPCTRL), A
 		OR LCD_DISPLAYCONTROL
 		CALL LCD16_COMMD
@@ -297,7 +298,7 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		
 		
 @LCD16_BLINKON:	LD A, (LCD_DSPCTRL)
-		OR LCD_BLINKON
+		SET LCD_BLINKON, A
 		LD (LCD_DSPCTRL), A
 		OR LCD_DISPLAYCONTROL
 		CALL LCD16_COMMD
@@ -320,28 +321,13 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		RET
 
 
-@LCD16_SETBKLIGHT:
-
-
+@LCD16_BKLTON:  LD A, BACKLIGHTPINMASK AND LCD_BACKLIGHT
+		LD (LCD_STSMASK),A
+		CALL LCD16_I2CSEND
 		RET
 
-; void LiquidCrystal_I2C::setBacklight( uint8_t value ) 
-; {
-;    // Check if backlight is available
-;    // ----------------------------------------------------
-;    if ( _backlightPinMask != 0x0 )
-;    {
-;       // Check for polarity to configure mask accordingly
-;       // ----------------------------------------------------------
-;       if  (((_polarity == POSITIVE) && (value > 0)) || 
-;            ((_polarity == NEGATIVE ) && ( value == 0 )))
-;       {
-;          _backlightStsMask = _backlightPinMask & LCD_BACKLIGHT;
-;       }
-;       else 
-;       {
-;          _backlightStsMask = _backlightPinMask & LCD_NOBACKLIGHT;
-;       }
-;       _i2cio.write( _backlightStsMask );
-;    }
-; }
+@LCD16_BKLTOFF: LD A, BACKLIGHTPINMASK AND LCD_NOBACKLIGHT
+		LD (LCD_STSMASK),A
+		CALL LCD16_I2CSEND
+		RET
+
