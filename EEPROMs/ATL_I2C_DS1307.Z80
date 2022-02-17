@@ -3,13 +3,13 @@
 ;-----------------------
 		
 		GLOBAL DS1307_INIT
-		GLOBAL DS1307_ADJUST_TEST					;DEFAULT DATE TIME
+		GLOBAL DS1307_ADJUST_TEST 					;DEFAULT DATE TIME
 		GLOBAL DS1307_ADJUST
 		GLOBAL DS1307_GETNOW
 		GLOBAL DS1307_SETSQ
 		GLOBAL DS1307_GETTIME
 		
-		DS1307_ADDRESS EQU $68						;0x68 SHL 1 UPPER 7 BITS
+		DS1307_ADDRESS EQU $68 						;0x68 SHL 1 UPPER 7 BITS
 		
 		DS1307_CONTROL_REGISTER EQU 0x07
 		
@@ -75,17 +75,17 @@ SHERR:		LD A, C
 		
 ;RESETS THE BUFFER DATA 20 BYTES
 RST_BUF:	XOR A
-		LD B,20
-		LD HL,BUFFER
-LP1: 		LD (HL),A
+		LD B, 20
+		LD HL, BUFFER
+LP1:		LD (HL), A
 		INC HL
 		DJNZ LP1
 		RET
-
+		
 ;SET THE MASK FOR DATETIME MESSAGE
-DS1307_INIT:	;NO NEED 
+DS1307_INIT:									;NO NEED
 		RET
-
+		
 DS1307_GETNOW:	LD HL, BUFFER
 		XOR A 								;SEND COMMAND 0
 		LD (HL), A
@@ -98,10 +98,14 @@ DS1307_GETNOW:	LD HL, BUFFER
 		LD D, DS1307_ADDRESS
 		LD BC, 7
 		CALL I2C_READ
-		JP NZ, SHERR		
+		JP NZ, SHERR
 		XOR A
 		RET
 		
+;SETS THE TIME ON DS1307 FROM A STRING
+;STRING IS ON TIMMSG VAR 'dd/mm/yy hh:mm:ss0'
+DS1307_SETTIME:	
+		RET
 		
 ;SEND COMMAND ADJUST TIME
 DS1307_ADJUST_TEST:	
@@ -110,35 +114,35 @@ DS1307_ADJUST_TEST:
 		XOR A
 		LD (DE), A
 		INC DE
-		LD A, 10							; 10 SECS
+		LD A, 10 							; 10 SECS
 		CALL BN2BCD
 		LD A, L
 		LD (DE), A
 		INC DE
-		LD A, 34							; 28 MINS
+		LD A, 34 							; 28 MINS
 		CALL BN2BCD
 		LD A, L
 		LD (DE), A
 		INC DE
-		LD A, 18							; 19 HOURS
+		LD A, 18 							; 19 HOURS
 		CALL BN2BCD
 		LD A, L
 		LD (DE), A
 		INC DE
-		LD A, 5								; DAY OF WEEK
+		LD A, 5 							; DAY OF WEEK
 		LD (DE), A
 		INC DE
-		LD A, 18							; 8 DAY
+		LD A, 18 							; 8 DAY
 		CALL BN2BCD
 		LD A, L
 		LD (DE), A
 		INC DE
-		LD A, 02							; 10 MONTH
+		LD A, 02 							; 10 MONTH
 		CALL BN2BCD
 		LD A, L
 		LD (DE), A
 		INC DE
-		LD A, 21							; 21 YEAR (2020)
+		LD A, 21 							; 21 YEAR (2020)
 		CALL BN2BCD
 		LD A, L
 		LD (DE), A
@@ -162,10 +166,10 @@ DS1307_ADJUST:	LD HL, BUFFER
 		LD BC, 9
 		CALL I2C_WRITE
 		JP NZ, SHERR0
-		LD BC, FFFFh							;8000H FOR 4MHZ
-		CALL PAUSE_LOOP							; 0.5 second delay
-		LD BC, FFFFh							;8000H FOR 4MHZ
-		CALL PAUSE_LOOP							; 0.5 second delay
+		LD BC, FFFFh 							;8000H FOR 4MHZ
+		CALL PAUSE_LOOP 						; 0.5 second delay
+		LD BC, FFFFh 							;8000H FOR 4MHZ
+		CALL PAUSE_LOOP 						; 0.5 second delay
 		RET
 		
 		
@@ -185,69 +189,69 @@ DS1307_SETSQ:	LD HL, BUFFER
 		RET
 		
 		
-
+		
 CONVHL:		CALL Bcd2ASC
-		LD H,0
+		LD H, 0
 		RET
-
-
-CHKERROR:	LD B,7
-		LD HL,BUFFER
-CEAGN:		LD A,(HL)
+		
+		
+CHKERROR:	LD B, 7
+		LD HL, BUFFER
+CEAGN:		LD A, (HL)
 		CP $FF
-		JR Z,STER
+		JR Z, STER
 		INC HL
 		DJNZ CEAGN
 		XOR A
 		RET
-STER:		;LD HL,ERRCNT
-		;INC (HL)
+STER:										;LD HL,ERRCNT
+;INC (HL)
 		SCF
 		RET
-
-;GETS THE TIME FROM DS1307
+		
+;GETS THE TIME AS STRING FROM DS1307
 ;SET THE DATE AND TIME ON TIMEMSG VAR
 ;ON ERROR CARRY IS SET
-DS1307_GETTIME: CALL RST_BUF
+DS1307_GETTIME:	CALL RST_BUF
 		CALL DS1307_GETNOW
-		RET C						;ERROR RETURN
-		CALL CHKERROR		
-		RET C						;ERRREAD  ;IF ERROR DONT PRINT			
-		LD IX,BUFFER
-		LD DE,TIMMSG		
-		LD H,0
-		LD L,(IX+4) ;DAY
+		RET C 								;ERROR RETURN
+		CALL CHKERROR
+		RET C 								;ERRREAD  ;IF ERROR DONT PRINT
+		LD IX, BUFFER
+		LD DE, TIMMSG
+		LD H, 0
+		LD L, (IX + 4) 							;DAY
 		CALL CONVHL
-		LD A,'/'
-		LD (DE),A
+		LD A, ' / '
+		LD (DE), A
 		INC DE
-		LD L,(IX+5) ;MONTH
+		LD L, (IX + 5) 							;MONTH
 		CALL CONVHL
-		LD A,'/'
-		LD (DE),A
+		LD A, ' / '
+		LD (DE), A
 		INC DE
-		LD L,(IX+6) ;YEAR
+		LD L, (IX + 6) 							;YEAR
 		CALL CONVHL
-		LD A,' '
-		LD (DE),A
+		LD A, ' '
+		LD (DE), A
 		INC DE
-		LD L,(IX+2) ;HOUR
+		LD L, (IX + 2) 							;HOUR
 		CALL CONVHL
-		LD A,':'
-		LD (DE),A
+		LD A, ':'
+		LD (DE), A
 		INC DE
-		LD L,(IX+1) ;MIN
+		LD L, (IX + 1) 							;MIN
 		CALL CONVHL
-		LD A,':'
-		LD (DE),A
+		LD A, ':'
+		LD (DE), A
 		INC DE
-		LD L,(IX)   ;SECS
+		LD L, (IX) 							;SECS
 		CALL CONVHL
 		INC DE
-		XOR A		
-		LD (DE),A
+		XOR A
+		LD (DE), A
 		RET
 		
-
+		
 		
 ;=======================
