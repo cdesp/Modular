@@ -58,7 +58,7 @@ ENTITY vga_controller IS
 	 --islowres :  IN   STD_LOGIC;  -- '1' IF WE DISPLAY lowres or hires
 	 datain	 :  IN   STD_LOGIC_VECTOR(7 DOWNTO 0);
 	-- datace   :  OUT  STD_LOGIC := '1'; --'0' enables memory chip --maybe let it always on
-	 addrout  :  OUT  STD_LOGIC_VECTOR(14 DOWNTO 0) -- A0 - A14 for addressing the 32k of memory chip
+	 addrout  :  OUT  STD_LOGIC_VECTOR(15 DOWNTO 0) -- A0 - A15 for addressing the 64k of memory chip
 	 );
 END vga_controller;
 
@@ -76,7 +76,7 @@ SIGNAL PXLLEFT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL PXLRIGHT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM
 SIGNAL PXLBYTE:STD_LOGIC_VECTOR(7 DOWNTO 0) ;  --DATA FROM VIDEO MEM
 SIGNAL PXLBYTEnx:STD_LOGIC_VECTOR(7 DOWNTO 0) ;  --DATA FROM VIDEO MEM
-SIGNAL memaddr:INTEGER RANGE 0 TO 32768-1 :=0;
+SIGNAL memaddr:INTEGER RANGE 0 TO 65536-1 :=0;
 SIGNAL FONTaddr:INTEGER RANGE 0 TO 8192-1 :=0;
 SIGNAL CHARaddr:INTEGER RANGE 0 TO 4096-1 :=0;
 SIGNAL COLRaddr:INTEGER RANGE 0 TO 2048-1 :=0;

@@ -6,6 +6,8 @@
 //Device: GW1N-1
 //Created Time: Thu 08 12 14:42:59 2021
 
+IO_LOC "addrout[15]" 16;
+IO_PORT "addrout[15]" IO_TYPE=LVTTL33 PULL_MODE=UP DRIVE=8;
 IO_LOC "addrout[14]" 17;
 IO_PORT "addrout[14]" IO_TYPE=LVTTL33 PULL_MODE=UP DRIVE=8;
 IO_LOC "addrout[13]" 18;
