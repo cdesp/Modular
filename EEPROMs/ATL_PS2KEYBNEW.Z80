@@ -71,11 +71,15 @@ NGETKEY:	DI
 		LD A,2
 		OUT (DEVKBI), A 
 		IN A, (DEVKBI) 							;GET KEY
-		CALL REVBITS                                                    ;remove this when hardware fixed
+		;CALL REVBITS                                                    ;remove this when hardware fixed
 		LD C, A
 		XOR A
 		OUT (DEVKBI), A 						;RESET FOR NEXT KEY
-		OUT (DEVKBI), A 						;RESET FOR NEXT KEY		
+		;LD B,30
+AGME1:		;DJNZ AGME1		
+		OUT (DEVKBI), A 						;ZERO COUNTER		
+		OUT (DEVKBI), A 						;ZERO COUNTER
+		;OUT (DEVKBI), A 						;ZERO COUNTER
 		LD A, C
 		EI								;CLEAR INTERRUPT
 		;DELAY
