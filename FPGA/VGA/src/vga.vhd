@@ -89,9 +89,9 @@ SIGNAL PXLBACKnx:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --DATA FROM VIDEO MEM 
 SIGNAL PXLTEXTnx:STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";  --PATTERN OF TEXT CHAR DATA FROM VIDEO MEM
 SIGNAL SETUPCHAR:INTEGER RANGE 0 TO 9:=0;
 SIGNAL disp_ena  : STD_LOGIC;  --display enable ('1' = display time, '0' = blanking time)
-SIGNAL column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
-SIGNAL row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
 SIGNAL vidset:STD_LOGIC_VECTOR(1 DOWNTO 0) := "01";  --video settings bit 1 graph=0/text=1 ,  bit 0 320=0,640=1
+SIGNAL vidbuf: STD_LOGIC := '0'; --video settings bit 7 is buffer 0 start at 0 or 1 start at 32768
+SIGNAL membuf: STD_LOGIC := '0'; -- memaddr high bit to control double buffering
 SIGNAL Rpixel_clk  : STD_LOGIC;
 SIGNAL RSTRT  : STD_LOGIC;
 SIGNAL READREGISTER:INTEGER RANGE 0 TO 9 :=0;  --THIS IS THE VIDEO MODE REGISTER BIT 0 AND 1 ARE USED
@@ -111,6 +111,9 @@ BEGIN
  PROCESS(Rpixel_clk)
     VARIABLE h_count : INTEGER RANGE 0 TO h_period - 1 := 0;  --horizontal counter (counts the columns)
     VARIABLE v_count : INTEGER RANGE 0 TO v_period - 1 := 0;  --vertical counter (counts the rows)
+VARIABLE column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
+VARIABLE row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
+
     VARIABLE LETCOL:INTEGER RANGE 0 TO 7 := 0;  --LETTER COLUMN
 	 --VARIABLE txrow:INTEGER RANGE 0 TO 20-1 := 0;    --TEXT ROW
   
@@ -149,15 +152,15 @@ BEGIN
       END IF;
       
       --set pixel coordinates
-      IF(h_count < h_pixels) THEN  --horiztonal display time
-        column <= h_count;           --set horiztonal pixel coordinate	     
+      IF(h_count <= h_pixels) THEN  --horiztonal display time
+        column := h_count;           --set horiztonal pixel coordinate	     
 		ELSE
-        COLUMN <=0;		
+          COLUMN :=0;		
       END IF;
       IF(v_count < v_pixels) THEN  --vertical display time
-        row <= v_count;              --set vertical pixel coordinate
+        row := v_count;              --set vertical pixel coordinate
 		ELSE
-		  ROW<=0;
+		  ROW:=0;
       END IF;
 
       --set display enable output
@@ -181,18 +184,20 @@ BEGIN
 --		  SCRST<='1';
 --		END IF;  
 
-     
+      
 
-	  IF h_count>h_pixels-8 THEN	
+	  IF h_count>h_pixels-7 THEN	--8
 	    SETUPCHAR<=SETUPCHAR+1;
 	  ELSE
 	    SETUPCHAR<=0;	
 	  END IF; 
 
+      membuf<='0';  --ALWAYS LOW FOR REGISTERS
+
 	  IF v_count=v_period-2 and h_count>h_pixels-10 and h_count<h_pixels-4 THEN	
-	    READREGISTER<=READREGISTER+1;
+	    READREGISTER<=READREGISTER+1;        
 	  ELSE
-	    READREGISTER<=0;	
+	    READREGISTER<=0;        
 	  END IF; 
 
 	  IF v_count=v_period-4 and h_count>h_pixels-10 and h_count<h_pixels-4 THEN	
@@ -204,12 +209,14 @@ BEGIN
 
 
       VIDSET<=VIDSET;
+      VIDBUF<=VIDBUF;
       IF READREGISTER=1 THEN
-        MEMADDR<=32760;
+        MEMADDR<=32760;        
       ELSIF READREGISTER=2 THEN
         CONFIGREG<=DATAIN;
       ELSIF READREGISTER=3 THEN
         VIDSET<=CONFIGREG(1 DOWNTO  0);
+        VIDBUF<=CONFIGREG(7);
       END IF;
 	
       IF READREGISTER2=1 THEN
@@ -222,16 +229,18 @@ BEGIN
         --PXLFORE<="0001";
       END IF;
 
-
+      
         --VIDSET<="01";
-     IF READREGISTER=0 AND  READREGISTER2=0 THEN   
+     IF READREGISTER=0 AND  READREGISTER2=0 THEN 
+      membuf<=VIDBUF;
 	  IF vidset="00" THEN  --GRAPHICS 320X200X4
         IF (h_count > h_period - 3)  THEN
 		  RSTRT <= '1';		  
 		ELSE
 		  RSTRT <= '0';
 		END IF;
-		
+		--set the buffer for graphics
+        membuf<=vidbuf;
 		
 		IF RSTRT='1' THEN
 		  MEMADDR <= (ROW/2)*160;
@@ -266,6 +275,9 @@ BEGIN
  
 		MEMADDR<= MEMADDR;	
 		CHARaddr<=CHARaddr;
+        --set the buffer for text
+        membuf<=vidbuf;
+
   		--IF (h_count > h_period - 2)  THEN
 		--  RSTRT <= '1';		  
 		--ELSE
@@ -282,13 +294,15 @@ BEGIN
 		    MEMADDR<=CHARaddr;				
 		  ELSIF SETUPCHAR=2 THEN
 		    TEXTCHAR<=to_integer(unsigned(DATAIN));
-			 MEMADDR<=1024 + CHARaddr;	
+			 MEMADDR<=1024 + CHARaddr;	--setup char colors 
 		  ELSIF SETUPCHAR=3 THEN		  
 		   PXLFOREnx<=datain(3 DOWNTO  0); 
 		   PXLBACKnx<=datain(7 DOWNTO  4); 		  
-		   MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT AT ADDR 4096 
+		   MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT AT ADDR 4096 on buffer 0 ONLY
+           membuf<='0';
 		  ELSIF SETUPCHAR=4 THEN
 		   PXLTEXTnx<=DATAIN;
+           membuf<='0';
 			--PXLTEXTnx<=DATAIN;
 			--RSTRT<='1';
           ELSIF SETUPCHAR=5 THEN
@@ -310,9 +324,11 @@ BEGIN
 		ELSIF COLUMN MOD 16=7 THEN  --READ COLOR , SETUP PATTERN
 		 PXLFOREnx<=datain(3 DOWNTO  0); 
 		 PXLBACKnx<=datain(7 DOWNTO  4); 		 
-		 MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS
+		 MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS on buffer 0 ONLY
+         membuf<='0';
       ELSIF COLUMN MOD 16=8 THEN  --READ PATTERN			
 		 PXLTEXTnx<=DATAIN;	  --GET FONT PATTERN 
+         membuf<='0';
 		END IF;
 		
 		
@@ -341,7 +357,8 @@ BEGIN
 		ELSE
 		  RSTRT <= '0';
 		END IF;
-		
+		--set the buffer for graphics
+        membuf<=vidbuf;
 		
 		IF RSTRT='1' THEN
 		  MEMADDR <= ROW*80; --640/8 PIXELS PER BYTE
@@ -376,17 +393,20 @@ BEGIN
 		MEMADDR<= MEMADDR;	
 		CHARaddr<=CHARaddr;
 	    LETCOL := COLUMN MOD 8;
+        --set the buffer for text
+        membuf<=vidbuf;
 		
 		
-		IF h_count>h_pixels+2 THEN
+		IF h_count>h_pixels+2 THEN --AFTER VISIBLE PIXELS
           CASE SETUPCHAR IS            
             WHEN 1 => 	CHARaddr <= (ROW/10)*80; 
                       --CHARaddr <= 6*80;
 			            TXFontline<= ROW MOD 10; -- 0..9
             WHEN 2 => MEMADDR<=CHARaddr;				
             WHEN 3 => TEXTCHAR<=to_integer(unsigned(DATAIN));
-		              MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT AT ADDR 4096 
-            WHEN 4 => PXLTEXTnx<=DATAIN;
+		              MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT AT ADDR 4096 on buffer 0 ONLY
+                      membuf<='0';
+            WHEN 4 => PXLTEXTnx<=DATAIN;membuf<='0';
             WHEN 5 => PXLTEXT<=PXLTEXTnx;
                       CHARaddr<= CHARaddr +1;
             WHEN OTHERS => CHARaddr<=CHARaddr;
@@ -412,8 +432,9 @@ BEGIN
            --when 0 => 		
             when 0 TO 2 => MEMADDR<=CHARaddr;	--CHARACTER ADDRESS	 			
             when 3 TO 4 => TEXTCHAR<=to_integer(unsigned(DATAIN));	--GET TEXT CHARACTER 	     
-                      MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS	
-            when 5 TO 6 => PXLTEXTnx<=DATAIN;	  --GET FONT PATTERN 		
+                      MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS on Buffer 0 ONLY	
+                      membuf<='0';
+            when 5 TO 6 => PXLTEXTnx<=DATAIN;membuf<='0';	  --GET FONT PATTERN 		
             when 7 => PXLTEXT  <= PXLTEXTnx; 
                       CHARaddr<= CHARaddr +1;
           end case;
@@ -438,14 +459,21 @@ BEGIN
 	      PXLOUT <= PXLFORE; 
 		 ELSE   
           PXLOUT <= PXLBACK; 
---          IF LETCOL=0 THEN
---		    PXLOUT <= "0010"; 
+   --       IF LETCOL=0 THEN
+	--	    PXLOUT <= "0010"; 
 --          ELSIF LETCOL=6 THEN
 --            PXLOUT <="0101";
---          ELSIF LETCOL=7 THEN
---            PXLOUT <="0001";
---          END IF;
+     --     ELSIF LETCOL=7 THEN
+      --      PXLOUT <="0001";
+      --    END IF;
 		 END IF;
+  --      IF COLUMN=0 THEN 
+--         PXLOUT<="1111";
+  --      END IF;
+   --     IF COLUMN=639 THEN 
+    --     PXLOUT<="1011";
+     --   END IF;
+
         --IF txfontline=0 AND LETCOL=1 THEN
          --  PXLOUT <= PXLBACK; 
         --END IF;
@@ -477,7 +505,9 @@ BEGIN
 --				 memaddr+1; 
              
   
-  addrout <= std_logic_vector(to_unsigned(memaddr, addrout'length));
+  --set the address and buffer
+  addrout <= std_logic_vector(to_unsigned(memaddr, addrout'length)) when membuf='0'
+   else std_logic_vector(to_unsigned(memaddr+32768, addrout'length));
 --addrout <="111111111111000";
   
   --RGBI <=  "0000" WHEN DISp_ena = '0' ELSE
