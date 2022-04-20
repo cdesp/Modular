@@ -97,7 +97,7 @@ SIGNAL RSTRT  : STD_LOGIC;
 SIGNAL READREGISTER:INTEGER RANGE 0 TO 9 :=0;  --THIS IS THE VIDEO MODE REGISTER BIT 0 AND 1 ARE USED
 SIGNAL READREGISTER2:INTEGER RANGE 0 TO 9 :=0;  -- THIS IS THE DEFAULT FORE AND BACK COLOR FOR MONOCHROME MODES
 SIGNAL CONFIGREG:STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";
-
+SIGNAL PAT  : STD_LOGIC;
 
 function is_even(val : integer) return boolean is
     constant vec: signed(31 downto 0) := to_signed(val, 32);
@@ -108,11 +108,11 @@ end;
 
 BEGIN
 
- PROCESS(Rpixel_clk)
+ PROCESS(Rpixel_clk,MEMBUF,PAT)
     VARIABLE h_count : INTEGER RANGE 0 TO h_period - 1 := 0;  --horizontal counter (counts the columns)
     VARIABLE v_count : INTEGER RANGE 0 TO v_period - 1 := 0;  --vertical counter (counts the rows)
-VARIABLE column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
-VARIABLE row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
+    VARIABLE column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
+    VARIABLE row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
 
     VARIABLE LETCOL:INTEGER RANGE 0 TO 7 := 0;  --LETTER COLUMN
 	 --VARIABLE txrow:INTEGER RANGE 0 TO 20-1 := 0;    --TEXT ROW
@@ -491,33 +491,45 @@ VARIABLE row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinat
 		
     END IF;
 
+--    PAT<='0';
+ --   IF MEMBUF='0' THEN
+
+   --   IF   COLUMN >= 600 AND COLUMN<=606 AND ROW>=10 AND ROW<=17   THEN
+    --    PAT<='1';
+     -- END IF;
+     
+
+    --ELSE
+
+      --IF   ( COLUMN = 605 OR COLUMN=606) AND ROW>=10 AND ROW<=17   THEN
+       -- PAT <= '1';       
+      --END IF;
+   -- END IF;
+   
+    
+    
+    --IF PAT='1' THEN  
+     -- PXLOUT <= "1111"; 
+    --END IF;
+
     scrst <= '0';
   END PROCESS;
 
     Rpixel_clk<=pixel_clk;
   
-  --MEMADDR <= RowH*160 WHEN (RSTRT='1') ELSE
-    --         MEMADDR+1 WHEN IS_even(COLUMNH)
-		--		 ELSE MEMADDR;
---  memaddr <= RowH*160 WHEN (RSTRT='1') ELSE
---             RowH*160 + (columnH/2) WHEN IS_even(COLUMNH) AND ROW<100 ELSE  --double pixel on each byte
---             RowH*160 + (columnH/2)+1 WHEN IS_even(COLUMNH) ELSE  --double pixel on each byte
---				 memaddr+1; 
-             
+  
   
   --set the address and buffer
-  addrout <= std_logic_vector(to_unsigned(memaddr, addrout'length)) when membuf='0'
-   else std_logic_vector(to_unsigned(memaddr+32768, addrout'length));
---addrout <="111111111111000";
-  
-  --RGBI <=  "0000" WHEN DISp_ena = '0' ELSE
-	--		  PXLLEFT WHEN COLUMNh REM 2=0 ELSE
-	--		  PXLRIGHT;
-	
-			  --PXLLEFT WHEN COLUMN MOD 4=1 ELSE
-			 -- PXLRIGHT WHEN COLUMNh MOD 2=1 ELSE
-			 -- PXLRIGHT WHEN COLUMN MOD 4=3 ELSE
-			  --"0000";	 
+--  addrout <= std_logic_vector(to_unsigned(memaddr, addrout'length)) when membuf='0'
+ --  else std_logic_vector(to_unsigned(memaddr+32768, addrout'length));
+
+  addrout <= MEMBUF & std_logic_vector(to_unsigned(memaddr, addrout'length -1 )) ;
+    
+    
+
+
+
+
 	RGBI <= "0000" WHEN DISp_ena = '0' ELSE
 			  PXLOUT;
 			  

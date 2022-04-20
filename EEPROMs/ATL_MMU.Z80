@@ -44,7 +44,7 @@ PUTPGINBANK:	LD C, A 							;SAVE PAGE
 
 ;B BANK NO (0..7)
 ;RET A THE PAGE IN BANK B
-;DESTROYS HL,DE,A
+;DESTROYS HL,DE
 GETPGINBANK:    LD HL,BANKS
                 LD D,0
                 LD E,B
