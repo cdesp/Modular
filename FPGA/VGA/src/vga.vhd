@@ -152,7 +152,7 @@ BEGIN
       END IF;
       
       --set pixel coordinates
-      IF(h_count <= h_pixels) THEN  --horiztonal display time
+      IF(h_count < h_pixels) THEN  --horiztonal display time
         column := h_count;           --set horiztonal pixel coordinate	     
 		ELSE
           COLUMN :=0;		
@@ -194,7 +194,7 @@ BEGIN
 
       membuf<='0';  --ALWAYS LOW FOR REGISTERS
 
-	  IF v_count=v_period-2 and h_count>h_pixels-10 and h_count<h_pixels-4 THEN	
+	  IF v_count=v_period-3 and h_count>h_pixels-10 and h_count<h_pixels-4 THEN	
 	    READREGISTER<=READREGISTER+1;        
 	  ELSE
 	    READREGISTER<=0;        
@@ -206,7 +206,11 @@ BEGIN
 	    READREGISTER2<=0;	
 	  END IF; 
 
-
+      IF v_count=v_period-1 THEN 
+        ROW:=0;
+        COLUMN:=0;
+        MEMADDR<=0;
+      END if;
 
       VIDSET<=VIDSET;
       VIDBUF<=VIDBUF;
@@ -229,27 +233,25 @@ BEGIN
         --PXLFORE<="0001";
       END IF;
 
-      
+      --VIDSET   0/1                   0/1
+      --VIDSET LOW/HIGH RESOLUTION  GRAPHICS/TEXT
         --VIDSET<="01";
      IF READREGISTER=0 AND  READREGISTER2=0 THEN 
       membuf<=VIDBUF;
 	  IF vidset="00" THEN  --GRAPHICS 320X200X4
-        IF (h_count > h_period - 3)  THEN
-		  RSTRT <= '1';		  
-		ELSE
-		  RSTRT <= '0';
-		END IF;
-		--set the buffer for graphics
-        membuf<=vidbuf;
-		
-		IF RSTRT='1' THEN
+        MEMADDR<= MEMADDR;	
+
+        --SETUP 1ST BYTE
+        IF h_count = h_period - 4 THEN
 		  MEMADDR <= (ROW/2)*160;
-		ELSIF COLUMN MOD 4=2 THEN
-		 MEMADDR<= MEMADDR +1;
-		ELSE
-	     MEMADDR<= MEMADDR;	
+		ELSIF h_count = h_period - 3 THEN
+	     PXLRIGHT <= datain(3 DOWNTO  0); 
+         PXLLEFT  <= datain(7 DOWNTO  4); 
 		END IF;
-		IF (RSTRT='1') OR ( COLUMN MOD 4=3) THEN
+		        
+        IF COLUMN MOD 4=2 THEN
+		 MEMADDR<= MEMADDR +1;
+        ELSIF ( COLUMN MOD 4=3) THEN
 	     PXLRIGHT <= datain(3 DOWNTO  0); 
          PXLLEFT  <= datain(7 DOWNTO  4); 
 		END IF;
@@ -276,7 +278,7 @@ BEGIN
 		MEMADDR<= MEMADDR;	
 		CHARaddr<=CHARaddr;
         --set the buffer for text
-        membuf<=vidbuf;
+        --membuf<=vidbuf;
 
   		--IF (h_count > h_period - 2)  THEN
 		--  RSTRT <= '1';		  
@@ -326,7 +328,7 @@ BEGIN
 		 PXLBACKnx<=datain(7 DOWNTO  4); 		 
 		 MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS on buffer 0 ONLY
          membuf<='0';
-      ELSIF COLUMN MOD 16=8 THEN  --READ PATTERN			
+        ELSIF COLUMN MOD 16=8 THEN  --READ PATTERN			
 		 PXLTEXTnx<=DATAIN;	  --GET FONT PATTERN 
          membuf<='0';
 		END IF;
@@ -351,25 +353,22 @@ BEGIN
        -- END IF;        
 
 	  ELSIF vidset="10" THEN  --GRAPHICS 640X400X1
+        PXLBYTEnx <= PXLBYTEnx;
+        MEMADDR<= MEMADDR;	
 
-        IF (h_count > h_period - 3)  THEN
-		  RSTRT <= '1';		  
-		ELSE
-		  RSTRT <= '0';
-		END IF;
-		--set the buffer for graphics
-        membuf<=vidbuf;
-		
-		IF RSTRT='1' THEN
+        --PREPARE FIRST BYTE
+        IF (h_count = h_period - 4)  THEN
 		  MEMADDR <= ROW*80; --640/8 PIXELS PER BYTE
-		ELSIF COLUMN MOD 8=1 THEN
-		 MEMADDR<= MEMADDR +1;
-		ELSE
-	     MEMADDR<= MEMADDR;	
+		ELSIF (h_count = h_period - 3) THEN
+		  PXLBYTEnx <= datain; 
+          MEMADDR<= MEMADDR +1; 
+        ELSIF (h_count = h_period - 2) THEN
+          PXLBYTE<=PXLBYTEnx;
 		END IF;
 		
-        IF (RSTRT='1') OR ( COLUMN MOD 8=3) THEN
-	      PXLBYTEnx <= datain; 
+        IF ( COLUMN MOD 8=6) THEN
+	      PXLBYTEnx <= datain;
+		  MEMADDR<= MEMADDR +1; 
         ELSIF COLUMN MOD 8=7 THEN
           PXLBYTE<=PXLBYTEnx;
         END IF;
@@ -394,7 +393,7 @@ BEGIN
 		CHARaddr<=CHARaddr;
 	    LETCOL := COLUMN MOD 8;
         --set the buffer for text
-        membuf<=vidbuf;
+       -- membuf<=vidbuf;
 		
 		
 		IF h_count>h_pixels+2 THEN --AFTER VISIBLE PIXELS

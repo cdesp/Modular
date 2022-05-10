@@ -176,6 +176,7 @@ FL_LP1:	LD A, H
 		LD DE, (FILL_X)
 		LD HL, (FILL_Y)
 		PUSH DE
+		EX DE,HL
 		CALL PLOTP
 		POP HL
 		DEC HL
@@ -239,6 +240,7 @@ FL_LP2:							; for (; x<=win->x1 && pixelread(x, y)==ov; x++)
 		LD DE, (FILL_X)
 		LD HL, (FILL_Y)
 		PUSH DE
+		EX DE,HL
 		CALL PLOTP
 		POP HL
 		INC HL

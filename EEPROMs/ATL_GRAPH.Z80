@@ -457,6 +457,7 @@ DLNEX:		POP DE 								;RET ADDR
 		LD D, (IX + 15) 						;X
 		LD E, (IX + 14)
 		PUSH DE 							;SAVE X
+		EX DE,HL
 ;PUSH DE,HL,DE,HL
 		CALL PLOTP
 ;setXY(x, y - radius, x, y - radius);
@@ -469,6 +470,7 @@ DLNEX:		POP DE 								;RET ADDR
 		XOR A
 		SBC HL, BC 							;
 ;PUSH DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x + radius, y, x + radius, y);
 		POP HL 								;GET X
@@ -479,8 +481,8 @@ DLNEX:		POP DE 								;RET ADDR
 		PUSH HL
 		XOR A
 		ADC HL, BC
-		EX DE, HL
-;PUSH DE,HL,DE,HL
+		;EX DE, HL
+;PUSH DE,HL,DE,HL		
 		CALL PLOTP
 ;setXY(x - radius, y, x - radius, y);
 		POP HL 								;GET X
@@ -488,7 +490,7 @@ DLNEX:		POP DE 								;RET ADDR
 		POP DE 								;GET Y
 		XOR A
 		SBC HL, BC
-		EX DE, HL
+		;EX DE, HL
 ;PUSH DE,HL,DE,HL
 		CALL PLOTP
 		
@@ -561,9 +563,10 @@ CIRC_SKIP:									;x1++;
 		ADD HL, DE
 		EX DE, HL 							;DE=X+X1
 		LD H, (IX + 13) 						;Y
-		LD L, (IX + 12)
+		LD L, (IX + 12)		
 		ADD HL, BC 							;HL=Y+Y1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x - x1, y + y1, x - x1, y + y1);
 		POP HL 								;X
@@ -577,6 +580,7 @@ CIRC_SKIP:									;x1++;
 		LD L, (IX + 12)
 		ADD HL, BC 							;HL=Y+Y1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x + x1, y - y1, x + x1, y - y1);
 		POP HL 								;X
@@ -590,6 +594,7 @@ CIRC_SKIP:									;x1++;
 		XOR A
 		SBC HL, BC 							;HL=Y+Y1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x - x1, y - y1, x - x1, y - y1);
 		POP HL 								;X
@@ -604,6 +609,7 @@ CIRC_SKIP:									;x1++;
 		XOR A
 		SBC HL, BC 							;HL=Y-Y1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x + y1, y + x1, x + y1, y + x1);
 		POP HL 								;X
@@ -618,6 +624,7 @@ CIRC_SKIP:									;x1++;
 		LD L, (IX + 12)
 		ADD HL, BC 							;HL=Y+X1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x - y1, y + x1, x - y1, y + x1);
 		POP HL 								;X
@@ -631,6 +638,7 @@ CIRC_SKIP:									;x1++;
 		LD L, (IX + 12)
 		ADD HL, BC 							;HL=Y+X1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x + y1, y - x1, x + y1, y - x1);
 		POP HL 								;X
@@ -645,6 +653,7 @@ CIRC_SKIP:									;x1++;
 		SBC HL, BC 							;HL=Y-X1
 		PUSH HL
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 ;setXY(x - y1, y - x1, x - y1, y - x1);
 		POP BC 								;Y-X1
@@ -656,6 +665,7 @@ CIRC_SKIP:									;x1++;
 		PUSH BC
 		POP HL 								;HL=Y-X1
 ;DE,HL,DE,HL
+		EX DE,HL
 		CALL PLOTP
 		JP CIRC_AGN
 CIRC_EXIT:	CALL LCD_CLRXY
