@@ -36,18 +36,15 @@
                 RET
 
 
-@GR_DRAWHLINE:									;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES
-;X , Y , LENGTH
-		LD IX, 2
+;X , Y , LENGTH 3 PARAMS PASS ON STACK
+@GR_DRAWHLINE:	LD IX, 2							;3 PARAMS 2-BYTES EACH TOTAL 6 BYTES		
 		ADD IX, SP
 		LD H, (IX + 5) 							;X
 		LD L, (IX + 4) 							;X
 		LD D, (IX + 3) 							;Y
 		LD E, (IX + 2) 							;Y
 		LD B, (IX + 1) 							;LENGTH
-		LD C, (IX) 							;LENGTH
-		
-		
+		LD C, (IX) 							;LENGTH			
 		PUSH HL
 		LD HL, $8000
 		OR A 								;CLEAR CARRY
@@ -64,10 +61,8 @@
 		PUSH HL
 POSH1:		POP HL	
 NXTH1:		PUSH HL
-                PUSH DE
-                ;HL X,DE Y                
-                CALL PLOTP
-                
+                PUSH DE                
+                CALL PLOTP                					;HL X,DE Y                
                 POP DE
                 POP HL                
                 INC HL
@@ -106,9 +101,9 @@ NXTH1:		PUSH HL
 		SBC A, A
 		SUB B
 		LD B, A
-		POP HL
+		EX DE,HL
 		SBC HL, BC 							;Y -= l;
-		PUSH HL
+		EX DE,HL
 POSV1:		POP HL
 NXTV1:		PUSH HL
                 PUSH DE

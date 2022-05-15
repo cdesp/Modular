@@ -12,6 +12,8 @@ NAME OSCOMMAND
 		LD (VGAFCOL), A
 		LD A, VGA_NAVY
 		LD (VGABCOL), A
+		LD HL,OS_CMDGET
+		LD (COMDGET),HL
 
 
 OS_CMDGET:      LD A,(CURSORX)
@@ -35,11 +37,6 @@ CGNXCHAR:       PUSH HL
                 JR Z,CGNXCHAR 
                 CP 32
                 JR NC,CGSVCHAR
-                PUSH HL
-                PUSH AF
-                CALL OS_RMVCURS         ;REMOVE CURSOR
-                POP AF
-                POP HL
 ;TEST CONTROL CHARS
                 CP 6                    ;BACKSPACE
                 JR NZ,CGTSTCH1                
@@ -70,7 +67,12 @@ CGDOPRNCH:      PUSH HL
                 POP AF
                 POP HL
                 RET
-CGDOCMD:        CALL CGDOPRNCH
+@CGDOCMD:       PUSH HL
+                PUSH AF
+                CALL OS_RMVCURS         ;REMOVE CURSOR
+                POP AF
+                POP HL
+		CALL CGDOPRNCH
                 XOR A
                 LD (HL),A
                 LD HL,COMDBUF
@@ -132,8 +134,8 @@ OSCLI5:		BIT 7, (HL)
 		
 HUH:		LD A, 254 							
 		CALL OSERROR
-		DEFM 'Bad command'
-		DEFB    0
+		DEFM 'OS Bad command'
+		DEFB    13,0
 		
 SKIPSP:		LD A, (HL)
 		CP ' '
@@ -241,14 +243,16 @@ COMDS:		DEFM  "BY"
 
 
 
-OSCMDFIN:       JP OS_CMDGET
+OSCMDFIN:       LD HL,(COMDGET)
+		PUSH HL
+		RET		;GOTO COMDGET
 
 OSERROR:        POP HL
                 CALL OS_PRINTTEXT
-                JP OS_CMDGET
+                JP OSCMDFIN
 
 SNTX_ERROR:	CALL OSERROR
-		DEFM  "Syntax error"
+		DEFM  "OS CMD Syntax error"
 		DEFB    0
 
 NIMP            JP OSCMDFIN
