@@ -718,8 +718,7 @@ GETKEYNW:									;CALL CHKCURS
 ;           A=0.
 ; Destroys: A,B,C,D,E,H,L,F
 ;
-@MYOS_OSLINE:	
-		LD A, (FLAGS)
+@MYOS_OSLINE:	LD A, (FLAGS)
 		BIT 3, A 							;EDIT MODE?
 		JR Z, OSLIN1
 		RES 3, A
@@ -728,6 +727,8 @@ GETKEYNW:									;CALL CHKCURS
 		CP L
 OSLIN1:		LD A, CR
 		LD (HL), A
+		CALL NZ, MYOS_OSWRCH
+		LD A, 'e'							;PROMPT
 		CALL NZ, MYOS_OSWRCH
 		LD L, 0
 		LD C, L 							;REPEAT FLAG
