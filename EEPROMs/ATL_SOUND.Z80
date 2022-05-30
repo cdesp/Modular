@@ -1,0 +1,364 @@
+;Sound module SN76489AN ic
+
+;DEVSND EQU $38
+
+                GLOBAL SND_INIT
+                GLOBAL SND_OUT
+                GLOBAL SND_NOTE
+                GLOBAL SND_SETVOLUME
+                GLOBAL SND_PLAYCH
+                GLOBAL SND_PLAYMUSIC
+                GLOBAL SND_MUTEALL
+                GLOBAL SND_ENABLE
+                GLOBAL SND_DISABLE
+                GLOBAL SND_DOBEEP
+                GLOBAL SND_BEEP
+                GLOBAL SND_BEEP2
+
+                @SNDVOLHI EQU 0
+                @SNDVOLM1 EQU 1
+                @SNDVOLM2 EQU 2
+                @SNDVOLLO EQU 3
+                @SNDMUTE EQU 4
+
+                @DEFCHN EQU 2      ;DEFAULT CHANNEL FOR SYSTEM USE BEEPS
+                ;NOTES - FREQUENCES FOR 2,5MHz CLOCK
+                ;ALL NOTES ARE FOR CHANNEL 0 EASILY CHANGED FOR OTHER CHANNELS BY CHANGING BITS 6&5 OF THE 1ST BYTE
+                ; HEX   #       NOTE  
+NOTES:    
+     	@nD2E2      EQU        $8F2C          ;        0       D2E2
+	@nE2        EQU        $8E34          ;        2       E2
+	@nF2        EQU        $8D3E          ;        4       F2
+	@nF2G2      EQU        $8D0C          ;        6       F2G2
+	@nG2        EQU        $8C1D          ;        8       G2
+	@nG2A2      EQU        $8B30          ;        10       G2A2
+	@nA2        EQU        $8B06          ;        12       A2
+	@nA2B2      EQU        $8A1E          ;        14       A2B2
+	@nB2        EQU        $8938          ;        16       B2
+	@nC3        EQU        $8915          ;        18       C3
+	@nC3D3      EQU        $8833          ;        20       C3D3
+	@nD3        EQU        $8814          ;        22       D3
+	@nD3E3      EQU        $8736          ;        24       D3E3
+	@nE3        EQU        $871A          ;        26       E3
+	@nF3        EQU        $863F          ;        28       F3
+	@nF3G3      EQU        $8626          ;        30       F3G3
+	@nG3        EQU        $860E          ;        32       G3
+	@nG3A3      EQU        $8538          ;        34       G3A3
+	@nA3        EQU        $8523          ;        36       A3
+	@nA3B3      EQU        $850F          ;        38       A3B3
+	@nB3        EQU        $843C          ;        40       B3
+	@nC4        EQU        $842A          ;        42       C4
+	@nC4D4      EQU        $8419          ;        44       C4D4
+	@nD4        EQU        $840A          ;        46       D4
+	@nD4E4      EQU        $833B          ;        48       D4E4
+	@nE4        EQU        $832D          ;        50       E4
+	@nF4        EQU        $831F          ;        52       F4
+	@nF4G4      EQU        $8313          ;        54       F4G4
+	@nG4        EQU        $8307          ;        56       G4
+	@nG4A4      EQU        $823C          ;        58       G4A4
+	@nA4        EQU        $8231          ;        60       A4
+	@nA4B4      EQU        $8227          ;        62       A4B4
+	@nB4        EQU        $821E          ;        64       B4
+	@nC5        EQU        $8215          ;        66       C5
+	@nC5D5      EQU        $820C          ;        68       C5D5
+	@nD5        EQU        $8205          ;        70       D5
+	@nD5E5      EQU        $813D          ;        72       D5E5
+	@nE5        EQU        $8136          ;        74       E5
+	@nF5        EQU        $812F          ;        76       F5
+	@nF5G5      EQU        $8129          ;        78       F5G5
+	@nG5        EQU        $8123          ;        80       G5
+	@nG5A5      EQU        $811E          ;        82       G5A5
+	@nA5        EQU        $8118          ;        84       A5
+	@nA5B5      EQU        $8113          ;        86       A5B5
+	@nB5        EQU        $810F          ;        88       B5
+	@nC6        EQU        $810A          ;        90       C6
+	@nC6D6      EQU        $8106          ;        92       C6D6
+	@nD6        EQU        $8102          ;        94       D6
+	@nD6E6      EQU        $803E          ;        96       D6E6
+	@nE6        EQU        $803B          ;        98       E6
+	@nF6        EQU        $8037          ;        100       F6
+	@nF6G6      EQU        $8034          ;        102       F6G6
+	@nG6        EQU        $8031          ;        104       G6
+	@nG6A6      EQU        $802F          ;        106       G6A6
+	@nA6        EQU        $802C          ;        108       A6
+	@nA6B6      EQU        $8029          ;        110       A6B6
+	@nB6        EQU        $8027          ;        112       B6
+	@nC7        EQU        $8025          ;        114       C7
+	@nC7D7      EQU        $8023          ;        116       C7D7
+	@nD7        EQU        $8021          ;        118       D7
+	@nD7E7      EQU        $801F          ;        120       D7E7
+	@nE7        EQU        $801D          ;        122       E7
+	@nF7        EQU        $801B          ;        124       F7
+	@nF7G7      EQU        $801A          ;        126       F7G7
+	@nG7        EQU        $8018          ;        128       G7
+	@nG7A7      EQU        $8017          ;        130       G7A7
+	@nA7        EQU        $8016          ;        132       A7
+	@nA7B7      EQU        $8014          ;        134       A7B7
+	@nB7        EQU        $8013          ;        136       B7
+	@nC8        EQU        $8012          ;        138       C8
+	@nC8D8      EQU        $8011          ;        140       C8D8
+	@nD8        EQU        $8010          ;        142       D8
+        @nEND       EQU        $0909          ; SIGNALS END OF SONG
+	
+
+;WE SHOULD WAIT 32 CLOCK CYCLES ON THE CLOCK OF THE 76489 NOW IS 2.5MHZ
+;WE ARE RUNNING ON 10MHZ SO 4*32=128 CL CYCLES BUT 64 SUFFICE APPARENTLY
+DELAYABIT:	NEG			;8 CLOCK CYCLES
+		NEG
+		NEG
+		NEG
+		NEG
+		NEG
+		NEG
+		NEG
+		RET
+
+
+;SOUT1           DB ' ',' ',' ',0
+
+;Sends a byte to the sound chip
+;A the byte
+SND_OUT:	OUT (DEVSND),A		;SEND TO SOUND
+                
+                ;OUTPUT BYTES SENT TO CHIP TO SERIAL 
+                ; PUSH AF
+                ; PUSH HL
+                ; PUSH DE
+                ; PUSH BC
+                ; LD HL,SOUT1
+                ; CALL STRFHEX
+                ; LD HL,SOUT1
+                ; CALL RS_TXT
+                ; POP BC
+                ; POP DE
+                ; POP HL
+                ; POP AF
+
+		CALL DELAYABIT
+		RET
+
+SND_MUTEALL:    LD A,$9F		;MUTE CHANNEL 0
+		CALL SND_OUT
+		LD A,$BF		;MUTE CHANNEL 1
+		CALL SND_OUT
+		LD A,$DF		;MUTE CHANNEL 2
+		CALL SND_OUT
+		LD A,$FF		;MUTE CHANNEL NOISE
+		CALL SND_OUT                
+                RET
+;JUST MUTES ALL CHANNELS
+SND_INIT:	CALL SND_MUTEALL
+                XOR A
+                LD (CHANST),A
+SND_CLRDAT:     XOR A
+                LD HL,CHANDATA
+                LD (HL),A
+                LD D,H
+                LD E,L
+                INC DE
+                LD BC,11  
+                LDIR
+		RET
+
+;HL THE NOTE ON CHANNEL 0 (H THE HI BYTE TO SEND)
+;A THE OUTPUT CHANNEL (0,1,2,3)
+;PRESERVES A,HL
+SND_NOTE:       PUSH AF
+                AND $03                  ;KEEP 2 BITS
+                RLCA
+                RLCA
+                RLCA
+                RLCA
+                RLCA                    ;TRANSFER TO BITS 6&5
+                OR H                    ;A HAS THE HI BYTE TO SEND TO THE SOUND CHIP WITH CORRECT CHANNEL
+                CALL SND_OUT
+SN_LOW:         LD A,L                
+                CALL SND_OUT
+                POP AF
+                RET
+                          
+;DOES A BEEP
+;HL THE NOTE      
+;PRESERVES A          
+SND_DOBEEP:     PUSH AF
+                LD A,DEFCHN
+                LD C,SNDVOLHI
+                CALL SND_SETVOLUME                
+                LD A,DEFCHN
+                CALL SND_NOTE
+                LD B,160
+                CALL DELAYMILI
+                LD A,DEFCHN
+                LD C,SNDMUTE
+                CALL SND_SETVOLUME
+                POP AF
+                RET
+
+SND_BEEP:       LD HL,nG4             ;NOTE G4 ON CHANNEL2
+                CALL SND_DOBEEP
+                RET
+
+SND_BEEP2:      LD HL,nD6             ;NOTE D6 ON CHANNEL2
+                CALL SND_DOBEEP
+                RET
+
+
+;SETS THE VOLUME OF A CHANNEL
+;A THE CHANNEL
+;C THE VOLUME 0-3,4=MUTE, 0=LOUD
+;DESTROYS B,DE
+SND_SETVOLUME:  RLCA                            ;DOUBLE CHANNEL 0-3 --> 0,2,4,6               
+                INC A                           ;E=A+1
+                LD E,A                          ;SAVE CHANNEL INFO
+                LD A,C
+                CP SNDMUTE
+                LD A,$F
+                JR Z, SV_DOIT                   ;SNDMUTE=4 MEANS NO VOLUME = MUTE
+                LD A,1                          ;VOLUME 0-3 --> 1,2,4,8 SET THE CORRESPONDING BIT 0-3
+                INC C
+SV_AGN:         DEC C
+                JR Z, SV_DOIT
+                RLCA
+                JR SV_AGN
+SV_DOIT:        LD D,A                          ;D THE VOLUME , E THE CHANNEL  1&CCC&VVVV
+                LD A,$80
+                RLC E
+                RLC E
+                RLC E
+                RLC E
+                OR D
+                OR E
+                CALL SND_OUT                    ;SET THE VOLUME        
+                RET
+
+;DISABLES/PAUSES THE CHANNEL ON A
+SND_DISABLE:    PUSH AF
+                CALL SND_GETCHMASK
+                LD B,A
+                LD A,(CHANST)
+                OR B
+                LD (CHANST),A
+                POP AF
+                LD C, SNDMUTE
+                CALL SND_SETVOLUME
+                RET
+
+;ENABLES/CONTINUE THE CHANNEL ON A
+SND_ENABLE:     PUSH AF
+                CALL SND_GETCHMASK
+                NEG
+                DEC A
+                LD B,A
+                LD A,(CHANST)
+                AND B
+                LD (CHANST),A
+                POP AF
+                LD C, SNDVOLHI                  ;TODO: KEEP RECORD OF THE VOLUME IN EACH CHANNEL
+                CALL SND_SETVOLUME
+                RET
+
+
+;RETURNS ON A THE MASK FOR CHANNEL 0-3 --> 1,2,4,8
+;A THE CHANNEL
+SND_GETCHMASK:  INC A
+                LD C,A
+                XOR A
+                INC A                
+GMCAGN:         DEC C
+                RET Z
+                RLCA
+                JR GMCAGN             
+
+
+
+;PLAYS NEXT NOTE ON SPECIFIC CHANNEL
+;A THE CHANNEL TO PLAY
+;RETURNS A=1 IF NO MORE DATA ON CHANNEL ELSE A=0
+SND_PLAYCH:     PUSH AF
+                LD HL,CHANDATA
+                RLCA                            ;DOUBLE A
+                LD B,0
+                LD C,A
+                ADD HL,BC                       ;HL ON CHANNELS DATA ADDRESS VAR
+                LD E,(HL)
+                INC HL
+                LD D,(HL)                       ;DE THE CHANNEL DATA ADDRESS
+                LD A,D
+                ADD E
+                OR A
+                JR Z, PC_NOMORE                 ;IF CHANDATA ADDRESS IS ZERO RETURN
+                
+                POP AF                          ;GET CHANNEL
+                PUSH AF
+                CALL SND_GETCHMASK
+                LD C, A
+                LD A,(CHANST)
+                AND C
+                POP BC
+                JR NZ,SNDOK                     ;SIGNAL OK BUT DON'T PLAY ANYTHING
+                PUSH BC
+
+                LD C,B                          ;CHAN NO ON C
+                LD B,0
+                LD HL,CHANCN
+                ADD HL,BC                       ;HL ON CHANNELS NOTE IDX
+                LD A,(HL)                       ;A THE NOTE IDX 0-255 
+                INC A
+                JR Z, PC_NOMORE                 ;IF 255 NO MORE NOTES TO PLAY
+                DEC A          
+                INC (HL)                        ;NEXT NOTE
+                LD L,A                          ;HL THE NOTE IDX
+                LD H,0                          ;
+                ADD HL,HL                       ;DOUBLE THE IDX CAUSE 2 BYTES PER NOTE
+                ADD HL,DE                       ;THE NOTE ADDRESS ON HL
+                LD E,(HL)                       ;E 2ND BYTE OF THE NOTE TO PLAYING
+                INC HL
+                LD D,(HL)                       ;D 1ST BYTE OF THE NOTE TO PLAYING
+                LD A,D
+                POP BC                          ;GET THE CHANNEL ON B
+                CP 10                           ;CHECK IF 1ST BYTE IS UNDER 10  MAYBE DO SPECIAL OPS
+                JR C,SND_SPOPS
+                EX DE,HL                        ;HL THE NOTE
+                LD A,B                          ;CHANNEL ON A
+                CALL SND_NOTE
+                JR SNDOK                        ;NOTE PLAYED OK
+PC_NOMORE:      POP BC
+                JR SNDEND                       ;SIGNAL  SONG END
+;SPECIAL OPERATIONS
+;0-3= MEANS SET VOLUME
+;B HAS THE CHANNEL
+SND_SPOPS:      CP 3
+                JR NC,SNDOTOPS
+                LD C,A                          ;VOLUME
+                LD A,B                          ;CHANNEL
+                CALL SND_SETVOLUME
+                JR SNDOK                        ;VOLUME SET OK
+;OTHER SPECIAL OPERATIONS
+SNDOTOPS:       CP 9                            ;9 MEANS SONG ENDED
+                JR Z, SNDEND
+SONXT1:        ;CHECK OTHER OPS
+SNDOK:          XOR A                           ;END OK                
+                RET
+SNDEND:         LD A,1                          ;SONG END
+                RET
+
+
+;PLAYS A NOTE FOR EVERY CHANNEL 
+;ZF SET IF NO MORE MUSIC IS AVAILABLE IN ANY CHANNEL
+SND_PLAYMUSIC:  LD B,4
+                LD C,0
+PM_NXT:         DEC B                           ;PLAY 3,2,1,0
+                LD A,B
+                PUSH BC                
+                CALL SND_PLAYCH
+                POP BC                
+                ADD A,C                         ;A=0 IF NOTE PLAYED A=1 IF CHANNEL NOT ENABLED OR NO MORE NOTES
+                LD C,A
+                LD A,B
+                OR A
+                JR NZ, PM_NXT
+                LD A,C
+                CP 4                            ;MEANS ALL 4 CHANNELS ARE NOT ENABLED
+                RET
+
+

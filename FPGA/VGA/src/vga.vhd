@@ -511,6 +511,12 @@ BEGIN
      -- PXLOUT <= "1111"; 
     --END IF;
 
+   -- IF ROW<100 THEN
+    --   PXLOUT<="1100";
+    --ELSE
+     --  PXLOUT<="0100";
+    --END IF;
+
     scrst <= '0';
   END PROCESS;
 
@@ -524,13 +530,14 @@ BEGIN
 
   addrout <= MEMBUF & std_logic_vector(to_unsigned(memaddr, addrout'length -1 )) ;
     
-    
+   
 
 
 
 
 	RGBI <= "0000" WHEN DISp_ena = '0' ELSE
-			  PXLOUT;
+            PXLOUT;
+		
 			  
 			  
 			  

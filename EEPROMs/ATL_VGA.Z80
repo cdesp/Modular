@@ -324,6 +324,7 @@ NX1:		CP 10 								;JUST IGNORE IT
 		RET Z
 		CP 13 								;CR =NEW LINE
 		JR NZ, NX2
+		CALL VGA_RMVCURS
 		CALL VGDOY 							;ADD 1 TO TY
 		LD (VGATX_X), A 						;ZF IS SET
 		RET

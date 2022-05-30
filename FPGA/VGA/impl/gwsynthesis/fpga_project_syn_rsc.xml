@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="vga_controller" Register="146" Alu="28" Lut="417"/>
+<Module name="vga_controller" Register="88" Alu="28" Lut="360"/>
