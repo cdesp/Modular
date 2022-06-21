@@ -2,6 +2,11 @@
  "Files" : [
   {
    "Library" : "work",
+   "Path" : "G:/_Programming/_DOCS/Schematics/MyModular/FPGA/VGA/src/gowin_sp/gowin_spRAM.vhd",
+   "Type" : "vhdl"
+  },
+  {
+   "Library" : "work",
    "Path" : "G:/_Programming/_DOCS/Schematics/MyModular/FPGA/VGA/src/vga.vhd",
    "Type" : "vhdl"
   }

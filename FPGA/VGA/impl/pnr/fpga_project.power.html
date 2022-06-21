@@ -55,7 +55,7 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <table class="summary_table">
 <tr>
 <td class="label">Report Title</td>
-<td>Gowin Power Analysis Report</td>
+<td>Power Analysis Report</td>
 </tr>
 <tr>
 <td class="label">Design File</td>
@@ -70,8 +70,8 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <td>G:\_Programming\_DOCS\Schematics\MyModular\FPGA\VGA\src\fpga_project.sdc</td>
 </tr>
 <tr>
-<td class="label">GOWIN Version</td>
-<td>V1.9.8</td>
+<td class="label">Version</td>
+<td>V1.9.8.06</td>
 </tr>
 <tr>
 <td class="label">Part Number</td>
@@ -83,12 +83,12 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td class="label">Created Time</td>
-<td>Sun May 22 14:06:18 2022
+<td>Mon Jun 13 13:36:57 2022
 </td>
 </tr>
 <tr>
 <td class="label">Legal Announcement</td>
-<td>Copyright (C)2014-2021 Gowin Semiconductor Corporation. All rights reserved.</td>
+<td>Copyright (C)2014-2022 Gowin Semiconductor Corporation. All rights reserved.</td>
 </tr>
 </table>
 <h1><a name="Summary">Power Summary</a></h1>
@@ -96,30 +96,30 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <table class="summary_table">
 <tr>
 <td class="label">Total Power (mW)</td>
-<td>15.571</td>
+<td>7.897</td>
 </tr>
 <tr>
 <td class="label">Quiescent Power (mW)</td>
-<td>4.691</td>
+<td>4.693</td>
 </tr>
 <tr>
 <td class="label">Dynamic Power (mW)</td>
-<td>10.880</td>
+<td>3.205</td>
 </tr>
 </table>
 <h2><a name="Thermal_Info">Thermal Information:</a></h2>
 <table class="summary_table">
 <tr>
 <td class="label">Junction Temperature</td>
-<td>25.230</td>
+<td>25.319</td>
 </tr>
 <tr>
 <td class="label">Theta JA</td>
-<td>14.800</td>
+<td>40.580</td>
 </tr>
 <tr>
 <td class="label">Max Allowed Ambient Temperature</td>
-<td>84.770</td>
+<td>84.681</td>
 </tr>
 </table>
 <h2><a name="Configure_Info">Configure Information:</a></h2>
@@ -188,23 +188,23 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 <tr>
 <td>VCC</td>
 <td>1.200</td>
-<td>6.122</td>
-<td>1.903</td>
-<td>9.631</td>
+<td>1.085</td>
+<td>1.905</td>
+<td>3.587</td>
 </tr>
 <tr>
 <td>VCCO12</td>
 <td>1.200</td>
-<td>0.070</td>
+<td>0.035</td>
 <td>0.021</td>
-<td>0.109</td>
+<td>0.067</td>
 </tr>
 <tr>
 <td>VCCO33</td>
 <td>3.300</td>
-<td>0.565</td>
+<td>0.306</td>
 <td>0.263</td>
-<td>2.730</td>
+<td>1.876</td>
 </tr>
 </table>
 <h1><a name="Detail">Power Details</a></h1>
@@ -218,15 +218,21 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>Logic</td>
-<td>0.163</td>
+<td>0.291</td>
 <td>NA</td>
-<td>12.500</td>
+<td>6.250</td>
 </tr>
 <tr>
 <td>IO</td>
-<td>6.236
+<td>4.253
 <td>1.941
-<td>14.015
+<td>7.386
+</tr>
+<tr>
+<td>BSRAM</td>
+<td>0.600
+<td>NA</td>
+<td>NA</td>
 </tr>
 </table>
 <h2><a name="By_Hierarchy">Power By Hierarchy:</a></h2>
@@ -238,8 +244,12 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>vga_controller</td>
-<td>0.163</td>
-<td>0.163(0.000)</td>
+<td>0.891</td>
+<td>0.891(0.600)</td>
+<tr>
+<td>vga_controller/SPRMEM/</td>
+<td>0.600</td>
+<td>0.600(0.000)</td>
 </table>
 <h2><a name="By_Clock_Domain">Power By Clock Domain:</a></h2>
 <table class="detail_table">
@@ -250,8 +260,8 @@ table.detail_table th.label {  min-width: 8%; width: 8%; }
 </tr>
 <tr>
 <td>pixel_clk</td>
-<td>100.000</td>
-<td>6.585</td>
+<td>50.000</td>
+<td>0.892</td>
 </tr>
 </table>
 </div><!-- content -->

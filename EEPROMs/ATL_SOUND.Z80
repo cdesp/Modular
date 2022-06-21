@@ -179,7 +179,8 @@ SN_LOW:         LD A,L
                           
 ;DOES A BEEP
 ;HL THE NOTE      
-;PRESERVES A          
+;PRESERVES A  
+;DEFAULT SYSTEM CHANNEL IS 2        
 SND_DOBEEP:     PUSH AF
                 LD A,DEFCHN
                 LD C,SNDVOLHI

@@ -4,6 +4,7 @@
     <Version>beta</Version>
     <Device id="GW1N-1" package="QFN48" speed="6" partNumber="GW1N-LV1QN48C6/I5"/>
     <FileList>
+        <File path="G:\_Programming\_DOCS\Schematics\MyModular\FPGA\VGA\src\gowin_sp\gowin_spRAM.vhd" type="vhdl"/>
         <File path="G:\_Programming\_DOCS\Schematics\MyModular\FPGA\VGA\src\vga.vhd" type="vhdl"/>
     </FileList>
     <OptionList>

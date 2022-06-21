@@ -11,8 +11,16 @@
 		GLOBAL OUTASC 							;CONVERTS A 16BIT BINARY NUMBER ON HL TO 6 DIGIT ASCII
 		GLOBAL Bcd2ASC 							;Converts a 2-digit BCD number to an ASCII string
 		GLOBAL PAUSE_LOOP
-		
-		
+		GLOBAL strtob
+		GLOBAL StrfHex
+		GLOBAL ReadBCDByte
+		GLOBAL Read8bit
+		GLOBAL Read16bit
+		GLOBAL IsStrHex
+		GLOBAL IsStrDec
+		GLOBAL REVBITS
+		GLOBAL SkipWhitespace
+
 @SCCLS:		
 @SCPRN:		
 		
@@ -415,7 +423,7 @@ AppendB2D:
 		ex de, hl 							; Get destination into DE
 		ret
 		
-		
+;SKIPS SPACES ON A STRING POINTED BY HL		
 @SkipWhitespace:	
 		ld a, (hl)
 		cp ' '

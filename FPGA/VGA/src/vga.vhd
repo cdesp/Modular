@@ -22,13 +22,13 @@
 --    
 --------------------------------------------------------------------------------
 
-LIBRARY ieee;
-USE ieee.std_logic_1164.all;
+LIBRARY ieee; 
+USE ieee.std_logic_1164.all; 
 USE ieee.numeric_std.all; 
 --use ieee.math_real.all; 
 
 
-
+  
 
 
 --640x400x70Hz 25,175 MHZ clock
@@ -98,7 +98,52 @@ SIGNAL READREGISTER:INTEGER RANGE 0 TO 9 :=0;  --THIS IS THE VIDEO MODE REGISTER
 SIGNAL READREGISTER2:INTEGER RANGE 0 TO 9 :=0;  -- THIS IS THE DEFAULT FORE AND BACK COLOR FOR MONOCHROME MODES
 SIGNAL CONFIGREG:STD_LOGIC_VECTOR(7 DOWNTO 0) := "00000000";
 SIGNAL PAT  : STD_LOGIC;
+SIGNAL SHOWPAT  : STD_LOGIC :='0';
 
+--SPRITE STUFF
+type SprReadState is (SRS_IDLE,SRS_INIT,SRS_Start,SRS_AddrLo,SRS_AddrHi,SRS_XLo,SRS_XHi,SRS_YLo,SRS_YHi,SRS_Wid,SRS_Hei,SRS_DataST,SRS_DataRD);
+type Spr_Struct is record
+        addr:integer range 0 to 8192-1;  --read from vram
+        xpos:integer range 0 to 640;    --read from vram
+        ypos:integer range 0 to 400;    --read from vram
+        spwd:integer range 0 to 32-1;     --read from vram
+        spht:integer range 0 to 32-1;     --read from vram
+        intram:integer range 0 to 8192-1; -- internal ram address
+     end record; 
+constant MAXSPR : integer := 2;
+type Spr_Arr is array (0 to MAXSPR) of Spr_Struct;  
+signal SPRITES : Spr_Arr; --an array of sprites information should be populated/transfer from external video ram
+signal sprno :integer RANGE 0 to MAXSPR; --MAXSPR sprites max
+signal sprnod :integer RANGE 0 to MAXSPR; --MAXSPR sprites max
+SIGNAL sprstate : SprReadState := SRS_IDLE;
+SIGNAL SPRPXLLEFTNXT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --pixel data for sprite
+SIGNAL SPRPXLRIGHTNXT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --pixel data for sprite
+
+
+Signal dout_o: std_logic_vector(7 downto 0);
+Signal clk_i : std_logic;
+Signal oce_i : std_logic := '1';
+Signal ce_i : std_logic := '1';
+Signal reset_i : std_logic := '1';
+Signal wre_i : std_logic := '1';
+Signal ad_i : std_logic_vector(12 downto 0);
+Signal din_i : std_logic_vector(7 downto 0);
+
+
+component Gowin_SPRAM
+    port (
+        dout: out std_logic_vector(7 downto 0);
+        clk: in std_logic;
+        oce: in std_logic;
+        ce: in std_logic;
+        reset: in std_logic;
+        wre: in std_logic;
+        ad: in std_logic_vector(12 downto 0);
+        din: in std_logic_vector(7 downto 0)
+    );
+end component;
+
+--
 function is_even(val : integer) return boolean is
     constant vec: signed(31 downto 0) := to_signed(val, 32);
 begin
@@ -108,22 +153,145 @@ end;
 
 BEGIN
 
+
+SPRMEM: Gowin_SPRAM
+    port map (
+        dout => dout_o,
+        clk => clk_i,
+        oce => oce_i,
+        ce => ce_i,
+        reset => reset_i,
+        wre => wre_i,
+        ad => ad_i,
+        din => din_i
+    );
+
  PROCESS(Rpixel_clk,MEMBUF,PAT)
     VARIABLE h_count : INTEGER RANGE 0 TO h_period - 1 := 0;  --horizontal counter (counts the columns)
     VARIABLE v_count : INTEGER RANGE 0 TO v_period - 1 := 0;  --vertical counter (counts the rows)
     VARIABLE column    : INTEGER RANGE 0 TO 640- 1:=0;    --horizontal pixel coordinate
     VARIABLE row       : INTEGER RANGE 0 TO 400- 1:=0;    --vertical pixel coordinate	 
-
     VARIABLE LETCOL:INTEGER RANGE 0 TO 7 := 0;  --LETTER COLUMN
-	 --VARIABLE txrow:INTEGER RANGE 0 TO 20-1 := 0;    --TEXT ROW
-  
-  BEGIN
 
+    
+    VARIABLE dattemp : INTEGER RANGE 0 to 255;
+    VARIABLE sprbytes : integer RANGE 0 to 1000;
+    VARIABLE intram : integer range 0 to 32768; --keep track of the data we write on internal ram
+    VARIABLE sprx:integer range 0 to 64-1;
+    VARIABLE spry:integer range 0 to 64-1;
+    VARIABLE SPRXPRE:integer range 0 to 128-1;
+    VARIABLE SPRcol    : INTEGER RANGE 0 TO 640- 1:=0;
+    VARIABLE SPRrow    : INTEGER RANGE 0 TO 200- 1:=0;
+    VARIABLE spridx:integer range 0 to 32-1;
+    VARIABLE SPRSTEVEN:BOOLEAN;
+    VARIABLE SPRPXLLEFT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --pixel data for sprite
+    VARIABLE SPRPXLRIGHT:STD_LOGIC_VECTOR(3 DOWNTO 0) := "0000";  --pixel data for sprite
+
+    --VARIABLE sprstateNext : SprReadState;
   
+    procedure ReadSpriteData  is
+    begin
+       case sprstate is 
+          when SRS_IDLE => 
+                MemAddr <= MemAddr;
+          when SRS_INIT =>
+                intram := 0;
+                sprno <= 0;
+                sprstate <=  SRS_START;                
+          when SRS_Start => 
+                MemAddr <= 32010;                
+                sprstate <= SRS_AddrLo;
+          when SRS_AddrLo =>  
+                dattemp := to_integer(unsigned(datain));
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_AddrHi;
+          when SRS_AddrHi =>      
+                SPRITES(sprno).addr <= to_integer(unsigned(datain)) * 256 + dattemp;
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_XLo;
+          when SRS_XLo =>      
+                dattemp := to_integer(unsigned(datain));
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_XHi;
+          when SRS_XHi =>      
+                SPRITES(sprno).XPos <= to_integer(unsigned(datain)) * 256 + dattemp;
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_YLo;
+          when SRS_YLo =>      
+                dattemp := to_integer(unsigned(datain));
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_YHi;
+          when SRS_YHi =>      
+                SPRITES(sprno).YPos <= to_integer(unsigned(datain)) * 256 + dattemp;
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_Wid;
+          when SRS_Wid =>      
+                SPRITES(sprno).spwd <= to_integer(unsigned(datain));
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_Hei;
+          when SRS_Hei =>      
+                SPRITES(sprno).spht <= to_integer(unsigned(datain));
+                MemAddr <= MemAddr + 1;
+                sprstate <= SRS_AddrLo;     --next sprite
+                sprno <= sprno +1;
+                if sprno >= MAXSPR then -- max 5 sprites for start                   
+                  sprstate <= SRS_DataST; --read sprite graphics
+                  sprno <= 0;                  
+                end if;
+           when SRS_DataST => --read sprite images
+             if sprno >= MAXSPR then --no more data
+                  sprstate <= SRS_IDLE;
+             elsif SPRITES(sprno).addr /= 0 then                
+                memaddr <= SPRITES(sprno).addr;
+                sprbytes := SPRITES(sprno).spwd * SPRITES(sprno).spht;
+                if sprbytes = 0 then    --sanity check
+                 sprbytes := 1;
+                end if;
+                SPRITES(sprno).intram <= intram;
+                sprstate <=SRS_DataRD;
+                ad_i <=  std_logic_vector(to_unsigned(intram, ad_i'length));
+                wre_i <= '1';   --WHIEN HIGH WRITE IS ENABLED
+                ce_i <= '1';    --ACTIVE HIGH 
+             else                 
+                sprno <= sprno + 1;
+             end if;
+            when SRS_DataRD => 
+                wre_i <= '1';   --WHIEN HIGH WRITE IS ENABLED
+                ce_i <= '1';    --ACTIVE HIGH 
+                din_i <= datain;
+                memaddr <= memaddr + 1;
+                ad_i <=  std_logic_vector(to_unsigned(intram, ad_i'length));
+                intram:=intram+1;                
+                if sprbytes = 0 then --no more bytes to read
+                  sprstate <= SRS_DataST;
+                  sprno <= sprno + 1;
+                ELSE
+                  sprbytes := sprbytes -1;
+                end if;
+             WHEN others =>
+              sprstate <= SRS_Idle;
+        end case;
+    end procedure;
+
+
+
+  BEGIN
+    
+    clk_i <= Rpixel_clk;
+  
+
    IF(Rpixel_clk'EVENT AND Rpixel_clk = '1') THEN
 
-	  PXLBACK<=PXLBACK;
+	  
+      
+      PXLBACK<=PXLBACK;
 	  PXLFORE<=PXLFORE;
+
+      wre_i<='0';
+      reset_i <='0';
+      ce_i <= '0';  
+      oce_i <= '0';  
+
 	 
       --counters
       IF(h_count < h_period - 1) THEN    --horizontal counter (pixels)
@@ -166,23 +334,16 @@ BEGIN
       --set display enable output
       IF(h_count < h_pixels AND v_count < v_pixels) THEN  --display time
         disp_ena <= '1';                                    --enable display
-		  --SETUPCHAR<=0;
       ELSE                                                --blanking time
         disp_ena <= '0';                                    --disable display
       END IF;
 		
 		--set display finished
-		IF (v_count = v_pixels-30)  THEN
-		  SCREND<='0';
-		ELSE
+		IF (v_count = v_pixels and h_count<10)  THEN
 		  SCREND<='1';
+		ELSE
+		  SCREND<='0';
 		END IF;  
---
---		IF (v_count <2 ) THEN
---		  SCRST<='0';
---		ELSE
---		  SCRST<='1';
---		END IF;  
 
       
 
@@ -192,7 +353,26 @@ BEGIN
 	    SETUPCHAR<=0;	
 	  END IF; 
 
-      membuf<='0';  --ALWAYS LOW FOR REGISTERS
+      if sprstate= SRS_DataST or sprstate =  SRS_DataRD then
+        membuf<='1';  --ALWAYS HIGH FOR sprite data = buffer1
+      else 
+        membuf<='0';  --ALWAYS LOW FOR REGISTERS
+      end if;
+
+      if v_count=v_pixels then
+          SHOWPAT <='0';
+      elsif v_count = v_pixels+1 and h_count=0  then 
+         sprstate <= SRS_INIT;         
+      end if;
+      if sprstate /= SRS_IDLE then
+           ReadSpriteData;       
+      end if;   
+     
+      if v_count=v_period-6 and sprstate=SRS_wid then --this should not be required
+         --sprstate <= SRS_IDLE;         
+      end if;       
+
+
 
 	  IF v_count=v_period-3 and h_count>h_pixels-10 and h_count<h_pixels-4 THEN	
 	    READREGISTER<=READREGISTER+1;        
@@ -230,13 +410,13 @@ BEGIN
       ELSIF READREGISTER2=3 THEN
         PXLFORE<=CONFIGREG(3 DOWNTO  0);
         PXLBACK<=CONFIGREG(7 DOWNTO  4);
-        --PXLFORE<="0001";
       END IF;
 
+
+     -- ******** SCREEN DISPLAY **********
       --VIDSET   0/1                   0/1
       --VIDSET LOW/HIGH RESOLUTION  GRAPHICS/TEXT
-        --VIDSET<="01";
-     IF READREGISTER=0 AND  READREGISTER2=0 THEN 
+     IF READREGISTER=0 AND  READREGISTER2=0 AND sprstate = SRS_IDLE  THEN 
       membuf<=VIDBUF;
 	  IF vidset="00" THEN  --GRAPHICS 320X200X4
         MEMADDR<= MEMADDR;	
@@ -262,9 +442,6 @@ BEGIN
 		  PXLOUT <=PXLRIGHT;
 		END IF;
 
---        IF ROW>200 THEN
---            PXLOUT <= "0001";
---        END IF;
 		
 	  ELSIF vidset="01" THEN  --TEXT 320X200X4 DOUBLE PIXELS
 	    TXFontline<=TXFontline;
@@ -277,15 +454,6 @@ BEGIN
  
 		MEMADDR<= MEMADDR;	
 		CHARaddr<=CHARaddr;
-        --set the buffer for text
-        --membuf<=vidbuf;
-
-  		--IF (h_count > h_period - 2)  THEN
-		--  RSTRT <= '1';		  
-		--ELSE
-		--  RSTRT <= '0';
-		--END IF;
-		--IF RSTRT='1'  THEN
 		
 		
 		
@@ -305,8 +473,6 @@ BEGIN
 		  ELSIF SETUPCHAR=4 THEN
 		   PXLTEXTnx<=DATAIN;
            membuf<='0';
-			--PXLTEXTnx<=DATAIN;
-			--RSTRT<='1';
           ELSIF SETUPCHAR=5 THEN
             PXLFORE<=PXLFOREnx;
             PXLBACK<=PXLBACKnx;
@@ -348,9 +514,6 @@ BEGIN
 		  PXLOUT <= PXLFORE; 
 		 END IF;
        
-        -- IF ROW>200 THEN
-        --    PXLOUT <= "0010";
-       -- END IF;        
 
 	  ELSIF vidset="10" THEN  --GRAPHICS 640X400X1
         PXLBYTEnx <= PXLBYTEnx;
@@ -386,20 +549,15 @@ BEGIN
 		TEXTCHAR<=TEXTCHAR;
 		PXLTEXT<=PXLTEXT;
         PXLTEXTnx<=PXLTEXTnx;
-		--PXLFORE<="0001";--YELLOW
-		--PXLBACK<="0100";--BLUE
  
 		MEMADDR<= MEMADDR;	
 		CHARaddr<=CHARaddr;
 	    LETCOL := COLUMN MOD 8;
-        --set the buffer for text
-       -- membuf<=vidbuf;
 		
 		
 		IF h_count>h_pixels+2 THEN --AFTER VISIBLE PIXELS
           CASE SETUPCHAR IS            
             WHEN 1 => 	CHARaddr <= (ROW/10)*80; 
-                      --CHARaddr <= 6*80;
 			            TXFontline<= ROW MOD 10; -- 0..9
             WHEN 2 => MEMADDR<=CHARaddr;				
             WHEN 3 => TEXTCHAR<=to_integer(unsigned(DATAIN));
@@ -410,25 +568,9 @@ BEGIN
                       CHARaddr<= CHARaddr +1;
             WHEN OTHERS => CHARaddr<=CHARaddr;
           END CASE;
---		  IF SETUPCHAR=1 THEN		    
-		  --  CHARaddr <= (ROW/10)*80; 
---            CHARaddr <= 6*80;
---			TXFontline<= ROW MOD 10; -- 0..9
---          ELSIF SETUPCHAR=2 THEN
---		    MEMADDR<=CHARaddr;				
---		  ELSIF SETUPCHAR=3 THEN
---		    TEXTCHAR<=to_integer(unsigned(DATAIN));
---		    MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT AT ADDR 4096 
---		  ELSIF SETUPCHAR=4 THEN
---		   PXLTEXTnx<=DATAIN;
---          ELSIF SETUPCHAR=5 THEN
---            PXLTEXT<=PXLTEXTnx;
---            CHARaddr<= CHARaddr +1;
---		  END IF;  
 	    ELSE 
 
           case LETCOL is
-           --when 0 => 		
             when 0 TO 2 => MEMADDR<=CHARaddr;	--CHARACTER ADDRESS	 			
             when 3 TO 4 => TEXTCHAR<=to_integer(unsigned(DATAIN));	--GET TEXT CHARACTER 	     
                       MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS on Buffer 0 ONLY	
@@ -438,18 +580,6 @@ BEGIN
                       CHARaddr<= CHARaddr +1;
           end case;
 
---		IF COLUMN mod 8=1 THEN
---		 CHARaddr<= CHARaddr +1;		
---		ELSIF COLUMN MOD 8=2  THEN --NEXT CHAR	 
---		 MEMADDR<=CHARaddr;	--CHARACTER ADDRESS	 		          		  	
---		ELSIF COLUMN MOD 8=4 THEN  --READ CHAR , 
---		 TEXTCHAR<=to_integer(unsigned(DATAIN));	--GET TEXT CHARACTER 	     
---		 MEMADDR<=4096+TEXTCHAR+(txfontline*256); --FONT PATTERN ADDRESS
---        ELSIF COLUMN MOD 8=6 THEN  --READ PATTERN			
---		 PXLTEXTnx<=DATAIN;	  --GET FONT PATTERN 
---		ELSIF  COLUMN MOD 8=7 THEN -- SETUP NEXT CHAR PATTERN AND COLORS	     
---          PXLTEXT  <= PXLTEXTnx;           		  	
---		END IF;
 
 		END IF; 
 
@@ -458,58 +588,98 @@ BEGIN
 	      PXLOUT <= PXLFORE; 
 		 ELSE   
           PXLOUT <= PXLBACK; 
-   --       IF LETCOL=0 THEN
-	--	    PXLOUT <= "0010"; 
---          ELSIF LETCOL=6 THEN
---            PXLOUT <="0101";
-     --     ELSIF LETCOL=7 THEN
-      --      PXLOUT <="0001";
-      --    END IF;
+ 
 		 END IF;
-  --      IF COLUMN=0 THEN 
---         PXLOUT<="1111";
-  --      END IF;
-   --     IF COLUMN=639 THEN 
-    --     PXLOUT<="1011";
-     --   END IF;
-
-        --IF txfontline=0 AND LETCOL=1 THEN
-         --  PXLOUT <= PXLBACK; 
-        --END IF;
-       -- IF COLUMN mod 8=1 THEN
-       --   PXLOUT <="0001";
-       --END IF;
-   
-       -- IF ROW>200 THEN
-       --    PXLOUT <= "0111";
-       -- END IF;        
-
 		
 	  END IF;	
      END IF;
-		
+	
+
+      -- ************* SPRITE DISPLAY  ************
+     if disp_ena='1'  AND  vidset(1)='0'  then --320x200 4bit/px ONLY
+      SPRcol := COLUMN /2;
+      SPRrow := row /2;
+      wre_i <= '0';     --READ ONLY
+      ce_i <= '1';    --ACTIVE  
+      oce_i <='0';   -- OUTPUT REGISTERS INACTIVE
+      FOR SPRNO IN 0 TO 0 LOOP
+            spridx:=SPRNO; 
+       if SPRITES(spridx).addr /=0 then    
+         if SPRrow >= SPRITES(spridx).ypos and SPRrow < SPRITES(spridx).ypos+(SPRITES(spridx).spht) then -- lines is ok                    
+             spry:= (SPRrow - SPRITES(spridx).ypos);
+
+             If SPRCOL = (SPRITES(spridx).xpos-2) THEN
+              ad_i<= Std_logic_vector(to_unsigned(SPRITES(spridx).intram  + (spry * SPRITES(spridx).spwd/2), ad_i'length  ));
+              SPRXPRE:=0; SPRX:=0;
+              SPRSTEVEN := (SPRCOL+2) MOD 2=0; -- IF WE START AT EVEN COLUMN 
+            END IF;
+             If SPRCOL = (SPRITES(spridx).xpos-1) THEN
+              SPRPXLLEFT:=dout_o(7 downto 4);
+              SPRPXLRIGHT:=dout_o(3 downto 0);                
+             END IF;
+
+
+          if SPRcol >= SPRITES(spridx).xpos and SPRcol < SPRITES(spridx).xpos+SPRITES(spridx).spwd then--columns is ok
+            --find the pixel to be displayed            
+            
+           
+            
+            SPRX:= (SPRCOL - SPRITES(spridx).Xpos)/2; --NEXT            
+            IF SPRX/=SPRXPRE  THEN              
+              SPRXPRE:=SPRX;
+              SPRPXLLEFT:=SPRPXLLEFTNXT;
+              SPRPXLRIGHT:=SPRPXLRIGHTNXT;
+            ELSE
+              ad_i<= Std_logic_vector(to_unsigned(SPRITES(spridx).intram+1   + sprx + (spry * SPRITES(spridx).spwd/2), ad_i'length  ));                                   
+              SPRPXLLEFTNXT<=dout_o(7 downto 4);
+              SPRPXLRIGHTNXT<=dout_o(3 downto 0);
+            END IF;     
+            
+            
+
+            --print the sprx,spry pixel from internal ram                        
+            
+            
+            IF (SPRCOL MOD 2 =1 AND SPRSTEVEN) OR (SPRCOL MOD 2 =0 AND NOT SPRSTEVEN) THEN
+              IF SPRPXLRIGHT/="0000" THEN
+                PXLOUT <= SPRPXLRIGHT;               
+              END IF;  
+            else
+              IF SPRPXLLEFT/="0000" THEN
+                PXLOUT <= SPRPXLLEFT;
+              END IF;
+            end if;            
+ 
+          end if; --columns
+         end if; --rows       
+       end if;  --sprites
+      END LOOP;
+
+      --if SPRITES(sprno).addr=1 then
+       -- PXLOUT <= "0011";
+      --end if;
+     end if;
+
     END IF;
 
---    PAT<='0';
- --   IF MEMBUF='0' THEN
-
-   --   IF   COLUMN >= 600 AND COLUMN<=606 AND ROW>=10 AND ROW<=17   THEN
-    --    PAT<='1';
-     -- END IF;
-     
-
-    --ELSE
-
-      --IF   ( COLUMN = 605 OR COLUMN=606) AND ROW>=10 AND ROW<=17   THEN
-       -- PAT <= '1';       
-      --END IF;
-   -- END IF;
-   
     
     
-    --IF PAT='1' THEN  
-     -- PXLOUT <= "1111"; 
-    --END IF;
+
+
+    
+    PAT<='0';
+    IF MEMBUF='0' THEN
+     IF   COLUMN >= 600 AND COLUMN<=606 AND ROW>=10 AND ROW<=17   THEN
+       PAT<='1';
+     END IF;
+    ELSE
+     IF   ( COLUMN = 605 OR COLUMN=606) AND ROW>=10 AND ROW<=17   THEN
+       PAT <= '1';       
+     END IF;
+    END IF;          
+    IF PAT='1' AND SHOWPAT='1' THEN  
+      PXLOUT <= "1111"; 
+    END IF;
 
    -- IF ROW<100 THEN
     --   PXLOUT<="1100";
@@ -520,26 +690,9 @@ BEGIN
     scrst <= '0';
   END PROCESS;
 
-    Rpixel_clk<=pixel_clk;
-  
-  
-  
-  --set the address and buffer
---  addrout <= std_logic_vector(to_unsigned(memaddr, addrout'length)) when membuf='0'
- --  else std_logic_vector(to_unsigned(memaddr+32768, addrout'length));
-
+  Rpixel_clk<=pixel_clk;
   addrout <= MEMBUF & std_logic_vector(to_unsigned(memaddr, addrout'length -1 )) ;
-    
-   
-
-
-
-
-	RGBI <= "0000" WHEN DISp_ena = '0' ELSE
+  RGBI <= "0000" WHEN DISp_ena = '0' ELSE
             PXLOUT;
-		
-			  
-			  
-			  
 			  
 END behavior;
