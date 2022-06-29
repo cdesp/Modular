@@ -7,6 +7,8 @@
                 GLOBAL SND_NOTE
                 GLOBAL SND_SETVOLUME
                 GLOBAL SND_PLAYCH
+                GLOBAL SND_DOCHAN                       ;PLAY A CHANNEL OR DELAY THE PREVIOUS NOTE
+                GLOBAL SND_INTDELAY
                 GLOBAL SND_PLAYMUSIC
                 GLOBAL SND_MUTEALL
                 GLOBAL SND_ENABLE
@@ -298,7 +300,6 @@ SND_PLAYCH:     PUSH AF
                 POP BC
                 JR NZ,SNDOK                     ;SIGNAL OK BUT DON'T PLAY ANYTHING
                 PUSH BC
-
                 LD C,B                          ;CHAN NO ON C
                 LD B,0
                 LD HL,CHANCN
@@ -311,10 +312,27 @@ SND_PLAYCH:     PUSH AF
                 LD L,A                          ;HL THE NOTE IDX
                 LD H,0                          ;
                 ADD HL,HL                       ;DOUBLE THE IDX CAUSE 2 BYTES PER NOTE
+                ADD HL,HL                       ;DOUBLE AGAIN THE IDX CAUSE 2 BYTES IS THE DURATION OF THE NOTE
                 ADD HL,DE                       ;THE NOTE ADDRESS ON HL
-                LD E,(HL)                       ;E 2ND BYTE OF THE NOTE TO PLAYING
+                LD E,(HL)                       ;E 2ND BYTE OF THE NOTE TO PLAY
                 INC HL
-                LD D,(HL)                       ;D 1ST BYTE OF THE NOTE TO PLAYING
+                LD D,(HL)                       ;D 1ST BYTE OF THE NOTE TO PLAY
+                INC HL
+                LD C,(HL)                      ;THE DURATION OF THE NOTE ON BC
+                INC HL
+                LD B,(HL)
+                LD (PRGEX),BC                   ;SAVE BC                
+                POP BC                          ;CHANNEL ON B
+                PUSH BC                         
+                LD HL,CHANDEL                   ;SAVING DURATION ON CHANDEL + CHAN IDX         
+                RLC B                           ;DOUBLE IDX
+                LD C,B
+                LD B,0
+                ADD HL,BC
+                LD BC,(PRGEX)                      ;RESTORE BC
+                LD (HL),C                       ;SAVE NOTE DELAY ON CHANNEL DELAY
+                INC HL
+                LD (HL),B
                 LD A,D
                 POP BC                          ;GET THE CHANNEL ON B
                 CP 10                           ;CHECK IF 1ST BYTE IS UNDER 10  MAYBE DO SPECIAL OPS
@@ -344,6 +362,46 @@ SNDEND:         LD A,1                          ;SONG END
                 RET
 
 
+;PLAYS NEXT NOTE ON SPECIFIC CHANNEL OR DELAYS
+;A THE CHANNEL TO PLAY
+;RETURNS A=1 IF NO MORE DATA ON CHANNEL ELSE A=0
+SND_DOCHAN:     LD HL,CHANDEL
+                LD C,A
+                LD B,0
+                ADD HL,BC
+                ADD HL,BC       ;DOUBLE CAUSE 2 BYTES PER DELAY VALUE
+                LD C,(HL)
+                INC HL
+                LD B,(HL)
+                LD D,A          ;SAVE A
+                LD A,B
+                OR C
+                LD A,D          ;RESTORE CHANNEL ON A
+                JP Z,SND_PLAYCH ;PLAY CHANNEL NOTES
+                XOR A           ;DATA ON CHANNEL CAUSE WE DELAY 
+                                ;DELAY VALUE SHOULD B DECREASED ON INTERRUPT
+                RET
+
+;CALLED EVERY 20ms BY THE INTERRUPT SERVICE
+;DECREASES THE VALUE OF DELAY ON ALL CHANNELS IF >0
+;A VALUE OF 10 SHOULD DELAY 200ms
+SND_INTDELAY:   LD HL,CHANDEL
+                LD B,4                  
+ID_NXTCH:       LD E,(HL)
+                INC HL
+                LD D,(HL)
+                LD A, D
+                OR E
+                JR Z, ID_SKP
+                DEC DE          ;MINUS NOTE DELAY VALUE
+                LD (HL),D
+                DEC HL
+                LD (HL),E
+                INC HL
+ID_SKP:         INC HL
+                DJNZ ID_NXTCH
+                RET
+
 ;PLAYS A NOTE FOR EVERY CHANNEL 
 ;ZF SET IF NO MORE MUSIC IS AVAILABLE IN ANY CHANNEL
 SND_PLAYMUSIC:  LD B,4
@@ -351,7 +409,7 @@ SND_PLAYMUSIC:  LD B,4
 PM_NXT:         DEC B                           ;PLAY 3,2,1,0
                 LD A,B
                 PUSH BC                
-                CALL SND_PLAYCH
+                CALL SND_DOCHAN
                 POP BC                
                 ADD A,C                         ;A=0 IF NOTE PLAYED A=1 IF CHANNEL NOT ENABLED OR NO MORE NOTES
                 LD C,A

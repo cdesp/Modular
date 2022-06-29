@@ -106,8 +106,13 @@
 		@MENULFORE DEFS 2	;MENU LCD COLOR FOREGROUND
 		@MENULBACK DEFS 2	;MENU LCD COLOR BACKGROUND
 
-
+;----SOUND MODULE
 @CHANDATA:       ;SONG DATA ADDRESS 0 FOR NO DATA
+                DEFS 2
+                DEFS 2
+                DEFS 2
+                DEFS 2
+@CHANDEL:	;CHANNEL DELAY TO MUTE
                 DEFS 2
                 DEFS 2
                 DEFS 2

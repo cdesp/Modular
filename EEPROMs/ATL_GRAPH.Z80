@@ -6,6 +6,11 @@
 ;DE 1ST PARAM HL 2ND PARAM
 @PLOTP:	        PUSH BC 							;SAVE BC
 		PUSH IX
+
+		;CHECK LCD ENABLED
+		LD A,(SCRNST)
+		AND 1
+		JR Z, PPNX		
 		
                 PUSH DE
                 PUSH HL
@@ -23,10 +28,14 @@
                 ;FOR VGA
                 POP HL
                 POP DE	                
+PPNX:		LD A,(SCRNST)
+		AND 2
+		JR Z, PPNX2		
+
                 LD A,(VGAFCOL)
                 CALL VGA_PLTPXL
 
-		POP IX
+PPNX2:		POP IX
 		POP BC 								;RESTORE BC
 		RET
 
