@@ -7,8 +7,10 @@
 		GLOBAL RS_RX
 		GLOBAL RS_RXNW
 		GLOBAL RS_TXT
+		GLOBAL RS_MESG
 		GLOBAL RS_KEYRD
 		GLOBAL SERERR							;SET ON MAIN
+		GLOBAL RS_NEWLINE
 		
 ;DEVSER EQU $20 ; SET ON MAIN
 		
@@ -89,8 +91,7 @@ RS_TX:		CALL RSTXRD
 ;CALL CHKERR2 		;CHECK ERROR ON TRANSMITION
 		RET
 		
-; RETurns when UART is ready to receive
-		
+; RETurns when UART is ready to receive		
 RSTXRD:		PUSH AF
 RSTXLP:		IN A, (LSR) 							; fetch the control register
 		BIT 5, A 							; bit will be set if UART is ready
@@ -98,14 +99,41 @@ RSTXLP:		IN A, (LSR) 							; fetch the control register
 		POP AF
 		RET
 		
-		
+;HL THE STRING TO PRINT
+;DESTROYS A		
 RS_TXT:		LD A, (HL)
 		INC HL
 		CP 0
 		RET Z
 		CALL RS_TX
 		JR RS_TXT
-		
+
+;PRINTS A ZT MESSAGE FOLLOWING THIS CALL
+;PRESERVES ALL REGS
+RS_MESG:	PUSH HL
+		PUSH BC
+		PUSH DE
+		PUSH AF
+		LD HL,9	;POINTS TO RET ADDRESS +10 FROM SP = OUR STRING
+		ADD HL,SP
+		LD B,(HL)				
+		DEC HL
+		LD C,(HL)
+		LD H,B
+		LD L,C
+		CALL RS_TXT
+		POP AF
+		POP DE
+		LD B,H		;NEW RET ADDRESS
+		LD C,L
+		LD HL,5	;POINTS TO RET ADDRESS +6 FROM SP
+		ADD HL,SP		
+		LD (HL),B
+		DEC HL
+		LD (HL),C		
+		POP BC
+		POP HL
+		RET	
 		
 		
 		
@@ -164,7 +192,14 @@ SHLCD:		PUSH AF
 ;CALL LCDCHR
 		RET
 		
-		
+RS_NEWLINE: 	PUSH AF
+		LD A,13
+		CALL RS_TX
+		LD A,10
+		CALL RS_TX
+		POP AF
+		RET		
+
 		
 CHKERR:		PUSH AF
 		PUSH HL
