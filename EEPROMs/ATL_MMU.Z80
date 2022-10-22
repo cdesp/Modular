@@ -5,7 +5,8 @@
         GLOBAL GETPGINBANK
         
 
-;DEFAULT SETUP FOR BANKS		
+;DEFAULT SETUP FOR BANKS	
+;0-7 PAGE TO 0-7 BANK	
 INITMMU:        LD HL,BANKS
                 LD B,8
                 XOR A
