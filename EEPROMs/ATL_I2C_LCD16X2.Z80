@@ -89,8 +89,9 @@
 ; @abstract   Defines the duration of the home and clear commands
 ; @discussion This constant defines the time it takes for the home and clear
 ; commands in the LCD - Time in microseconds.
-		HOME_CLEAR_EXEC EQU 2000
-		
+		;HOME_CLEAR_EXEC EQU 2000
+		HOME_CLEAR_EXEC EQU 2 ; IN MILLISECONDS
+
 ;    @abstract   Backlight off constant declaration
 ;    @discussion Used in combination with the setBacklight to swith off the
 ; LCD backlight. @set setBacklight
@@ -183,26 +184,26 @@ LCSD_4BIT:	LD A, D
 		CALL LCD16_WR4BITS						;LOW 4 BITS NEXT
 		RET
 		
+PAUSE:		LD B,4
+		CALL DELAYMILI
+		RET
+
 @LCD16_INIT:	LD A, 3 							;SET LCD TO 4BIT MODE
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		LD BC, $3000
-		CALL PAUSE_LOOP 						;DELAY 4,5ms
+		CALL PAUSE	 						;DELAY 4,5ms
 		LD A, 3
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		LD BC, $3000
-		CALL PAUSE_LOOP 						;DELAY 4,5ms
+		CALL PAUSE	 						;DELAY 4,5ms
 		LD A, 3
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		LD BC, $3000
-		CALL PAUSE_LOOP 						;DELAY 4,5ms
+		CALL PAUSE	 						;DELAY 4,5ms
 		LD A, 2 							;PUT 4 BIT MODE
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		LD BC, $3000
-		CALL PAUSE_LOOP 						;DELAY 4,5ms
+		CALL PAUSE	 						;DELAY 4,5ms
 ;finally, set # lines, font size, etc.
 		LD A, LCD_FUNCTIONSET OR LCD_2LINE
 		CALL LCD16_COMMD
@@ -214,8 +215,7 @@ LCSD_4BIT:	LD A, D
 		LD (LCD_DSPMODE), A
 		OR LCD_ENTRYMODESET
 		CALL LCD16_COMMD
-		LD BC, $3000
-		CALL PAUSE_LOOP 						;DELAY 4,5ms
+		CALL PAUSE	 						;DELAY 4,5ms
 		CALL LCD16_BKLTON						;BACKLIGHT ON BY DEFAULT
 		RET
 		
@@ -232,12 +232,8 @@ LCSD_4BIT:	LD A, D
 		CALL LCD16_COMMD
 		RET
 		
-LCDDELAY:	LD BC, HOME_CLEAR_EXEC
-LCLR_AGN1:	PUSH BC
-		CALL DELAYMICRO
-		POP BC
-		DEC C
-		JP PO, LCLR_AGN1
+LCDDELAY:	LD B, HOME_CLEAR_EXEC
+LCLR_AGN1:	CALL DELAYMILI		
 		RET
 		
 @LCD16_CLR:	LD A, LCD_CLEARDISPLAY 						;clear display, set cursor position to zero

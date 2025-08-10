@@ -1,16 +1,14 @@
 		NAME UTILS
 		
-		GLOBAL DELAY
-		GLOBAL DEL2
-		GLOBAL DELAYMICRO
+		GLOBAL DELAY5MICS
 		GLOBAL DELAYMILI
+		GLOBAL DELAYSEC
 		GLOBAL BCD2BN 							;CONVERT ONE BYTE BCD TO BINARY
 		GLOBAL BN2BCD 							;CONVERT ONE BYTE BINARY  TO BCD
 		GLOBAL B2BCD 							;CONVERT 16BIT ON HL TO 6 DIGIT BCD ON C:HL
 		GLOBAL BCD2HA 							;Converts a 6-digit BCD number to a hex ASCII string
 		GLOBAL OUTASC 							;CONVERTS A 16BIT BINARY NUMBER ON HL TO 6 DIGIT ASCII
 		GLOBAL Bcd2ASC 							;Converts a 2-digit BCD number to an ASCII string
-		GLOBAL PAUSE_LOOP
 		GLOBAL strtob
 		GLOBAL StrfHex
 		GLOBAL ReadBCDByte
@@ -27,60 +25,98 @@
 		GLOBAL STR_ADD
 		GLOBAL STR_ADDCHAR
 		GLOBAL NUM_ADDZERO
+		GLOBAL DIV
+		GLOBAL MUL
+
 
 ;@SCCLS:		
 ;@SCPRN:		
 		
 	;	RET
-		
-;THIS DELAYS 1MICROSECOND ON 8MHZ CPU
-DELAYMICROSEC:	PUSH AF
-		PUSH DE
-		DEC DE
-		POP DE
-		POP AF
+
+
+;---------------- DELAY ROUTINES
+
+
+;DELAY RTN FOR 5us DELAY UP TO 20MHz
+DELAYRTN:
+m18:		nop         ; 4 cycles
+		nop         ; 4 cycles
+m16:   		nop         ; 4 cycles
+     		nop         ; 4 cycles
+     		nop         ; 4 cycles
+m14:   		nop         ; 4 cycles
+		nop         ; 4 cycles
+m12:   		nop         ; 4 cycles
+     		nop         ; 4 cycles
+     		nop         ; 4 cycles
+m10:   		nop         ; 4 cycles
+     		nop         ; 4 cycles
+m8:   		nop         ; 4 cycles
+     		nop         ; 4 cycles
+   		nop         ; 4 cycles
+m6:    		nop         ; 4 cycles
+   		nop         ; 4 cycles
+m4:		nop         ; 4 cycles
+	    	nop         ; 4 cycles
+     		nop         ; 4 cycles
+		JP DM3CONT
+	       ; ret         ; 10 cycles		
+
+;idx from delay5us 18 is for 4mhz
+		;MHZ  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20
+;DMHELPIDX:	DB 0,20,19,18,18,17,16,16,13,13,11,11,08,08,06,06,03,03,01,01,01  ;
+DMHELPIDX:	DB 0,20,19,18,18,17,16,16,13,13,11,11,11,08,06,06,03,03,01,00,00 ;FIXED FOR DELAYS 
+
+; b has the 5us multiple to delay
+; so for 250us b should be 250/5=50
+DELAY5MICS:	IN A, (128)          ; THE CPU SPEED IN MHZ e.g. 12
+		LD HL,DMHELPIDX
+		LD E,A
+		LD D,0
+		ADD HL,DE
+		LD A,(HL)
+		LD E,A
+		LD HL,DELAYRTN
+		ADD HL,DE
+DM3AGN:		JP (HL)
+DM3CONT:	DJNZ DM3AGN
 		RET
-		
-DELAYMICRO:	
-S21:		CALL DELAYMICROSEC
-		DJNZ S21
-		RET
-		
-;THIS DELAYS 1MILISECOND ON 8MHZ CPU
-DELAY:		
-DELAYMILISEC:	PUSH AF
-		PUSH DE
-		LD DE, 300 							;2000 1 MILISEC =300 ON 8MHZ SO 30= 0.1 MILISECS = 100 MICROSECS
-DEL1:		DEC DE
-		LD A, D 							;TEST FOR DE=00
-		OR E
-		JR NZ, DEL1
-		POP DE
-		POP AF
-		RET
-		
-DEL2:										;RET; REMOVE AS IT IS ONLY FOR DEBUG
-		LD B, 80
-DELAYMILI:	
-S1:		CALL DELAYMILISEC
-		DJNZ S1
-		RET
-		
-		
-; B HAS THE SECONDS TO DELAY
-; A,C IS DESTROYED
-@DELAYSEC:	PUSH BC
-		LD BC, 1000
-MYDLAGN:	PUSH BC
-		CALL DELAY 							;1MS ON 8 MHZ
+
+
+;B THE NUMBER OF MS TO DELAY
+;ALL DESTROYED
+DELAYMILI:
+DELms:		;PUSH AF
+		;PUSH DE
+		;PUSH HL
+NXTMS:		PUSH BC
+		;1000 us IS 1ms
+		LD B,950/5		;FIX SHOULD BE 1000
+		CALL DELAY5MICS
 		POP BC
-		DEC BC
-		LD A, B
-		OR C
-		JR NZ, MYDLAGN
+		DJNZ NXTMS
+		;POP HL
+		;POP DE
+		;POP AF
+		RET
+
+
+;B THE NUMBER OF SECS TO DELAY
+;ALL DESTROYED
+DELAYSEC:	PUSH BC
+		LD B,250
+		CALL DELAYMILI
+		LD B,250
+		CALL DELAYMILI
+		LD B,250
+		CALL DELAYMILI
+		LD B,250
+		CALL DELAYMILI
 		POP BC
 		DJNZ DELAYSEC
 		RET
+
 		
 ;CONVERTS A 16BIT NUMBER ON HL TO ASCII ON DE		
 ; DE =THE TXT BUFFER
@@ -275,41 +311,6 @@ cvtLN:
 		LD (DE), A
 		INC DE
 		RET
-		
-;------------------------------------------------------------------------------
-; PAUSE_LOOP
-;
-; Timer function
-;
-; 16-bit (BC) decrement counter, performing 4xNEG loop until BC
-; reaches zero.
-;
-; 61 T-states in loop = 15.25uS per loop @ 4 MHz - near enough
-; a second delay for 65,535 iterations.
-;
-; Set iteration count in BC before calling this function.
-; Destroys: BC
-;------------------------------------------------------------------------------
-PAUSE_LOOP:	
-		PUSH AF 							; 11 T-states
-pau_lp:		
-		NEG 								; 8 T-states
-		NEG 								; 8 T-states
-		NEG 								; 8 T-states
-		NEG 								; 8 T-states
-		DEC BC 								; 6 T-states
-		LD A, C 							; 9 T-states
-		OR B 								; 4 T-states
-		JP NZ, pau_lp 							; 10 T-states
-		POP AF 								; 10 T-states
-		RET 								; Pause complete, RETurn
-		
-		
-		
-		
-		
-		END
-		
 		
 		
 		
@@ -757,3 +758,35 @@ AZ_AGN2:	DEC HL
 		INC DE
 		INC HL
 		JR COPYSTRING
+;---------------------------math func
+
+; this routine performs the operation HL=H*E
+@Mul8b:		ld d,0                         ; clearing D and L
+  		ld l,d
+  		ld b,8                         ; we have 8 bits
+Mul8bLoop:  	add hl,hl                      ; advancing a bit
+  		jp nc,Mul8bSkip                ; if zero, we skip the addition (jp is used for speed)
+  		add hl,de                      ; adding to the product if necessary
+Mul8bSkip:	djnz Mul8bLoop
+  		ret
+
+; Multiplication routine to multiply B by C and store result in HL
+MUL:		LD HL, 0             ; Clear HL
+    		LD D, A              ; D = A (number of microseconds)
+    		LD E, C              ; E = C (CPU speed)
+MUL_LOOP:	ADD HL, DE           ; HL = HL + DE
+    		DEC D                ; Decrement D
+    		JR NZ, MUL_LOOP      ; Repeat until D is zero
+    		RET
+
+; Division routine to divide HL by E and store the quotient in A
+DIV:   		XOR A                ; Clear A (quotient)
+    		LD B, 16             ; Set bit counter (16 bits)
+DIV_LOOP:       ADD HL, HL           ; Shift HL left
+    		RL A                 ; Shift A left through carry
+    		CP E                 ; Compare A with E
+    		JR C, NO_SUB         ; If A < E, skip subtraction
+    		SUB E                ; A = A - E
+    		INC L                ; Increment L (part of quotient)
+NO_SUB:		DJNZ DIV_LOOP        ; Loop 16 times
+    		RET                  ; Return with quotient in A
