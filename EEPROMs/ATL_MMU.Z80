@@ -1,55 +1,101 @@
-		NAME MMU
+;*******************************************************************************
+; Z80 MMU (MEMORY MANAGEMENT UNIT) MODULE
+;
+; This module provides functions for controlling a Memory Management Unit
+; on a Z80-based system. It is designed to manage up to 2MB of memory,
+; split into 8 banks of 8KB each. The module includes routines for
+; initializing the banks, and mapping memory pages to specific banks.
+;
+; The address for the MMU port (DEVMMU) must be defined in the main program.
+;*******************************************************************************
+                NAME MMU
+
+                GLOBAL INITMMU            ; Initializes the MMU banks to a default setup (bank 0 -> page 0, etc.).
+                GLOBAL PUTPGINBANK        ; Puts a specific page into a memory bank. Params: B = bank number (0-7), A = page number (0-255).
+                GLOBAL GETPGINBANK        ; Gets the current page number for a given bank. Params: B = bank number (0-7). Returns: A = page number.
+                GLOBAL BANKS              ; A global memory location storing the current page-to-bank mapping.
+
 ;DEVMMU PORT
-        GLOBAL INITMMU
-        GLOBAL PUTPGINBANK
-        GLOBAL GETPGINBANK
-        
-
-;DEFAULT SETUP FOR BANKS	
-;0-7 PAGE TO 0-7 BANK	
-INITMMU:        LD HL,BANKS
-                LD B,8
+                
+;-------------------------------------------------------------------------------
+; INITMMU: Initializes the MMU banks to a default setup.
+;
+; Description:
+;   This routine sets up a 1:1 mapping where each bank (0-7) is assigned to
+;   its corresponding page (0-7). It writes the page numbers to the BANKS table.
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   None. HL, B, and A are used as scratch registers.
+;-------------------------------------------------------------------------------
+INITMMU:        LD HL, BANKS
+                LD B, 8
                 XOR A
-INM_AGN:        LD (HL),A
+INM_AGN:        LD (HL), A
                 INC A
-		INC HL
+                INC HL
                 DJNZ INM_AGN
-                RET                
-
-;C MMU PORT
-;B HAS THE BANK NO (0..7) EACH BANK IS 8K
-;A HAS THE PAGE TO PUT IN BANK EACH PAGE IS 8K PAGES (0..255) TOTAL 2MB MEMORY ACCESIBLE A0-A20 2^21
-;DESTROYS C,HL,DE
-PUTPGINBANK:	LD C, A 							;SAVE PAGE
-		LD A, B                                                         ;BANK IN A
-		CP 2
-		RET C 								;BANK 0,1 WILL NEVER CHANGE
-		CP 7
-		RET Z 								;BANK 7 WILL NEVER CHANGE
-		LD HL, BANKS
-		LD D, 0
-		LD E, A
-		ADD HL, DE
-		LD A, C 							;RESTORE PAGE
-		LD (HL), A 							;SAVE PG IN BANK B MEMORY
-		LD C, DEVMMU
-		LD E,B
-		SLA B 								;SHIFT BANK TO A15..A13 FROM A2..A0 WE USE THESE PINS ON THE CPLD FOR BANK INPUT
-		SLA B
-		SLA B
-		SLA B
-		SLA B 								;SET TO A15,A14,A13
-		OUT (C), A
-		LD B,E
-		RET
-
-;B BANK NO (0..7)
-;RET A THE PAGE IN BANK B
-;DESTROYS HL,DE
-GETPGINBANK:    LD HL,BANKS
-                LD D,0
-                LD E,B
-                ADD HL,DE
-                LD A,(HL)
                 RET
-        
+                
+;-------------------------------------------------------------------------------
+; PUTPGINBANK: Maps a memory page into a specific bank.
+;
+; Parameters:
+;   A: The page number to map into the bank (0-255).
+;   B: The bank number to use for the mapping (0-7).
+;
+; Preserved Registers:
+;   None. A, B, C, HL, D, and E are used as scratch registers.
+;
+; Memory Accessed:
+;   Memory: Writes to the BANKS table.
+;   I/O Ports: Writes the bank number to DEVMMU.
+;-------------------------------------------------------------------------------
+PUTPGINBANK:    LD C, A                   ; Save page number in C
+                LD A, B                   ; Bank number to A for comparison
+                CP 2
+                RET C                     ; Banks 0 and 1 are fixed, so return if B < 2
+                CP 7
+                RET Z                     ; Bank 7 is also fixed, so return if B = 7
+                LD HL, BANKS
+                LD D, 0
+                LD E, A
+                ADD HL, DE
+                LD A, C                   ; Restore page number
+                LD (HL), A                ; Save the page number in the BANKS memory table
+                LD C, DEVMMU
+                LD E, B
+                SLA B                     ; Shift bank number to align with CPLD pins
+                SLA B
+                SLA B
+                SLA B
+                SLA B                     ; Bank number in B is now shifted by 5
+                OUT (C), A
+                LD B, E
+                RET
+
+;-------------------------------------------------------------------------------
+; GETPGINBANK: Retrieves the page number currently mapped to a specific bank.
+;
+; Parameters:
+;   B: The bank number (0-7) to get the page from.
+;
+; Preserved Registers:
+;   None. A, HL, D, and E are used as scratch registers.
+;
+; Memory Accessed:
+;   Memory: Reads from the BANKS table.
+;
+; Return Value:
+;   A: The page number currently mapped to the given bank.
+;-------------------------------------------------------------------------------
+GETPGINBANK:    LD HL, BANKS
+                LD D, 0
+                LD E, B
+                ADD HL, DE
+                LD A, (HL)
+                RET
+                
+                END

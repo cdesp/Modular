@@ -1,768 +1,807 @@
-	NAME STORAGE_NEW_USB_SDCARD
+;*******************************************************************************
+; Z80 STORAGE MODULE
+;
+; This module provides functions for managing a storage device (USB or SD card)
+; using the CH376S chip. It includes routines for initializing the device,
+; managing files and directories, and reading/writing data.
+;
+; This module assumes the presence of external routines for the CH376S
+; communication (CH376_...) and other utilities (RS_..., OS_...).
+;*******************************************************************************
+                NAME STORAGE_NEW_USB_SDCARD
 
-;STORAGE COMMANDS
-		GLOBAL STRG_INIT
-		GLOBAL STRG_OPENCRD
-		GLOBAL STRG_OPNFILE
-		GLOBAL STRG_CLSFILE
-		GLOBAL STRG_DIRLIST
-		GLOBAL STRG_DIRCHG
-		GLOBAL STRG_DIRNMCHG
-		GLOBAL STRG_OPENCDIR
-		GLOBAL STRG_BLKREAD
-		GLOBAL STRG_BLKWRITE
-		GLOBAL STRG_TPFILE
-		GLOBAL STRG_GETPOS
-		GLOBAL STRG_SETPOS
-		GLOBAL STRG_SETPOS16
-		GLOBAL STRG_GETSIZE
-		GLOBAL STRG_GETEOF
-		GLOBAL STRG_PRDRVINFO
-		GLOBAL STRG_LOADFILE
-		GLOBAL STRG_SAVEFILE
-		GLOBAL STRG_CHECK
-		GLOBAL STRG_EXISTS		
-		GLOBAL STRG_DIRLIST
-		GLOBAL STRG_DIRCHG
-		GLOBAL STRG_READBUFR
-		GLOBAL STRG_WRITEBUFR
-		;COPYFNAME on ATL_UTILS fname goes to strgbuff
+;===============================================================================
+; GLOBAL COMMANDS (EXPORTED FUNCTIONS)
+;===============================================================================
+                GLOBAL STRG_INIT          ; Initializes the CH376S chip
+                GLOBAL STRG_OPENCRD        ; Mounts the flash disk
+                GLOBAL STRG_OPNFILE        ; Opens a file
+                GLOBAL STRG_CLSFILE        ; Closes the currently open file
+                GLOBAL STRG_DIRLIST        ; Prints the current directory contents
+                GLOBAL STRG_DIRCHG         ; Changes the current directory
+                GLOBAL STRG_DIRNMCHG       ; Changes the current directory path in memory
+                GLOBAL STRG_OPENCDIR       ; Opens the current directory
+                GLOBAL STRG_BLKREAD        ; Reads a block of bytes
+                GLOBAL STRG_BLKWRITE       ; Writes a block of bytes
+                GLOBAL STRG_TPFILE         ; (Stub)
+                GLOBAL STRG_GETPOS         ; (Stub)
+                GLOBAL STRG_SETPOS         ; Sets the file pointer position (32-bit)
+                GLOBAL STRG_SETPOS16       ; Sets the file pointer position (16-bit)
+                GLOBAL STRG_GETSIZE        ; (Stub)
+                GLOBAL STRG_GETEOF         ; (Stub)
+                GLOBAL STRG_PRDRVINFO      ; Prints drive information
+                GLOBAL STRG_LOADFILE       ; Loads a file into memory
+                GLOBAL STRG_SAVEFILE       ; Saves a file from memory
+                GLOBAL STRG_CHECK          ; Checks connection status and mounts drive
+                GLOBAL STRG_EXISTS         ; Checks if a device exists
+                GLOBAL STRG_READBUFR       ; Reads 500 bytes into a buffer
+                GLOBAL STRG_WRITEBUFR      ; Writes 500 bytes from a buffer
+                
+; CH376S COMMANDS AND ERRORS (Constants should be defined in another module)
+@CH376_ERROR    EQU RS_MESG
 
+;-------------------------------------------------------------------------------
+; STRG_INIT: Initializes the CH376S chip.
+;
+; Parameters:
+;   A: 3 for SD card, 6 for USB flash drive.
+;
+; Returns:
+;   A: Version number if successful.
+;   A: 0 if an error occurs or no device is present.
+;   ZF: Set if OK (NZ if error).
+;
+; Preserved Registers: D is destroyed.
+;-------------------------------------------------------------------------------
+STRG_INIT:      LD      D, A
+                XOR     A
+                LD      (STRG_STAT), A         ; NOT CONNECTED, NOT EXISTS
+                CALL    CH376_INIT
+                JR      NZ, INIERR
+                LD      A, D                   ; Select USB device (3 for SD card, 6 for flash)
+                CALL    CH376_SETUSB
+                JR      Z, INIOK
+INIERR:         LD      A, 0
+                RET
+INIOK:          CALL    CH376_VERSION
+                CP      A                      ; Set Zero Flag
+                LD      A, $80                 ; Set bit 7 to mean 'EXISTS'
+                LD      (STRG_STAT), A
+                RET
 
-@CH376_ERROR EQU RS_MESG
+;-------------------------------------------------------------------------------
+; STRG_EXISTS: Checks if a device exists.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   ZF: Set if the device exists, NZ otherwise.
+;-------------------------------------------------------------------------------
+STRG_EXISTS:    LD      A, (STRG_STAT)
+                BIT     7, A
+                RET
 
+;-------------------------------------------------------------------------------
+; STRG_CHECK: Checks the connection status and mounts the drive if necessary.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   CF: Set if the device is not present.
+;   A: 0 for timeout, 1 if just connected, 2 if just disconnected.
+;
+; Preserved Registers: B is used as a counter.
+;-------------------------------------------------------------------------------
+STRG_CHECK:     CALL    STRG_EXISTS
+                SCF
+                RET     Z                      ; Not connected
+                LD      B, 5
+SC_AGN1:        CALL    CH376_CONNECT
+                JR      Z, DOCON
+                JR      NC, DODISC
+                DJNZ    SC_AGN1
+                XOR     A
+                RET                            ; Timeout
+                
+DOCON:          XOR     A
+                LD      A, (STRG_STAT)
+                BIT     0, A
+                RET     NZ                     ; Already mounted
+                CALL    CH376_MOUNT
+                JR      NZ, DONOMNT
+                LD      A, (STRG_STAT)
+                SET     0, A
+                LD      (STRG_STAT), A
+                XOR     A
+                LD      A, 1                   ; A=1 is just connected
+                RET
+DONOMNT:        ; NO-OP
+                
+DODISC:         XOR     A
+                LD      A, (STRG_STAT)
+                BIT     0, A
+                RET     Z                      ; Already disconnected
+                RES     0, A                   ; Set bit 0 to 0 (disconnected)
+                LD      (STRG_STAT), A
+                LD      A, 2                   ; A=2 is just disconnected
+                RET
 
+;-------------------------------------------------------------------------------
+; STRG_OPENCRD: Mounts the flash disk.
+;
+; Parameters:
+;   A: 6 for USB stick, 3 for SD card.
+;
+; Returns:
+;   NZ: An error occurred.
+;-------------------------------------------------------------------------------
+STRG_OPENCRD:   JP      CH376_MOUNTDEV
 
-;INITIALIZE THE CH376S
-;A=3 FOR SDCARD, 6 FOR USB FLASH
-;RETURNS THE VERSION ON A IF ALL OK
-;A=0 IF ERROR OR DEVICE NOT PRESENT
-;ALSO CHECK THE ZF NZ=ERROR
-;DESTROYS D
-STRG_INIT:	LD D,A
-		XOR A		
-		LD (STRG_STAT),A 	;NOT CONNECTED, NOT EXISTS
-		CALL CH376_INIT
-		JR NZ,INIERR
-		LD A,D			;SELECT USB DEVICE 3 FOR SDCARD, 6 FOR FLASH
-		CALL CH376_SETUSB
-		JR Z,INIOK
-INIERR:		LD A,0		
-		RET
-INIOK:		CALL CH376_VERSION
-		CP A		;SET ZF
-		LD A, $80		;BIT 7 MEANS EXISTS
-		LD (STRG_STAT),A 	;
-		RET
+SDIRTP          DEFB    '*', 0
 
-;NZ IF EXISTS
-STRG_EXISTS:	LD A,(STRG_STAT)
-		BIT 7,A
-		RET
+;-------------------------------------------------------------------------------
+; STRG_DIRLIST: Prints the contents of the current directory to the screen.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   ZF: Set if there are no more files to list.
+;
+; Memory Accessed:
+;   USBBUF: Used as a temporary buffer for file names.
+;-------------------------------------------------------------------------------
+STRG_DIRLIST:   CALL    STRG_OPENCDIR          ; Open current directory
+                LD      HL, SDIRTP
+                CALL    STRG_OPENFD
+DL_NXTFILE:     RET     Z                      ; No more files
+                LD      A, CMD_RDUSB_DATA0
+                CALL    CH376_COMMD
+                CALL    CH376_GETDATA          ; Data in USBBUF, A = bytes to read
+                LD      A, 0
+                LD      (DE), A                ; ZT string
+                
+                LD      HL, USBBUF
+                CALL    OS_PRMESSCRSFE
+                LD      A, $0D
+                CALL    OS_PRCHSCR
+                
+                LD      A, CMD_FILEENUM_GO
+                CALL    CH376_COMMD
+                CALL    CH376_WTCMDEND
+                CP      ERR_MISS_FILE
+                JR      DL_NXTFILE
 
-;CHECKS IF USB IS CONNECTED OR DISCONNECTED AND CONNECTS IF NECESSARY
-;CAN BE CALLED MULTIPLE TIMES ONLY ONCE THE DRIVE IS MOUNTED
-;CF SET IF DEVICE NOT PRESENT
-;A=0 TIMEOUT, A=1 IF JUST CONNECTED,A=2 IF JUST DISCONNECTED
-STRG_CHECK:	CALL STRG_EXISTS
-		SCF
-		RET Z				;Z MEANS NOT EXISTS
-		LD B,5
-SC_AGN1:	CALL CH376_CONNECT		
-		JR Z,DOCON
-		JR NC,DODISC
-		DJNZ SC_AGN1				
-		;CALL RS_MESG
-		;DEFM " TIMEOUT CONNECTING"
-		;DB 10,13,0
-		XOR A			
-		RET 		;TIMEOUT
-		
-DOCON:		XOR A				;CLCF
-		LD A,(STRG_STAT)
-		BIT 0,A
-		RET NZ				;ALREADY MOUNTED THE DRIVE
-		;CALL RS_MESG
-		;DEFM " MOUNTING"
-		;DB 10,13,0					
-		CALL CH376_MOUNT			;MOUNT THE DRIVE
-		JR NZ, DONOMNT
-		;CALL RS_MESG
-		;DEFM " CONNECT"
-		;DB 10,13,0		
-		LD A,(STRG_STAT)
-		SET 0,A
-		LD (STRG_STAT),A
-		XOR A				;CLEAR CARRY FLAG MEANS WE ARE OK
-		LD A,1				;A=1 IS JUST CONNECTED
-		RET
-DONOMNT:	;CALL RS_MESG
-		;DEFM " NOT MOUNTED"
-		;DB 10,13,0		
+;-------------------------------------------------------------------------------
+; NEXTDIR: Finds the end of a directory name string.
+;
+; Parameters:
+;   HL: Points to the directory name string.
+;
+; Returns:
+;   HL: Points to the null terminator of the string.
+;-------------------------------------------------------------------------------
+NEXTDIR:        LD      A, (HL)
+                INC     HL
+                OR      A
+                RET     Z
+                JR      NEXTDIR
 
-DODISC:		;CALL RS_MESG
-		;DEFM " DISCONNECT"
-		;DB 10,13,0	
-		XOR A	
-		LD A,(STRG_STAT)		
-		BIT 0,A
-		RET Z				;ALREADY DISCONNECTED
-		RES 0,A				;SET BIT 0 TO 0=DISCONNECTED
-		LD (STRG_STAT),A		
-		LD A,2				;A=2 IS JUST DISCONNECTED
-		RET
+;-------------------------------------------------------------------------------
+; STRG_OPENCDIR: Opens the current directory.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   CF: Set on error or if a file is missing.
+;
+; Preserved Registers: AF is destroyed.
+;-------------------------------------------------------------------------------
+STRG_OPENCDIR:  PUSH    HL
+                PUSH    DE
+                PUSH    BC
+                LD      HL, DIRNM
+                CALL    STRG_OPENCDIR2
+                POP     BC
+                POP     DE
+                POP     HL
+                RET
 
+STRG_OPENCDIR2: LD      A, (HL)
+                OR      A
+                RET     Z                      ; End of directory path
+                PUSH    HL
+                CALL    STRG_OPENFD
+                POP     HL
+                RET     C                      ; Error
+                SCF
+                LD      A, 150                 ; Missing file error number
+                RET     Z                      ; File missing
+                CALL    NEXTDIR
+                JR      STRG_OPENCDIR2
 
-;MOUNTS THE FLASH DISK
-;IN A=6 USB STICK 3-SDCARD
-;NZ IF ERROR
-STRG_OPENCRD:   JP CH376_MOUNTDEV		
-
-
-SDIRTP 		DEFB '*',0
-;OUTPUTS CURRENT DIRECTORY ON SCREEN
-STRG_DIRLIST:	CALL STRG_OPENCDIR	;OPEN CURRENT DIR
-		LD HL,SDIRTP
-		CALL STRG_OPENFD
-DL_NXTFILE:	RET Z 			;NO  MORE FILES
-		LD A,CMD_RDUSB_DATA0
-		CALL CH376_COMMD
-		CALL CH376_GETDATA	;DATA ON USBBUF A=BYTES TO READ
-		LD A,0
-		LD (DE),A   ;ZT STRING
-		;PRINT DATA ON USBBUF
-		LD HL,USBBUF
-		CALL OS_PRMESSCRSFE
-		LD A,$0D
-		CALL OS_PRCHSCR
-		;NEXT FILE
-		LD A, CMD_FILEENUM_GO
-		CALL CH376_COMMD
-		CALL CH376_WTCMDEND
-		CP ERR_MISS_FILE
-		JR DL_NXTFILE
-
-;HL POINTS TO DIRNAME
-;RETURNS AFTER IT
-NEXTDIR:	LD A,(HL)
-		INC HL
-		OR A
-		RET Z
-		JR NEXTDIR
-
-;OPENS CURRENT DIR ON DIRNM
-;DIRNM SHOULD BE /0 1STNAME0...LASTNAME00
-;CF SET ON ERROR OR MISSING FILE 
-;DESTROYS AF
-STRG_OPENCDIR:	PUSH HL
-		PUSH DE
-		PUSH BC		
-		LD HL,DIRNM
-		CALL STRG_OPENCDIR2
-	        POP BC
-		POP DE
-		POP HL
-		RET
-
-STRG_OPENCDIR2:	LD A,(HL)
-		OR A
-		RET Z		;WHEN ZERO MEANS NO MORE DIR TO OPEN
-	;	PUSH HL
-	;	 CALL OS_PRINTTEXT
-	;	 POP HL
-		PUSH HL
-		CALL STRG_OPENFD
-		POP HL
-		RET C		;ERROR
-		SCF
-		LD A,150	;MISSING FILENAME
-		RET Z		;FILE MISSING
-		;OK DIR OPENED
-		CALL NEXTDIR
-		JR STRG_OPENCDIR2
-
-;HL THE NEW DIR TO ADD OR .. TO GO BACK
-;HL PRESERVED
-STRG_DIRNMCHG:	PUSH HL		
-		LD A,(HL)
-		CP '\'								;changed from '/' on 18/2/2024
-		JR Z,DNC_RESET
-		CP '/'								; 25/2/2024
-		JR Z,DNC_RESET		
-		CP '.'
-		JR NZ, DNC_ADD
-		CP '.'
-		JR Z,DNC_RMV
-		POP HL
-		RET	;DO NOTHING IF . OR .\ OR .<x>
-DNC_RESET:	LD HL,DIRNM
-		LD (HL),'\'
-		INC HL
-		LD (HL),0
-		INC HL
-		LD (HL),0
-		POP HL
-		RET
-;REMOVES THE LAST DIRECTORY		
-DNC_RMV:	LD HL,DIRNM
-		CALL NEXTDIR
-		LD A,(HL)
-		OR A
-		EX DE,HL ;DE THE NEXT DIR
-		POP HL
-		RET Z	;RET IF WE ARE ON 1ST DIRECTORY		
-		PUSH HL
-		EX DE,HL ;HL THE NEXT DIR
-RMV_NXT:	LD B,H
-		LD C,L
-		CALL NEXTDIR
-		LD A,(HL)
-		OR A
-		JR NZ,RMV_NXT	;GO TO NEXT DIR 
-		;HERE ON THE LAST ONE HL ON THE 2ND ZERO
-		;BC THE START OF THE LAST DIR
-		XOR A
-		LD (BC),A
-		POP HL
-		RET
-DNC_ADD:	EX DE,HL		;DE THE NEW FILE
-		LD HL,DIRNM
-ADDNXT:		CALL NEXTDIR
-		LD A,(HL)
-		OR A
-		JR NZ,ADDNXT
-		;HERE ON THE LAST DIR		
-		EX DE,HL
-		;COPY FROM HL TO DE
-ADDNXT2:	LD A,(HL)
-		LD (DE),A
-		INC HL
-		INC DE
-		OR A
-		JR NZ,ADDNXT2
-		;HERE WE COPIED THE NEW FILE WITH THE ZT
-		EX DE,HL
-		LD (HL),0 ;SIGNAL END OF DIRECTORIES WITH A SECOND ZERO
-		POP HL
-		RET
-		
-
-;HL THE MESSAGE
-TEMPPRMSG:	PUSH AF
-		CALL OS_PRMESSCR
-		LD A,$0A
-		CALL OS_PRCHSCR
-		POP AF
-		RET
-
-;HL POINTS TO THE ZT STRING
-;CF MEANS ERROR SETTING FNAME
-;ZF MEANS MISSING FILE
-;OPENS A FILE OR DIR
-;LD HL, STRGBUFF
-;HL PRESERVED
-STRG_OPENFD:	
-STRG_DIRCHG: 	PUSH HL
-		;PUSH HL
-		;CALL TEMPPRMSG
-		;POP HL
-		LD A, CMD_SETFILENAME
-    		CALL CH376_COMMD		
-    		CALL CH376_WRSTRING
-		JR NZ,DC_WSERR		
-		LD A, CMD_FILE_OPEN
-		CALL CH376_COMMD
-		CALL CH376_WTCMDEND			
-		POP HL
-		CP ERR_MISS_FILE
-		RET Z
-		OR A		;CLEAR CARRY
-		RET
-;HERE IF ERROR ON SET FNAME
-DC_WSERR:	POP HL
-		SCF
-		RET		
-
-STRG_TPFILE: 	RET
-STRG_GETPOS: 	RET
-
-;MOVE FILE POINTER
-;BC:DE BYTES TO MOVE
-STRG_SETPOS16:	PUSH DE
-		LD DE,0
-		CALL STRG_SETPOS 
-		POP DE
-		RET
-
-STRG_SETPOS: 	LD A,CMD_BYTE_LOCATE
-		CALL CH376_COMMD
-		LD A,C                             ; 4 BYTES TO SET THE OFFSET LOW IN FRONT
-    		CALL CH376_DATAWR
-		LD A,B
-		CALL CH376_DATAWR
-		LD A,E
-		CALL CH376_DATAWR	           ;LAST 2 BYTES 0 MAX 65535 SKIP
-		LD A,D
-		CALL CH376_DATAWR
-    		CALL CH376_WTCMDEND
-		RET
+;-------------------------------------------------------------------------------
+; STRG_DIRNMCHG: Changes the current directory.
+;
+; Parameters:
+;   HL: Points to the new directory name (or ".." to go back, or "/" to reset).
+;
+; Preserved Registers: HL is preserved on return.
+;-------------------------------------------------------------------------------
+STRG_DIRNMCHG:  PUSH    HL
+                LD      A, (HL)
+                CP      '\'
+                JR      Z, DNC_RESET
+                CP      '/'
+                JR      Z, DNC_RESET
+                CP      '.'
+                JR      NZ, DNC_ADD
+                CP      '.'
+                JR      Z, DNC_RMV
+                POP     HL
+                RET                            ; Do nothing for . or similar
+DNC_RESET:      LD      HL, DIRNM
+                LD      (HL), '\'
+                INC     HL
+                LD      (HL), 0
+                INC     HL
+                LD      (HL), 0
+                POP     HL
+                RET
+DNC_RMV:        LD      HL, DIRNM
+                CALL    NEXTDIR
+                LD      A, (HL)
+                OR      A
+                EX      DE, HL                 ; DE points to the end of the last directory name
+                POP     HL
+                RET     Z                      ; At the root directory
+                PUSH    HL
+                EX      DE, HL                 ; HL points to the end of the last directory name
+RMV_NXT:        LD      B, H
+                LD      C, L
+                CALL    NEXTDIR
+                LD      A, (HL)
+                OR      A
+                JR      NZ, RMV_NXT            ; Find the end of the second-to-last directory
+                XOR     A
+                LD      (BC), A                ; Null-terminate to remove the last directory
+                POP     HL
+                RET
+DNC_ADD:        EX      DE, HL                 ; DE points to the new directory name
+                LD      HL, DIRNM
+ADDNXT:         CALL    NEXTDIR
+                LD      A, (HL)
+                OR      A
+                JR      NZ, ADDNXT
+                EX      DE, HL
+ADDNXT2:        LD      A, (HL)
+                LD      (DE), A
+                INC     HL
+                INC     DE
+                OR      A
+                JR      NZ, ADDNXT2
+                EX      DE, HL
+                LD      (HL), 0                ; Signal end of directories with a second zero
+                POP     HL
+                RET
 
 
-STRG_GETSIZE: 	RET
-STRG_GETEOF: 	RET
+;HL THE MESSAGE       
+TEMPPRMSG:	PUSH AF   
+		CALL OS_PRMESSCR  
+		LD A,$0A          
+		CALL OS_PRCHSCR   
+		POP AF            
+		RET               
 
+;-------------------------------------------------------------------------------
+; STRG_OPENFD: Opens a file or directory.
+;
+; Parameters:
+;   HL: Points to the null-terminated file or directory name string.
+;
+; Returns:
+;   CF: Set on error.
+;   ZF: Set if the file is missing.
+;-------------------------------------------------------------------------------
+STRG_OPENFD:
+STRG_DIRCHG:    PUSH    HL
+                LD      A, CMD_SETFILENAME
+                CALL    CH376_COMMD
+                CALL    CH376_WRSTRING
+                JR      NZ, DC_WSERR
+                LD      A, CMD_FILE_OPEN
+                CALL    CH376_COMMD
+                CALL    CH376_WTCMDEND
+                POP     HL
+                CP      ERR_MISS_FILE
+                RET     Z
+                OR      A                      ; Clear carry flag
+                RET
+DC_WSERR:       POP     HL
+                SCF
+                RET
 
+STRG_TPFILE:    RET
+STRG_GETPOS:    RET
 
-;PRINTS TO SCREEN USB DRIVE INFO
-;VOLUME NAME , TOTAL SECTORS, FREE SECTORS, FILESYSTEM TYPE
-		;VOLUME NAME
-STRG_PRDRVINFO:	LD A,CMD_RDUSB_DATA0
-		CALL CH376_COMMD
-		CALL CH376_GETDATA
-		PUSH AF
-		SUB 8		
-		LD B,A
-		POP AF			
-		LD HL,USBBUF+8		;SKIP 8 BYTES
-PDI_NXT:	LD A,(HL)
-		PUSH HL
-		PUSH BC
-		CALL OS_PRINTCHAR
-		POP BC
-		POP HL
-		INC HL
-		DJNZ PDI_NXT		
-		CALL RS_NEWLINE
-		; SECTORS FREE AND USED
-		LD A,CMD_DISK_QUERY  	
-		CALL CH376_COMMD
-		CALL CH376_WTCMDEND
-		RET NZ
-		LD A,CMD_RDUSB_DATA0
-		CALL CH376_COMMD		
-		CALL CH376_GETDATA
-		
-		LD IX,USBBUF	
-		PUSH IX			
-		LD D,(IX+3)
-		LD E,(IX+2)
-		LD H,(IX+1)
-		LD L,(IX+0)
-		CALL B2D32				;DE:HL RES ON B2DBUF
-		LD HL,B2DBUF
-		CALL SKIPSPC
-		CALL OS_PRINTTEXT
-		CALL OS_PRINTMSG
-		DEFM " SECTORS"
-		DB 10,13 0
-		POP IX
+;-------------------------------------------------------------------------------
+; STRG_SETPOS16: Sets the file pointer position using a 16-bit offset.
+;
+; Parameters:
+;   DE: The 16-bit offset.
+;
+; Returns:
+;   None.
+;
+; Preserved Registers: DE is preserved.
+;-------------------------------------------------------------------------------
+STRG_SETPOS16:  PUSH    DE
+                LD      DE, 0
+                CALL    STRG_SETPOS
+                POP     DE
+                RET
 
-		PUSH IX					
-		LD D,(IX+7)
-		LD E,(IX+6)
-		LD H,(IX+5)
-		LD L,(IX+4)		
-		CALL B2D32		;DE:HL RES ON B2DBUF
-		LD HL,B2DBUF
-		CALL SKIPSPC
-		CALL OS_PRINTTEXT
-		CALL OS_PRINTMSG
-		DEFM " SECTORS FREE   "
-		DB 10,13,0			
-		POP IX
-		;FILESYSTEM TYPE		
-FILESYSTEM:	LD A,(IX+8)		;1-FAT12,2-FAT16,3-FAT32
-		DEC A
-		JR Z,PDI_NXT0
-		DEC A
-		JR Z,PDI_NXT1
-		DEC A
-		JR Z,PDI_NXT2
-		JR PDI_NXT3
-		;1-FAT12		
-PDI_NXT0:	CALL OS_PRINTMSG
-		DEFM "FS IS FAT-12"
-		DB 10,13,0
-		RET
-PDI_NXT1:	CALL OS_PRINTMSG
-		DEFM "FS IS FAT-16"
-		DB 10,13,0
-		RET
-PDI_NXT2:	CALL OS_PRINTMSG
-		DEFM "FS IS FAT-32"
-		DB 10,13,0
-		RET
-PDI_NXT3:	CALL OS_PRINTMSG
-		DEFM "UNKNOWN FS"
-		DB 10,13,0
-		LD A,(IX+8)		;TO BE PRINTED MAYBE
-		RET
+;-------------------------------------------------------------------------------
+; STRG_SETPOS: Sets the file pointer position using a 32-bit offset.
+;
+; Parameters:
+;   BC:DE: The 32-bit offset (BC is high, DE is low).
+;
+; Returns:
+;   None.
+;-------------------------------------------------------------------------------
+STRG_SETPOS:    LD      A, CMD_BYTE_LOCATE
+                CALL    CH376_COMMD
+                LD      A, C                   ; Low byte of offset
+                CALL    CH376_DATAWR
+                LD      A, B
+                CALL    CH376_DATAWR
+                LD      A, E
+                CALL    CH376_DATAWR
+                LD      A, D
+                CALL    CH376_DATAWR
+                CALL    CH376_WTCMDEND
+                RET
 
+STRG_GETSIZE:   RET
+STRG_GETEOF:    RET
 
-;OPEN A FILE WITH ITS NAME ON STRGBUFF
-;A=0 FOR READ, 1 FOR WRITE, 2 FOR READ/WRITE, 4 FOR CREATE/WRITE
-STRG_OPNFILE:	PUSH AF
-		LD A, CMD_SETFILENAME
-    		CALL CH376_COMMD
-		LD HL, STRGBUFF
-    		CALL CH376_WRSTRING
-		JR Z,OF_WSOK
-		POP AF
-		CALL OS_PRINTMSG
-		DEFM "ERROR SETTING FILENAME"
-		DB 10,13,0		
-		RET
-OF_WSOK:	POP AF
-		;PUSH AF
-		;CALL PRINTNUM
-		;POP AF		
-		OR A		;0 READ
-		JR Z,OF_OPEN
-		SUB 1		;1 WRITE
-		JR Z,OF_OPEN
-		SUB 1		;2 READ/WRITE
-		JR Z,OF_OPEN
-		;SUB 1		;3 CREATE AS 4
-		;JR Z,OF_CREATE
-		;SUB 1		;4 CREATE
-		;JR NZ,OF_OPEN	;OTHER JUST OPEN
-		;3-255 CREATE
-OF_CREATE:	;CALL OS_PRINTMSG
-		;DB 10,13
-		;DEFM "CREATING..."
-		;DB 10,13,0				
-		LD A, CMD_FILE_CREATE		
-		JR OF_EXEC
-OF_OPEN:	;CALL OS_PRINTMSG
-		;DB 10,13
-		;DEFM "OPENING..."
-		;DB 10,13,0	
-		LD A, CMD_FILE_OPEN
-OF_EXEC:	;PUSH AF
-		;CALL PRINTNUM
-		;POP AF
-		CALL CH376_COMMD
-		CALL CH376_WTCMDEND
-		RET
+;-------------------------------------------------------------------------------
+; STRG_PRDRVINFO: Prints drive information to the screen.
+;
+; Description:
+;   Prints the volume name, total sectors, free sectors, and file system type.
+;
+; Parameters:
+;   None.
+;-------------------------------------------------------------------------------
+STRG_PRDRVINFO: LD      A, CMD_RDUSB_DATA0
+                CALL    CH376_COMMD
+                CALL    CH376_GETDATA
+                PUSH    AF
+                SUB     8
+                LD      B, A
+                POP     AF
+                LD      HL, USBBUF + 8
+PDI_NXT:        LD      A, (HL)
+                PUSH    HL
+                PUSH    BC
+                CALL    OS_PRINTCHAR
+                POP     BC
+                POP     HL
+                INC     HL
+                DJNZ    PDI_NXT
+                CALL    RS_NEWLINE
+                
+                LD      A, CMD_DISK_QUERY
+                CALL    CH376_COMMD
+                CALL    CH376_WTCMDEND
+                RET     NZ
+                LD      A, CMD_RDUSB_DATA0
+                CALL    CH376_COMMD
+                CALL    CH376_GETDATA
+                
+                LD      IX, USBBUF
+                PUSH    IX
+                LD      D, (IX + 3)
+                LD      E, (IX + 2)
+                LD      H, (IX + 1)
+                LD      L, (IX + 0)
+                CALL    B2D32
+                LD      HL, B2DBUF
+                CALL    SKIPSPC
+                CALL    OS_PRINTTEXT
+                CALL    OS_PRINTMSG
+                DEFM    " SECTORS"
+                DB      10, 13, 0
+                POP     IX
 
-STRG_CLSFILE:	LD A, CMD_FILE_CLOSE
-    		CALL CH376_COMMD
-    		LD A, 1                             ; 1 = update file size if necessary
-    		CALL CH376_DATAWR
-    		CALL CH376_WTCMDEND
-    		RET
+                PUSH    IX
+                LD      D, (IX + 7)
+                LD      E, (IX + 6)
+                LD      H, (IX + 5)
+                LD      L, (IX + 4)
+                CALL    B2D32
+                LD      HL, B2DBUF
+                CALL    SKIPSPC
+                CALL    OS_PRINTTEXT
+                CALL    OS_PRINTMSG
+                DEFM    " SECTORS FREE   "
+                DB      10, 13, 0
+                POP     IX
 
-;BC THE REQUESTED BYTES
-;DE THE DESTINATION BUFFER
-;RET HL,BC= BYTES RECEIVED
-;ZF OK , NZ ERROR
-STRG_BLKREAD:	PUSH DE
-		LD A, CMD_BYTE_READ
-    		CALL CH376_COMMD
-    		LD A, C                           ; BYTES REQUEST ON BC
-    		CALL CH376_DATAWR
-    		LD A, B
-    		CALL CH376_DATAWR
-		CPL
-		CPL				
-		;CALL OS_PRINTMSG
-		;DEFM "BLOCK READING"
-		;DB 10,13,0
-		POP DE
-		LD HL,0				  ;BYTE RECEIVE COUNTER
-STBR_DOREST:	PUSH HL
-		PUSH DE
-		CALL CH376_WTCMDEND
-		POP DE
-		POP HL
-		JR Z, FR_DONE	  ;Z=NO MORE OR CANNOT READ
-		CP USB_INT_DISK_READ                    
-    		JR NZ, FR_ERROR
-		;OK READ THE BYTES
-		LD A,CMD_RDUSB_DATA0
-		CALL CH376_COMMD	
-		CALL CH376_DATARD		;A= BYTES TO READ TO BUFFER
-		LD B,A
-		;PUSH HL
-		;PUSH DE
-		;PUSH BC
-		;PUSH AF
-		;CALL OS_PRINTMSG
-		;DEFM "READING "
-		;DB 0	
-		;POP AF	
-		;CALL PRINTNUM
-		;POP BC
-		;POP DE
-		;POP HL
-STBR_NXT1:	CALL CH376_DATARD		;READ THE BYTES TO BUFFER
-		LD (DE),A
-		INC DE
-		INC HL				;TOTAL BYTES READ COUNTER
-		DJNZ STBR_NXT1		
-		LD A, CMD_BYTE_RD_GO	
-		CALL CH376_COMMD	
-		JR STBR_DOREST
-FR_DONE:	;PUSH HL
-		;CALL OS_PRINTMSG
-		;DEFM "READING DONE!!! "
-		;DB 0	
-		;POP HL
-		LD B,H
-		LD C,L
-		XOR A
-		RET
-FR_ERROR:	PUSH AF
-		CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM "ERROR READING BLOCK!!! "
-		DB 0	
-		POP AF
-		LD B,2
-		DEC B
-		RET		
+FILESYSTEM:     LD      A, (IX + 8)            ; 1-FAT12, 2-FAT16, 3-FAT32
+                DEC     A
+                JR      Z, PDI_NXT0
+                DEC     A
+                JR      Z, PDI_NXT1
+                DEC     A
+                JR      Z, PDI_NXT2
+                JR      PDI_NXT3
+PDI_NXT0:       CALL    OS_PRINTMSG
+                DEFM    "FS IS FAT-12"
+                DB      10, 13, 0
+                RET
+PDI_NXT1:       CALL    OS_PRINTMSG
+                DEFM    "FS IS FAT-16"
+                DB      10, 13, 0
+                RET
+PDI_NXT2:       CALL    OS_PRINTMSG
+                DEFM    "FS IS FAT-32"
+                DB      10, 13, 0
+                RET
+PDI_NXT3:       CALL    OS_PRINTMSG
+                DEFM    "UNKNOWN FS"
+                DB      10, 13, 0
+                LD      A, (IX + 8)
+                RET
 
-;LOADS A FILE TO MEM
-;HL THE FILE
-;BC THE BYTE COUNT TO LOAD
-;DE THE BUFFER TO PUT THE BYTES
-;RET CF IF ERROR & BC BYTES LOADED TO BUFFER
-STRG_LOADFILE:	PUSH DE
-		PUSH BC
-		;PUSH HL		
-		;CALL OS_PRINTMSG
-		;DEFM "OPEN FILE"
-		;DB 10,13,0
-		;POP HL
-		CALL COPYFNAME
-		XOR A			;READ ONLY 
-		CALL STRG_OPNFILE		
-		JR NZ, FOPENERR
-		;CALL OS_PRINTMSG
-		;DB 10,13
-		;DEFM "FILE OPEN OK"
-		;DB 10,13,0		
-		POP BC		;BYTECOUNT
-		POP DE		;DEST BUFFER
-		CALL STRG_BLKREAD
-		JR Z, FREADOK
-		CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM " ERROR READING FILE"
-		DB 10,13,0
-		PUSH DE
-		PUSH BC
-		JR FOPENERR
-FREADOK:	PUSH BC
-		CALL B2D16
-		LD HL,B2DBUF
-		CALL SKIPSPC
-		CALL RS_TXT
-		CALL OS_PRINTMSG
-		DEFM " BYTES READ"
-		DB 10,13,0
-		CALL STRG_CLSFILE
-		POP BC			;BYTES LOADED TO BUFFER
-		XOR A
-		RET
-FOPENERR:	POP BC
-		POP DE
-		CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM "-->ERROR AT LOADFILE"
-		DB 10,13,0
-		LD HL,STRGBUFF
-		CALL RS_TXT
-		CALL RS_NEWLINE
-		SCF
-		RET
+;-------------------------------------------------------------------------------
+; STRG_OPNFILE: Opens a file with its name from STRGBUFF.
+;
+; Parameters:
+;   A: 0 for READ, 1 for WRITE, 2 for READ/WRITE, 4 for CREATE/WRITE.
+;
+; Returns:
+;   NZ: An error occurred.
+;-------------------------------------------------------------------------------
+STRG_OPNFILE:   PUSH    AF
+                LD      A, CMD_SETFILENAME
+                CALL    CH376_COMMD
+                LD      HL, STRGBUFF
+                CALL    CH376_WRSTRING
+                JR      Z, OF_WSOK
+                POP     AF
+                CALL    OS_PRINTMSG
+                DEFM    "ERROR SETTING FILENAME"
+                DB      10, 13, 0
+                RET
+OF_WSOK:        POP     AF
+                OR      A                      ; 0 READ
+                JR      Z, OF_OPEN
+                SUB     1                      ; 1 WRITE
+                JR      Z, OF_OPEN
+                SUB     1                      ; 2 READ/WRITE
+                JR      Z, OF_OPEN
+OF_CREATE:      LD      A, CMD_FILE_CREATE
+                JR      OF_EXEC
+OF_OPEN:        LD      A, CMD_FILE_OPEN
+OF_EXEC:        CALL    CH376_COMMD
+                CALL    CH376_WTCMDEND
+                RET
 
+;-------------------------------------------------------------------------------
+; STRG_CLSFILE: Closes the currently open file.
+;
+; Parameters:
+;   None.
+;-------------------------------------------------------------------------------
+STRG_CLSFILE:   LD      A, CMD_FILE_CLOSE
+                CALL    CH376_COMMD
+                LD      A, 1                   ; 1 = update file size if necessary
+                CALL    CH376_DATAWR
+                CALL    CH376_WTCMDEND
+                RET
 
-;READS A BYTE FROM FILE TO MEM
-;HL ZT FILENAME
-;BC THE OFFSET OF THE BYTE TO READ
-;DE THE BUFFER TO PUT THE BYTE (500 BYTES LENGTH)
-;RET CF IF ERROR & BC BYTES LOADED TO BUFFER
-STRG_READBUFR:	PUSH DE
-		PUSH BC
-		;PUSH HL		
-		;CALL OS_PRINTMSG
-		;DEFM "OPEN FILE"
-		;DB 10,13,0
-		;POP HL
-		CALL COPYFNAME
-		XOR A			;READ ONLY 
-		CALL STRG_OPNFILE		
-		JR NZ, RB_FOPENERR
-		;CALL OS_PRINTMSG
-		;DB 10,13
-		;DEFM "FILE OPEN OK"
-		;DB 10,13,0		
-		POP BC		;BYTE OFFSET
-		CALL STRG_SETPOS16
-		LD BC, 500	;READ 500 BYTES		
-		POP DE		;DEST BUFFER
-		CALL STRG_BLKREAD
-		JR Z, RB_FREADOK
-		CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM " ERROR READING FILE"
-		DB 10,13,0
-		JR RB_FOPENERR2
-RB_FREADOK:	PUSH BC
-		;CALL B2D16
-		;LD HL,B2DBUF
-		;CALL SKIPSPC
-		;CALL RS_TXT
-		;CALL OS_PRINTMSG
-		;DEFM " BYTES READ"
-		;DB 10,13,0
-		CALL STRG_CLSFILE
-		POP BC			;BYTES LOADED TO BUFFER
-		XOR A
-		RET
-RB_FOPENERR:	POP BC
-		POP DE
-RB_FOPENERR2:	CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM "-->ERROR OPENING FILE"
-		DB 10,13,0
-		LD HL,STRGBUFF
-		CALL RS_TXT
-		CALL RS_NEWLINE
-		SCF
-		RET
+;-------------------------------------------------------------------------------
+; STRG_BLKREAD: Reads a block of bytes from the file.
+;
+; Parameters:
+;   BC: The number of bytes to read.
+;   DE: The destination buffer address.
+;
+; Returns:
+;   HL, BC: The number of bytes actually read.
+;   ZF: OK, NZ: Error.
+;-------------------------------------------------------------------------------
+STRG_BLKREAD:   PUSH    DE
+                LD      A, CMD_BYTE_READ
+                CALL    CH376_COMMD
+                LD      A, C                   ; Bytes requested (low)
+                CALL    CH376_DATAWR
+                LD      A, B                   ; Bytes requested (high)
+                CALL    CH376_DATAWR
+                CPL
+                CPL
+                POP     DE
+                LD      HL, 0
+STBR_DOREST:    PUSH    HL
+                PUSH    DE
+                CALL    CH376_WTCMDEND
+                POP     DE
+                POP     HL
+                JR      Z, FR_DONE
+                CP      USB_INT_DISK_READ
+                JR      NZ, FR_ERROR
+                
+                LD      A, CMD_RDUSB_DATA0
+                CALL    CH376_COMMD
+                CALL    CH376_DATARD           ; A = bytes to read to buffer
+                LD      B, A
+                
+STBR_NXT1:      CALL    CH376_DATARD           ; Read the bytes to buffer
+                LD      (DE), A
+                INC     DE
+                INC     HL                     ; Total bytes read counter
+                DJNZ    STBR_NXT1
+                LD      A, CMD_BYTE_RD_GO
+                CALL    CH376_COMMD
+                JR      STBR_DOREST
+FR_DONE:        LD      B, H
+                LD      C, L
+                XOR     A
+                RET
+FR_ERROR:       PUSH    AF
+                CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    "ERROR READING BLOCK!!! "
+                DB      0
+                POP     AF
+                LD      B, 2
+                DEC     B
+                RET
 
+;-------------------------------------------------------------------------------
+; STRG_LOADFILE: Loads a file from storage into memory.
+;
+; Parameters:
+;   HL: The file name string.
+;   BC: The number of bytes to load.
+;   DE: The destination buffer.
+;
+; Returns:
+;   CF: Set on error.
+;   BC: The number of bytes actually loaded.
+;-------------------------------------------------------------------------------
+STRG_LOADFILE:  PUSH    DE
+                PUSH    BC
+                CALL    COPYFNAME
+                XOR     A                      ; Read-only
+                CALL    STRG_OPNFILE
+                JR      NZ, FOPENERR
+                POP     BC                     ; Byte count
+                POP     DE                     ; Destination buffer
+                CALL    STRG_BLKREAD
+                JR      Z, FREADOK
+                CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    " ERROR READING FILE"
+                DB      10, 13, 0
+                PUSH    DE
+                PUSH    BC
+                JR      FOPENERR
+FREADOK:        PUSH    BC
+                CALL    B2D16
+                LD      HL, B2DBUF
+                CALL    SKIPSPC
+                CALL    RS_TXT
+                CALL    OS_PRINTMSG
+                DEFM    " BYTES READ"
+                DB      10, 13, 0
+                CALL    STRG_CLSFILE
+                POP     BC                     ; Bytes loaded to buffer
+                XOR     A
+                RET
+FOPENERR:       POP     BC
+                POP     DE
+                CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    "-->ERROR AT LOADFILE"
+                DB      10, 13, 0
+                LD      HL, STRGBUFF
+                CALL    RS_TXT
+                CALL    RS_NEWLINE
+                SCF
+                RET
 
-;BC THE BYTES TO WRITE 
-;DE THE SOURCE BUFFER OF BYTES TO BE WRITTEN
-STRG_BLKWRITE:  PUSH DE
-		LD A, CMD_BYTE_WRITE
-    		CALL CH376_COMMD
-    		LD A, C                           ; BYTES REQUEST ON BC
-    		CALL CH376_DATAWR
-    		LD A, B
-    		CALL CH376_DATAWR				
-		;CALL OS_PRINTMSG
-		;DEFM "BLOCK WRITING"
-		;DB 10,13,0
-		POP HL
-STBW_DOREST:	CALL CH376_WTCMDEND		
-		JR Z, WFR_DONE	  ;Z=NO MORE OR CANNOT READ
-		CP USB_INT_DISK_WRITE                    
-    		JR NZ, WFR_ERROR
-		LD A,CMD_WR_REQ_DATA
-		CALL CH376_COMMD	
-		;READ BYTE COUNT 		
-		CALL CH376_DATARD	;READ BYTE COUNT UP TO 255 BYTES
-		LD B,A			
+;-------------------------------------------------------------------------------
+; STRG_READBUFR: Reads 500 bytes from a file into a buffer.
+;
+; Parameters:
+;   HL: The file name string.
+;   BC: The byte offset to read from.
+;   DE: The destination buffer.
+;
+; Returns:
+;   CF: Set on file open error.
+;   BC: The number of bytes loaded.
+;-------------------------------------------------------------------------------
+STRG_READBUFR:  PUSH    DE
+                PUSH    BC
+                CALL    COPYFNAME
+                XOR     A                      ; Read-only
+                CALL    STRG_OPNFILE
+                JR      NZ, RB_FOPENERR
+                POP     BC                     ; Byte offset
+                CALL    STRG_SETPOS16
+                LD      BC, 500                ; Read 500 bytes
+                POP     DE                     ; Destination buffer
+                CALL    STRG_BLKREAD
+                JR      Z, RB_FREADOK
+                CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    " ERROR READING FILE"
+                DB      10, 13, 0
+                JR      RB_FOPENERR2
+RB_FREADOK:     PUSH    BC
+                CALL    STRG_CLSFILE
+                POP     BC
+                XOR     A
+                RET
+RB_FOPENERR:    POP     BC
+                POP     DE
+RB_FOPENERR2:   CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    "-->ERROR OPENING FILE"
+                DB      10, 13, 0
+                LD      HL, STRGBUFF
+                CALL    RS_TXT
+                CALL    RS_NEWLINE
+                SCF
+                RET
 
-STBW_NXT1:	LD A,(HL)
-		CALL CH376_DATAWR
-		INC HL
-		DJNZ STBW_NXT1
-		LD A, CMD_BYTE_WR_GO	
-		CALL CH376_COMMD	
-		JR STBW_DOREST
-WFR_DONE:	;PUSH HL
-		;CALL OS_PRINTMSG
-		;DEFM "WRITING DONE!!! "
-		;DB 13,10,0	
-		;POP HL
-		OR A
-		RET
-WFR_ERROR:	PUSH AF
-		CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM "ERROR WRITING BLOCK!!! "
-		DB 13,10,0	
-		POP AF
-		LD B,2
-		DEC B
-		RET		
+;-------------------------------------------------------------------------------
+; STRG_BLKWRITE: Writes a block of bytes to the file.
+;
+; Parameters:
+;   BC: The number of bytes to write.
+;   DE: The source buffer.
+;
+; Returns:
+;   ZF: OK, NZ: Error.
+;-------------------------------------------------------------------------------
+STRG_BLKWRITE:  PUSH    DE
+                LD      A, CMD_BYTE_WRITE
+                CALL    CH376_COMMD
+                LD      A, C                   ; Bytes requested (low)
+                CALL    CH376_DATAWR
+                LD      A, B                   ; Bytes requested (high)
+                CALL    CH376_DATAWR
+                POP     HL
+STBW_DOREST:    CALL    CH376_WTCMDEND
+                JR      Z, WFR_DONE
+                CP      USB_INT_DISK_WRITE
+                JR      NZ, WFR_ERROR
+                LD      A, CMD_WR_REQ_DATA
+                CALL    CH376_COMMD
+                
+                CALL    CH376_DATARD           ; Read byte count up to 255 bytes
+                LD      B, A
+                
+STBW_NXT1:      LD      A, (HL)
+                CALL    CH376_DATAWR
+                INC     HL
+                DJNZ    STBW_NXT1
+                LD      A, CMD_BYTE_WR_GO
+                CALL    CH376_COMMD
+                JR      STBW_DOREST
+WFR_DONE:       OR      A
+                RET
+WFR_ERROR:      PUSH    AF
+                CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    "ERROR WRITING BLOCK!!! "
+                DB      13, 10, 0
+                POP     AF
+                LD      B, 2
+                DEC     B
+                RET
 
+;-------------------------------------------------------------------------------
+; STRG_SAVEFILE: Saves a file from memory to storage.
+;
+; Parameters:
+;   HL: The file name string.
+;   BC: The number of bytes to save.
+;   DE: The source buffer.
+;
+; Returns:
+;   CF: Set on error creating/opening file.
+;   ZF: Set on successful write.
+;-------------------------------------------------------------------------------
+STRG_SAVEFILE:  PUSH    DE
+                PUSH    BC
+                PUSH    HL
+                CALL    OS_PRINTMSG
+                DB      10, 13
+                DEFM    "SAVE FILE"
+                DB      10, 13, 10, 13, 0
+                POP     HL
+                CALL    COPYFNAME
+                LD      A, 4                   ; Create the file
+                CALL    STRG_OPNFILE
+                JR      NZ, FSAVEERR
+                CALL    OS_PRINTMSG
+                DB      10, 13
+                DEFM    "FILE CREATED OK"
+                DB      10, 13, 0
+                POP     BC                     ; Byte count
+                POP     DE                     ; Source buffer
+                CALL    STRG_BLKWRITE
+                JR      Z, FWRITEOK
+                CALL    OS_PRINTMSG
+                DEFM    " ERROR WRITING FILE"
+                DB      10, 13, 0
+FWRITEOK:       CALL    OS_PRINTMSG
+                DEFM    "BYTE WRITTEN"
+                DB      10, 13, 0
+                CALL    STRG_CLSFILE
+                XOR     A
+                RET
+FSAVEERR:       POP     BC
+                POP     DE
+                CALL    PRINTNUM
+                CALL    OS_PRINTMSG
+                DEFM    "-->ERROR CREATING FILE"
+                DB      10, 13, 0
+                LD      HL, STRGBUFF
+                CALL    RS_TXT
+                CALL    RS_NEWLINE
+                SCF
+                RET
 
-;SAVES A FILE FROM MEM
-;HL THE FILE
-;BC THE BYTE COUNT TO SAVE
-;DE THE BUFFER TO GET THE BYTES
-;RET CF IF ERROR & BC BYTES SAVED TO FILE
-STRG_SAVEFILE:	PUSH DE
-		PUSH BC
-		PUSH HL		
-		CALL OS_PRINTMSG
-		DB 10,13
-		DEFM "SAVE FILE"
-		DB 10,13,10,13,0
-		POP HL
-		CALL COPYFNAME
-		LD A,4			;CREATE THE FILE
-		CALL STRG_OPNFILE		
-		JR NZ, FSAVEERR
-		CALL OS_PRINTMSG
-		DB 10,13
-		DEFM "FILE CREATED OK"
-		DB 10,13,0
-		POP BC		;BYTECOUNT
-		POP DE		;SOURCE BUFFER
-		CALL STRG_BLKWRITE
-		JR Z, FWRITEOK
-		;CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM " ERROR WRITING FILE"
-		DB 10,13,0
-FWRITEOK:	CALL OS_PRINTMSG
-		DEFM "BYTE WRITTEN"
-		DB 10,13,0
-		CALL STRG_CLSFILE
-		XOR A
-		RET
-FSAVEERR:	POP BC
-		POP DE
-		CALL PRINTNUM
-		CALL OS_PRINTMSG
-		DEFM "-->ERROR CREATING FILE"
-		DB 10,13,0
-		LD HL,STRGBUFF
-		CALL RS_TXT
-		CALL RS_NEWLINE
-		SCF
-		RET
-
-
-;WRITES 500 BYTES FROM A BUFFER TO THE END OF THE FILE
-;HL POINTS THE FILENAME
-;DE THE BUFFER
-;BC THE BYTECOUNT
-;CF ON FILEOPEN/CREATE ERROR
-;NZ ON WRITE TO FILE ERROR
-;ZF ON SUCCESS
-STRG_WRITEBUFR:	PUSH BC
-		PUSH DE
-		CALL COPYFNAME			;HL NOT NEEDED AFTER THIS
-		LD A,1				;OPEN THE FILE FOR W
-		CALL STRG_OPNFILE		
-		JR NZ,SWB_CREATE		;ON ERROR TRY TO CREATE THE FILE
-		;APPEND
-		LD BC,$FFFF
-		LD DE,$FFFF	
-		CALL STRG_SETPOS		;GOTO EOF
-		JR SWB_WRITEBUF
-SWB_CREATE:	;CREATE THE FILE
-		LD A,4
-		CALL STRG_OPNFILE		
-		LD A,151			;ERROR NUMBER
-		JR NZ, SWB_ERR
-SWB_WRITEBUF:	POP DE
-		POP BC				;THE BYTE COUNT		
-		CALL STRG_BLKWRITE		
-		PUSH AF
-		CALL STRG_CLSFILE		;ALWAYS CLOSE FILE
-		POP AF
-		RET NZ				;NZ IF ERROR
-		XOR A
-		RET
-SWB_ERR:	POP DE
-		POP BC		
-		SCF
-		RET		
+;-------------------------------------------------------------------------------
+; STRG_WRITEBUFR: Writes 500 bytes from a buffer to the end of a file.
+;
+; Parameters:
+;   HL: The file name string.
+;   DE: The source buffer.
+;   BC: The number of bytes to write.
+;
+; Returns:
+;   CF: Set on file open/create error.
+;   NZ: Set on write error.
+;   ZF: Set on success.
+;-------------------------------------------------------------------------------
+STRG_WRITEBUFR: PUSH    BC
+                PUSH    DE
+                CALL    COPYFNAME
+                LD      A, 1                   ; Open for writing
+                CALL    STRG_OPNFILE
+                JR      NZ, SWB_CREATE         ; If error, try to create the file
+                
+                LD      BC, $FFFF
+                LD      DE, $FFFF
+                CALL    STRG_SETPOS            ; Go to EOF
+                JR      SWB_WRITEBUF
+SWB_CREATE:     LD      A, 4
+                CALL    STRG_OPNFILE
+                LD      A, 151                 ; Error number
+                JR      NZ, SWB_ERR
+SWB_WRITEBUF:   POP     DE
+                POP     BC                     ; The byte count
+                CALL    STRG_BLKWRITE
+                PUSH    AF
+                CALL    STRG_CLSFILE           ; Always close file
+                POP     AF
+                RET     NZ                     ; NZ if error
+                XOR     A
+                RET
+SWB_ERR:        POP     DE
+                POP     BC
+                SCF
+                RET

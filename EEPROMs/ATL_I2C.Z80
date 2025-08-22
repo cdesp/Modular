@@ -1,234 +1,300 @@
-;---------- I2C PCA9665 ROUTINES -----------------
-		
-		GLOBAL I2C_INIT
-		GLOBAL I2C_READ
-		GLOBAL I2C_WRITE
-		
-		DI2C_STA EQU DEVI2C + 0						;00 A0=LOW A1=LOW READONLY		DEF $F8
-		DI2C_INDPTR EQU DEVI2C + 0					;00 A0=LOW A1=LOW WRITEONLY	DEF $00
-		DI2C_DAT EQU DEVI2C + 1						;01 A0=HIGH A1=LOW R/W 		DEF $00
-		DI2C_CON EQU DEVI2C + 3						;11 A0=HIGH A1=HIGH R/W		DEF $00
-		DI2C_INDIR EQU DEVI2C + 2					;10 A0=LOW A1=HIGH R/W		DEF $00
-		
-;WRITE ONE OF THESE TO INDPTR TO SELECT INDIRECT REGISTER
-;THEN ACCESS THAT REGISTER THROUGH INDIR
-		I2CCOUNT EQU $00						;R/W		DEF $01
-		I2CADR EQU $01							;R/W		DEF $E0
-		I2CSCLL EQU $02							;R/W		DEF $9D
-		I2CSCLH EQU $03							;R/W		DEF $86
-		I2CTO EQU $04							;R/W		DEF $FF
-		I2CPRESET EQU $05						;W ONLY		DEF $00
-		I2CMODE EQU $06							;R/W		DEF $00
-		
-;STATUS RESULTS
-		ILLEGAL_START_STOP EQU 0x00
-		MASTER_START_TXed EQU 0x08
-		MASTER_RESTART_TXed EQU 0x10
-		MASTER_SLA_W_ACK EQU 0x18
-		MASTER_SLA_W_NAK EQU 0x20
-		MASTER_DATA_W_ACK EQU 0x28
-		MASTER_DATA_W_NAK EQU 0x30
-		MASTER_ARB_LOST EQU 0x38
-		MASTER_SLA_R_ACK EQU 0x40
-		MASTER_SLA_R_NAK EQU 0x48
-		MASTER_DATA_R_ACK EQU 0x50
-		MASTER_DATA_R_NAK EQU 0x58
-		SLAVE_ADDRESSED_W EQU 0x60
-		SLAVE_AL_ADDRESSED_W EQU 0x68
-		SDA_STUCK EQU 0x70
-		SCL_STUCK EQU 0x78
-		SLAVE_DATA_RX_ACK EQU 0x80
-		SLAVE_DATA_RX_NAK EQU 0x88
-		SLAVE_STOP_OR_RESTART EQU 0xA0
-		SLAVE_ADDRESSED_R EQU 0xA8
-		SLAVE_AL_ADDRESSED_R EQU 0xB0
-		SLAVE_DATA_TX_ACK EQU 0xB8
-		SLAVE_DATA_TX_NAK EQU 0xC0
-		SLAVE_LAST_DATA_TX_ACK EQU 0xC8
-		SLAVE_GENERALCALL EQU 0xD0
-		SLAVE_GENERALCALL_AL EQU 0xD8
-		SLAVE_GENERALCALL_DATA_RX_ACK EQU 0xE0
-		SLAVE_GENERALCALL_DATA_RX_NAK EQU 0xE8
-		IDLE EQU 0xF8
-		ILLEGAL_I2CCOUNT EQU 0xFC
-		
-		
+ok;*******************************************************************************
+; Z80 I2C PCA9665 ROUTINES
+;
+; This module provides low-level routines for initializing and controlling the
+; PCA9665 I2C bus controller in a master-mode configuration. It includes
+; functions for bus initialization, writing data to a slave device, and
+; reading data from a slave device.
+;
+; The base address for the I2C device ports (DEVI2C) must be defined elsewhere.
+;*******************************************************************************
+				NAME I2C_ROUTINES
+
+				GLOBAL I2C_INIT ; Initializes the PCA9665 I2C bus.
+				GLOBAL I2C_READ ; Reads data from a slave device.
+				GLOBAL I2C_WRITE ; Writes data to a slave device.
+
+; PCA9665 Register Addresses relative to DEVI2C
+DI2C_STA	EQU DEVI2C + 0
+DI2C_INDPTR	EQU DEVI2C + 0
+DI2C_DAT	EQU DEVI2C + 1
+DI2C_CON	EQU DEVI2C + 3
+DI2C_INDIR	EQU DEVI2C + 2
+
+; Indirect Register Addresses
+I2CCOUNT	EQU $00
+I2CADR		EQU $01
+I2CSCLL		EQU $02
+I2CSCLH		EQU $03
+I2CTO		EQU $04
+I2CPRESET	EQU $05
+I2CMODE		EQU $06
+
+; I2C Status Codes
+ILLEGAL_START_STOP EQU 0x00
+MASTER_START_TXed EQU 0x08
+MASTER_RESTART_TXed EQU 0x10
+MASTER_SLA_W_ACK EQU 0x18
+MASTER_SLA_W_NAK EQU 0x20
+MASTER_DATA_W_ACK EQU 0x28
+MASTER_DATA_W_NAK EQU 0x30
+MASTER_ARB_LOST EQU 0x38
+MASTER_SLA_R_ACK EQU 0x40
+MASTER_SLA_R_NAK EQU 0x48
+MASTER_DATA_R_ACK EQU 0x50
+MASTER_DATA_R_NAK EQU 0x58
+SLAVE_ADDRESSED_W EQU 0x60
+SLAVE_AL_ADDRESSED_W EQU 0x68
+SDA_STUCK EQU 0x70
+SCL_STUCK EQU 0x78
+SLAVE_DATA_RX_ACK EQU 0x80
+SLAVE_DATA_RX_NAK EQU 0x88
+SLAVE_STOP_OR_RESTART EQU 0xA0
+SLAVE_ADDRESSED_R EQU 0xA8
+SLAVE_AL_ADDRESSED_R EQU 0xB0
+SLAVE_DATA_TX_ACK EQU 0xB8
+SLAVE_DATA_TX_NAK EQU 0xC0
+SLAVE_LAST_DATA_TX_ACK EQU 0xC8
+SLAVE_GENERALCALL EQU 0xD0
+SLAVE_GENERALCALL_AL EQU 0xD8
+SLAVE_GENERALCALL_DATA_RX_ACK EQU 0xE0
+SLAVE_GENERALCALL_DATA_RX_NAK EQU 0xE8
+IDLE EQU 0xF8
+ILLEGAL_I2CCOUNT EQU 0xFC
+
+
+;-------------------------------------------------------------------------------
+; I2C_RDSTAT_WT: Reads the I2C status register and waits for a valid status.
+;
+; This routine polls the control register until the Serial Interrupt (SI) bit
+; is set. This indicates that the I2C controller has completed an operation
+; and a new status code is available. A timeout is implemented to prevent
+; the routine from hanging indefinitely.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   A: Contains the status byte from the DI2C_STA register.
+;
+; Preserved Registers:
+;   BC
+;-------------------------------------------------------------------------------
 I2C_RDSTAT_WT:	PUSH BC
-		LD BC, $2000
-I2CRWT_AGN:	IN A, (DI2C_CON) 						;READ CONTROL REGISTER BIT 3 IS SI
-		BIT 3, A 							;CHECK BIT 3 SI
-		JR NZ, I2CRWT_OK 						;BIT 3 SHOULD BE SET IF VALID STATUS
-		DEC BC
-		LD A, B
-		OR C
-		JR NZ, I2CRWT_AGN
-I2CRWT_OK:	POP BC
-		IN A, (DI2C_STA) 						;VALID HERE
-		RET
-		
-I2C_RDSTAT_NW:	IN A, (DI2C_CON) 						;READ CONTROL REGISTER BIT 3 IS SI
-		BIT 3, A 							;CHECK BIT 3 SI
-		LD A, $FF 							;$FF=INVALID STATUS
-		RET Z 								;BIT 3 SHOULD BE SET IF VALID STATUS
-		IN A, (DI2C_STA) 						;VALID HERE
-		RET
-		
-		
-I2C_INIT:	LD A, I2CADR
-		OUT (DI2C_INDPTR), A
-		LD A, $E0
-		OUT (DI2C_INDIR), A 						;SET MY SLAVE ADDR
-		
-		LD A, $40 							;INIT
-		OUT (DI2C_CON), A						;
-		LD B, 500/5
-		CALL DELAY5MICS
-		;LD B, 250
-		;CALL DELAYMICRO 						;DELAY 500 MICROSECS
-;SET SPEED MODE
-;MODE 	0x00, 0x9D, 0x86	STANDARD
-;	0x01, 0x2C, 0x14	FAST
-;	0x02, 0x011, 0x09	FAST+
-		LD A, I2CMODE
-		OUT (DI2C_INDPTR), A						;SELECT I2CMODE REGISTER
-		LD A, 0 							;SELECT MODE 0
-		OUT (DI2C_INDIR), A
-		LD A, I2CSCLL
-		OUT (DI2C_INDPTR), A						;SELECT I2CMODE REGISTER
-		LD A, $9D 							;SELECT CLK L
-		OUT (DI2C_INDIR), A
-		LD A, I2CSCLH
-		OUT (DI2C_INDPTR), A						;SELECT I2CMODE REGISTER
-		LD A, $86 							;SELECT CLK H
-		OUT (DI2C_INDIR), A
-		
-		RET
-		
-		
-;D = ADDR OF DEVICE
-;HL BUFFER ADDRESS
-;BC BYTE COUNT
-I2C_WRITE:	
-I2C_WR_BYTE:	LD A, $60 							;START
-		OUT (DI2C_CON), A
-WRB_LP1:	CALL I2C_RDSTAT_WT 						;WAIT FOR INTERRUPT SI=1
-		LD E, A 							;SAVE STATUS
-		CP MASTER_START_TXed						;A HAS THE STATUS
-		JR Z, WRB_S1
-		CP MASTER_RESTART_TXed
-		JR Z, WRB_S1
-		CP MASTER_DATA_W_ACK
-		JR Z, WRB_S2
-		CP MASTER_SLA_W_ACK
-		JR Z, WRB_S3
-		CP MASTER_SLA_W_NAK
-		JR Z, WRB_EXIT
-		CP MASTER_DATA_W_NAK
-		JR Z, WRB_EXIT
-		CP MASTER_ARB_LOST
-		RET Z
-		CP SLAVE_AL_ADDRESSED_R
-		RET Z
-		CP SLAVE_AL_ADDRESSED_W
-		RET Z
-		CP SLAVE_GENERALCALL_AL
-		RET Z
-		RET
-		
-WRB_S1:		LD A, D 							;DEVICE ADDR
-		SLA A
-		AND $FE 							;ADDR+WRITE ON D0=0
-		OUT (DI2C_DAT), A
-		LD A, $40
-		OUT (DI2C_CON), A
-		JR WRB_LP1
-WRB_S2:		DEC BC
-WRB_S3:		LD A, B
-		OR C
-		JR Z, WRB_EXIT
-		LD A, (HL)
-		INC HL
-		OUT (DI2C_DAT), A
-		LD A, $40
-		OUT (DI2C_CON), A
-		JR WRB_LP1
-		
-WRB_EXIT:	LD A, $50 							;STOP
-		OUT (DI2C_CON), A
-		LD A, B
-		OR C
-		RET 								;IF A NOT ZERO THEN ERROR
-		
-;D DEVICE ADDR
-;HL BYTE BUFFER
-;BC BYTE COUNT
-I2C_READ:	
+				LD BC, $2000
+I2CRWT_AGN:		IN A, (DI2C_CON)
+				BIT 3, A
+				JR NZ, I2CRWT_OK
+				DEC BC
+				LD A, B
+				OR C
+				JR NZ, I2CRWT_AGN
+I2CRWT_OK:		POP BC
+				IN A, (DI2C_STA)
+				RET
+
+
+;-------------------------------------------------------------------------------
+; I2C_RDSTAT_NW: Reads the I2C status register without waiting.
+;
+; This routine checks the control register's SI bit. If the bit is set, it
+; returns the status byte. Otherwise, it returns an invalid status code.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   A: Contains the status byte from the DI2C_STA register, or $FF if
+;      the status is not ready.
+;-------------------------------------------------------------------------------
+I2C_RDSTAT_NW:	IN A, (DI2C_CON)
+				BIT 3, A
+				LD A, $FF
+				RET Z
+				IN A, (DI2C_STA)
+				RET
+
+
+;-------------------------------------------------------------------------------
+; I2C_INIT: Initializes the PCA9665 I2C controller.
+;
+; Sets the local slave address, initializes the bus state machine, and
+; configures the I2C clock speed for standard mode.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   None
+;
+; Memory Accessed:
+;   I/O Ports: DI2C_INDPTR, DI2C_INDIR, DI2C_CON, DI2C_SCLH, DI2C_SCLL.
+;-------------------------------------------------------------------------------
+I2C_INIT:		LD A, I2CADR
+				OUT (DI2C_INDPTR), A
+				LD A, $E0
+				OUT (DI2C_INDIR), A
+				LD A, $40
+				OUT (DI2C_CON), A
+				LD B, 500/5
+				CALL DELAY5MICS
+				LD A, I2CMODE
+				OUT (DI2C_INDPTR), A
+				LD A, 0
+				OUT (DI2C_INDIR), A
+				LD A, I2CSCLL
+				OUT (DI2C_INDPTR), A
+				LD A, $9D
+				OUT (DI2C_INDIR), A
+				LD A, I2CSCLH
+				OUT (DI2C_INDPTR), A
+				LD A, $86
+				OUT (DI2C_INDIR), A
+				RET
+
+
+;-------------------------------------------------------------------------------
+; I2C_WRITE: Performs a master I2C write transaction.
+;
+; Initiates a start condition, sends the slave device address with the write
+; bit, and then transmits the specified number of data bytes from a buffer.
+;
+; Parameters:
+;   D:      Contains the 7-bit slave device address.
+;   HL:     Points to the buffer of bytes to transmit.
+;   BC:     Contains the number of bytes to transmit.
+;
+; Returns:
+;   A:      Contains the number of bytes that were *not* written, or 0 on success.
+;
+; Preserved Registers:
+;   None
+;-------------------------------------------------------------------------------
+I2C_WRITE:
+I2C_WR_BYTE:	LD A, $60
+				OUT (DI2C_CON), A
+WRB_LP1:		CALL I2C_RDSTAT_WT
+				LD E, A
+				CP MASTER_START_TXed
+				JR Z, WRB_S1
+				CP MASTER_RESTART_TXed
+				JR Z, WRB_S1
+				CP MASTER_DATA_W_ACK
+				JR Z, WRB_S2
+				CP MASTER_SLA_W_ACK
+				JR Z, WRB_S3
+				CP MASTER_SLA_W_NAK
+				JR Z, WRB_EXIT
+				CP MASTER_DATA_W_NAK
+				JR Z, WRB_EXIT
+				CP MASTER_ARB_LOST
+				RET Z
+				CP SLAVE_AL_ADDRESSED_R
+				RET Z
+				CP SLAVE_AL_ADDRESSED_W
+				RET Z
+				CP SLAVE_GENERALCALL_AL
+				RET Z
+				RET
+WRB_S1:			LD A, D
+				SLA A
+				AND $FE
+				OUT (DI2C_DAT), A
+				LD A, $40
+				OUT (DI2C_CON), A
+				JR WRB_LP1
+WRB_S2:			DEC BC
+WRB_S3:			LD A, B
+				OR C
+				JR Z, WRB_EXIT
+				LD A, (HL)
+				INC HL
+				OUT (DI2C_DAT), A
+				LD A, $40
+				OUT (DI2C_CON), A
+				JR WRB_LP1
+WRB_EXIT:		LD A, $50
+				OUT (DI2C_CON), A
+				LD A, B
+				OR C
+				RET
+
+
+;-------------------------------------------------------------------------------
+; I2C_READ: Performs a master I2C read transaction.
+;
+; Initiates a start condition, sends the slave device address with the read
+; bit, and then reads the specified number of data bytes into a buffer. It
+; sends an ACK for all but the last byte, which receives a NAK.
+;
+; Parameters:
+;   D:      Contains the 7-bit slave device address.
+;   HL:     Points to the buffer for storing received bytes.
+;   BC:     Contains the number of bytes to read.
+;
+; Returns:
+;   A:      Contains the number of bytes that were *not* read, or 0 on success.
+;
+; Preserved Registers:
+;   None
+;-------------------------------------------------------------------------------
+I2C_READ:
 I2C_RD_BYTE:	LD A, B
-		OR C
-		RET Z								;RETURN IF ZERO BYTE COUNT
-		LD A, $60
-		OUT (DI2C_CON), A
-RDB_LP1:	CALL I2C_RDSTAT_WT 						;WAIT FOR INTERRUPT SI=1
-		LD E, 0
-		CP MASTER_START_TXed
-		JR Z, RDB_S1
-		MASTER_RESTART_TXed
-		JR Z, RDB_S1
-		CP MASTER_DATA_R_NAK
-		JR Z, RDB_S2
-		CP MASTER_DATA_R_ACK
-		JR Z, RDB_S3
-		CP MASTER_SLA_R_ACK
-		JR Z, RDB_S4
-		CP MASTER_SLA_R_NAK
-		JR Z, RDB_EXIT
-		CP MASTER_ARB_LOST
-		RET Z
-		CP SLAVE_AL_ADDRESSED_R
-		RET Z
-		CP SLAVE_AL_ADDRESSED_W
-		RET Z
-		CP SLAVE_GENERALCALL_AL
-		RET Z
-		RET
-		
-		
-RDB_S1:		LD A, D 							;DEVICE ADDR
-		SLA A
-		OR $01 								;ADDR + READ COMMAND
-		OUT (DI2C_DAT), A
-		LD A, $40
-		OUT (DI2C_CON), A
-		JR RDB_LP1
-RDB_S2:		LD E, 1 							;MEANS WE EXIT
-RDB_S3:		IN A, (DI2C_DAT) 						;READ DATA
-		LD (HL), A
-		INC HL
-		DEC BC
-RDB_S4:		LD A, B 							; IS LENGTH 0
-		OR C
-		JR Z, RDB_EXIT
-		LD A, E
-		CP 1
-		JR Z, RDB_EXIT
-		LD A, B
-		ADD C
-		CP 1
-		LD A, $40
-		JR Z, RDB_NXT1
-		LD A, $C0
-RDB_NXT1:	OUT (DI2C_CON), A 						;WRITE $40 IF BYTE COUNT BC=1 ELSE WRITE $C0
-		JR RDB_LP1
-		
-RDB_EXIT:	LD A, $50
-		OUT (DI2C_CON), A
-		LD A, B
-		OR C
-		RET 								;IF A NOT ZERO THEN ERROR
-		
-		
-		
-		
-		
-		
-;---------- I2C PCA9665 ROUTINES END-----------------
+				OR C
+				RET Z
+				LD A, $60
+				OUT (DI2C_CON), A
+RDB_LP1:		CALL I2C_RDSTAT_WT
+				LD E, 0
+				CP MASTER_START_TXed
+				JR Z, RDB_S1
+				MASTER_RESTART_TXed
+				JR Z, RDB_S1
+				CP MASTER_DATA_R_NAK
+				JR Z, RDB_S2
+				CP MASTER_DATA_R_ACK
+				JR Z, RDB_S3
+				CP MASTER_SLA_R_ACK
+				JR Z, RDB_S4
+				CP MASTER_SLA_R_NAK
+				JR Z, RDB_EXIT
+				CP MASTER_ARB_LOST
+				RET Z
+				CP SLAVE_AL_ADDRESSED_R
+				RET Z
+				CP SLAVE_AL_ADDRESSED_W
+				RET Z
+				CP SLAVE_GENERALCALL_AL
+				RET Z
+				RET
+RDB_S1:			LD A, D
+				SLA A
+				OR $01
+				OUT (DI2C_DAT), A
+				LD A, $40
+				OUT (DI2C_CON), A
+				JR RDB_LP1
+RDB_S2:			LD E, 1
+RDB_S3:			IN A, (DI2C_DAT)
+				LD (HL), A
+				INC HL
+				DEC BC
+RDB_S4:			LD A, B
+				OR C
+				JR Z, RDB_EXIT
+				LD A, E
+				CP 1
+				JR Z, RDB_EXIT
+				LD A, B
+				ADD C
+				CP 1
+				LD A, $40
+				JR Z, RDB_NXT1
+				LD A, $C0
+RDB_NXT1:		OUT (DI2C_CON), A
+				JR RDB_LP1
+RDB_EXIT:		LD A, $50
+				OUT (DI2C_CON), A
+				LD A, B
+				OR C
+				RET

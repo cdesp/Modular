@@ -1,42 +1,51 @@
-;------------------------------------
-;SERIAL LCD 16X2
+;*******************************************************************************
+; Z80 SERIAL LCD 16x2 ROUTINES
+;
+; This module provides a set of high-level routines for controlling a 16x2 LCD
+; screen connected via a PCF8574 I2C I/O expander. It includes functions for
+; initialization, text display, cursor control, and screen scrolling.
+;
+; The module relies on an external I2C_WRITE routine to perform the low-level
+; bus communication.
+;*******************************************************************************
 		
-;// COMMANDS
-		GLOBAL LCD16_INIT
-		GLOBAL LCD16_NODISP
-		GLOBAL LCD16_DISP
-		GLOBAL LCD16_CLR
-		GLOBAL LCD16_PRINT
-		GLOBAL LCD16_PRCHR
-		GLOBAL LCD16_HOME
-		GLOBAL LCD16_SETCURS
-		GLOBAL LCD16_CURSOFF
-		GLOBAL LCD16_CURSON
-		GLOBAL LCD16_BLINKOFF
-		GLOBAL LCD16_BLINKON
-		GLOBAL LCD16_SCRLEFT
-		GLOBAL LCD16_SCRRIGHT
-		GLOBAL LCD16_MOVLEFT
-		GLOBAL LCD16_MOVRIGHT
+; COMMANDS
+		GLOBAL LCD16_INIT 						; Initializes the LCD module. Params: None.
+		GLOBAL LCD16_NODISP 						; Turns off the LCD display. Params: None.
+		GLOBAL LCD16_DISP 						; Turns on the LCD display. Params: None.
+		GLOBAL LCD16_CLR 						; Clears the LCD display. Params: None.
+		GLOBAL LCD16_PRINT 						; Prints a null-terminated string to the LCD. Params: HL = pointer to string.
+		GLOBAL LCD16_PRCHR 						; Prints a single character to the LCD. Params: A = the character.
+		GLOBAL LCD16_HOME 						; Sets the cursor position to the home (0,0) position. Params: None.
+		GLOBAL LCD16_SETCURS 						; Sets the cursor position to a specific column and row. Params: D = column, E = row.
+		GLOBAL LCD16_CURSOFF 						; Turns off the cursor. Params: None.
+		GLOBAL LCD16_CURSON 						; Turns on the cursor. Params: None.
+		GLOBAL LCD16_BLINKOFF 						; Turns off the cursor blink. Params: None.
+		GLOBAL LCD16_BLINKON 						; Turns on the cursor blink. Params: None.
+		GLOBAL LCD16_SCRLEFT 						; Scrolls the entire display to the left. Params: None.
+		GLOBAL LCD16_SCRRIGHT 						; Scrolls the entire display to the right. Params: None.
+		GLOBAL LCD16_MOVLEFT 						; Moves the cursor one position to the left. Params: None.
+		GLOBAL LCD16_MOVRIGHT 						; Moves the cursor one position to the right. Params: None.
+		
+;=========================
+; LCD I2C Configuration
+;-------------------------
+		LCDADDR EQU $27 						; The 7-bit I2C address of the PCF8574 chip.
+		BACKLIGHTPIN EQU 3 						; The PCF8574 pin connected to the backlight control.
+		BACKLIGHTPINMASK EQU 1.SHL.BACKLIGHTPIN 			; A mask for the backlight pin.
+		LCD_NOBACKLIGHT EQU 0x00 					; Constant for turning off the backlight.
+		LCD_BACKLIGHT EQU 0xFF 						; Constant for turning on the backlight.
+		EN EQU 2 							; Enable bit on the PCF8574.
+		RW EQU 1 							; Read/Write bit on the PCF8574.
+		RS EQU 0 							; Register select bit on the PCF8574.
+		D4 EQU 4 							; Data bit D4 mapping.
+		D5 EQU 5 							; Data bit D5 mapping.
+		D6 EQU 6 							; Data bit D6 mapping.
+		D7 EQU 7 							; Data bit D7 mapping.
 		
 		
-		LCDADDR EQU $27							;$3F
-		BACKLIGHTPIN EQU 3
-		BACKLIGHTPINMASK EQU 1.SHL.BACKLIGHTPIN 		
-		
-		LCD_NOBACKLIGHT EQU 0x00
-		LCD_BACKLIGHT EQU 0xFF
-		EN EQU 2							;6  // Enable bit
-		RW EQU 1							;5  // Read/Write bit
-		RS EQU 0							;4  // Register select bit
-		D4 EQU 4							;0
-		D5 EQU 5							;1
-		D6 EQU 6							;2
-		D7 EQU 7							;3
-		
-		
-;// LCD Commands
-;// ---------------------------------------------------------------------------
+; LCD Commands
+;-------------------------------------------------------------------------------
 		LCD_CLEARDISPLAY EQU 0x01
 		LCD_RETURNHOME EQU 0x02
 		LCD_ENTRYMODESET EQU 0x04
@@ -46,31 +55,31 @@
 		LCD_SETCGRAMADDR EQU 0x40
 		LCD_SETDDRAMADDR EQU 0x80
 		
-;// flags for display entry mode
-;// ---------------------------------------------------------------------------
+; Flags for display entry mode
+;-------------------------------------------------------------------------------
 		LCD_ENTRYRIGHT EQU 0x00
 		LCD_ENTRYLEFT EQU 0x02
 		LCD_ENTRYSHIFTINCREMENT EQU 0x01
 		LCD_ENTRYSHIFTDECREMENT EQU 0x00
 		
-;// flags for display on/off and cursor control
-;// ---------------------------------------------------------------------------
-		LCD_DISPLAYON EQU 2;0x04
+; Flags for display on/off and cursor control
+;-------------------------------------------------------------------------------
+		LCD_DISPLAYON EQU 2
 		LCD_DISPLAYOFF EQU 0x00
-		LCD_CURSORON EQU 1;0x02
+		LCD_CURSORON EQU 1
 		LCD_CURSOROFF EQU 0x00
-		LCD_BLINKON EQU 0;0x01
+		LCD_BLINKON EQU 0
 		LCD_BLINKOFF EQU 0x00
 		
-;// flags for display/cursor shift
-;// ---------------------------------------------------------------------------
+; Flags for display/cursor shift
+;-------------------------------------------------------------------------------
 		LCD_DISPLAYMOVE EQU 0x08
 		LCD_CURSORMOVE EQU 0x00
 		LCD_MOVERIGHT EQU 0x04
 		LCD_MOVELEFT EQU 0x00
 		
-;// flags for function set
-;// ---------------------------------------------------------------------------
+; Flags for function set
+;-------------------------------------------------------------------------------
 		LCD_8BITMODE EQU 0x10
 		LCD_4BITMODE EQU 0x00
 		LCD_2LINE EQU 0x08
@@ -79,70 +88,92 @@
 		LCD_5x8DOTS EQU 0x00
 		
 		
-;// Define COMMAND and DATA LCD Rs (used by send method).
-;// ---------------------------------------------------------------------------
+; Define COMMAND and DATA LCD Rs (used by send method).
+;-------------------------------------------------------------------------------
 		COMMAND EQU 0
 		LCD_DATA EQU 1
 		FOUR_BITS EQU 2
 		
 		
-; @abstract   Defines the duration of the home and clear commands
-; @discussion This constant defines the time it takes for the home and clear
+; Defines the duration of the home and clear commands
+; This constant defines the time it takes for the home and clear
 ; commands in the LCD - Time in microseconds.
-		;HOME_CLEAR_EXEC EQU 2000
-		HOME_CLEAR_EXEC EQU 2 ; IN MILLISECONDS
-
-;    @abstract   Backlight off constant declaration
-;    @discussion Used in combination with the setBacklight to swith off the
-; LCD backlight. @set setBacklight
+		HOME_CLEAR_EXEC EQU 2 						; IN MILLISECONDS
 		
+; Backlight off constant declaration
+; Used in combination with the setBacklight to swith off the LCD backlight.
 		BACKLIGHT_OFF EQU 0
 		
-; @abstract   Backlight on constant declaration
-; @discussion Used in combination with the setBacklight to swith on the
-; LCD backlight. @set setBacklight
-		
+; Backlight on constant declaration
+; Used in combination with the setBacklight to swith on the LCD backlight.
 		BACKLIGHT_ON EQU 255
 		
 		BACKLIGHTPIN EQU 3
-		BACKLIGHTPINMASK EQU 1.SHL.BACKLIGHTPIN 
-					
+		BACKLIGHTPINMASK EQU 1.SHL.BACKLIGHTPIN
 		
-;A HAS THE VALUE FOR THE 4 BITS
-;E HAS THE COMMAND OR DATA SIGNAL E=1 MEANS DATA
-LCD16_WR4BITS:	LD D, 0 							;PIN MAP VALUES FRO 8574 BIT 0-7
-; Map the value ON A to LCD pin mapping
-		RRCA 								;D4 = D0,D5=D1,D6=D2,D7=D3
-		JR NC, LWNXT1 							;BIT 0 NOT SET JR
+;-------------------------------------------------------------------------------
+; LCD16_WR4BITS: Writes 4 bits to the LCD via the I2C expander.
+;
+; This is a helper routine that maps 4 bits from register A to the appropriate
+; PCF8574 pins, adds the RS and backlight state, and sends the resulting byte
+; to the I2C bus with an Enable pulse.
+;
+; Parameters:
+;	A: The 4 data bits (low nibble) to be written.
+;	E: A flag indicating command (E=0) or data (E=1).
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	I/O Ports: Communicates with the I2C device via LCD16_I2CSEND.
+;	Reads from LCD_STSMASK.
+;-------------------------------------------------------------------------------
+LCD16_WR4BITS:	LD D, 0
+		RRCA
+		JR NC, LWNXT1
 		SET D4, D
 LWNXT1:		RRCA
-		JR NC, LWNXT2 							;BIT 1 NOT SET JR
+		JR NC, LWNXT2
 		SET D5, D
 LWNXT2:		RRCA
-		JR NC, LWNXT3 							;BIT 2 NOT SET JR
+		JR NC, LWNXT3
 		SET D6, D
 LWNXT3:		RRCA
-		JR NC, LWNXT4 							;BIT 3 NOT SET JR
+		JR NC, LWNXT4
 		SET D7, D
 LWNXT4:		LD A, E
 		RRCA
 		JR NC, LWNXT5
 		SET RS, D
-LWNXT5:										;HERE WE HAVE ALL BITS SET TO DRIVE 8574 PINS
-		LD A,(LCD_STSMASK)							;ADD THE BACKLIGHT MASKS 	
+LWNXT5:		LD A, (LCD_STSMASK)
 		OR D
-		LD D,A
-;WE SEND A PULSE TO WRITE THE 4BITS TO LCD
-		SET EN, D 							;EN=HIGH
+		LD D, A
+		SET EN, D
 		LD A, D
 		CALL LCD16_I2CSEND
-		RES EN, D 							;EN=LOW
+		RES EN, D
 		LD A, D
 		CALL LCD16_I2CSEND
 		RET
 		
 		
-;A HAS THE BYTE TO SEND
+;-------------------------------------------------------------------------------
+; LCD16_I2CSEND: Sends a single byte to the I2C device.
+;
+; This is a low-level helper routine that takes a byte from register A and sends
+; it to the PCF8574 expander using the I2C_WRITE routine.
+;
+; Parameters:
+;	A: The byte to be sent.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	I/O Ports: Communicates with the I2C device.
+;	Writes to BUFFER.
+;-------------------------------------------------------------------------------
 LCD16_I2CSEND:	PUSH DE
 		PUSH HL
 		LD HL, BUFFER
@@ -154,22 +185,63 @@ LCD16_I2CSEND:	PUSH DE
 		POP DE
 		RET
 		
-;A HAS THE COMMAND TO SEND
+;-------------------------------------------------------------------------------
+; LCD16_COMMD: Sends a command byte to the LCD.
+;
+; This routine prepares to send a command by setting the RS flag to 0 and then
+; jumps to the main send routine.
+;
+; Parameters:
+;	A: The command byte to be sent.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_SEND.
+;-------------------------------------------------------------------------------
 LCD16_COMMD:	LD E, COMMAND
 		JR LCD16_SEND
 		
-;A HAS THE DATA TO SEND
-LCD16_DATA:	LD E, LCD_DATA		
-;A HAS THE VALUE FOR THE 4 BITS
-;E HAS THE COMMAND OR DATA SIGNAL E=1 MEANS DATA E=0 MEANS COMMAND E=2 IS FOUR_BITS
-LCD16_SEND:	LD D, A 							;SAVE A FOR LATER USE
+;-------------------------------------------------------------------------------
+; LCD16_DATA: Sends a data byte to the LCD.
+;
+; This routine prepares to send data by setting the RS flag to 1 and then
+; jumps to the main send routine.
+;
+; Parameters:
+;	A: The data byte (character) to be sent.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_SEND.
+;-------------------------------------------------------------------------------
+LCD16_DATA:	LD E, LCD_DATA
+;-------------------------------------------------------------------------------
+; LCD16_SEND: The main routine for sending bytes to the LCD.
+;
+; This routine handles sending a full 8-bit byte by breaking it into two 4-bit
+; nibbles (high and low) and sending them sequentially.
+;
+; Parameters:
+;	A: The byte to be sent.
+;	E: A flag for command (0), data (1), or 4-bit initialization (2).
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_WR4BITS.
+;-------------------------------------------------------------------------------
+LCD16_SEND:	LD D, A
 		LD A, E
 		RRCA
 		JR C, ISCMDDATA
 		RRCA
 		JR NC, ISCMDDATA
-;FOUR BITS
-		LD E, COMMAND 							;SEND 4 BITS AS COMMAND E=0
+		LD E, COMMAND
 		JR LCSD_4BIT
 ISCMDDATA:	LD A, D
 		SRL A
@@ -177,34 +249,64 @@ ISCMDDATA:	LD A, D
 		SRL A
 		SRL A
 		PUSH DE
-		CALL LCD16_WR4BITS						;HIGH 4 BITS FIRST
+		CALL LCD16_WR4BITS
 		POP DE
 LCSD_4BIT:	LD A, D
 		AND $0F
-		CALL LCD16_WR4BITS						;LOW 4 BITS NEXT
+		CALL LCD16_WR4BITS
 		RET
 		
-PAUSE:		LD B,4
+;-------------------------------------------------------------------------------
+; PAUSE: A short delay routine.
+;
+; This routine provides a brief delay by calling DELAYMILI.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls DELAYMILI.
+;-------------------------------------------------------------------------------
+PAUSE:		LD B, 4
 		CALL DELAYMILI
 		RET
-
-@LCD16_INIT:	LD A, 3 							;SET LCD TO 4BIT MODE
+		
+;-------------------------------------------------------------------------------
+; LCD16_INIT: Initializes the LCD in 4-bit mode.
+;
+; This is a critical routine that sends a specific sequence of commands to the
+; LCD to initialize it for 4-bit communication. It sets the number of lines,
+; display state, and entry mode.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Writes to LCD_DSPCTRL, LCD_DSPMODE.
+;	Calls LCD16_SEND, LCD16_COMMD, LCD16_DISP, LCD16_CLR, LCD16_BKLTON.
+;-------------------------------------------------------------------------------
+@LCD16_INIT:	LD A, 3
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		CALL PAUSE	 						;DELAY 4,5ms
+		CALL PAUSE
 		LD A, 3
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		CALL PAUSE	 						;DELAY 4,5ms
+		CALL PAUSE
 		LD A, 3
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		CALL PAUSE	 						;DELAY 4,5ms
-		LD A, 2 							;PUT 4 BIT MODE
+		CALL PAUSE
+		LD A, 2
 		LD E, FOUR_BITS
 		CALL LCD16_SEND
-		CALL PAUSE	 						;DELAY 4,5ms
-;finally, set # lines, font size, etc.
+		CALL PAUSE
 		LD A, LCD_FUNCTIONSET OR LCD_2LINE
 		CALL LCD16_COMMD
 		LD A, LCD_DISPLAYON OR LCD_CURSOROFF OR LCD_BLINKOFF
@@ -215,16 +317,50 @@ PAUSE:		LD B,4
 		LD (LCD_DSPMODE), A
 		OR LCD_ENTRYMODESET
 		CALL LCD16_COMMD
-		CALL PAUSE	 						;DELAY 4,5ms
-		CALL LCD16_BKLTON						;BACKLIGHT ON BY DEFAULT
+		CALL PAUSE
+		CALL LCD16_BKLTON
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_NODISP: Turns the LCD display off.
+;
+; This routine sends the command to turn off the LCD display, but leaves the
+; backlight on.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from LCD_DSPCTRL.
+;	Writes to LCD_DSPCTRL.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_NODISP:	LD A, (LCD_DSPCTRL)
 		RES LCD_DISPLAYON, A
 		LD (LCD_DSPCTRL), A
 		OR LCD_DISPLAYCONTROL
 		CALL LCD16_COMMD
 		RET
+		
+;-------------------------------------------------------------------------------
+; LCD16_DISP: Turns the LCD display on.
+;
+; This routine sends the command to turn on the LCD display.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from LCD_DSPCTRL.
+;	Writes to LCD_DSPCTRL.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_DISP:	LD A, (LCD_DSPCTRL)
 		SET LCD_DISPLAYON, A
 		LD (LCD_DSPCTRL), A
@@ -232,16 +368,61 @@ PAUSE:		LD B,4
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCDDELAY: Provides a delay specifically for commands that take longer.
+;
+; This routine is used for the `Clear Display` and `Return Home` commands, which
+; require a longer execution time than others.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls DELAYMILI.
+;-------------------------------------------------------------------------------
 LCDDELAY:	LD B, HOME_CLEAR_EXEC
-LCLR_AGN1:	CALL DELAYMILI		
+LCLR_AGN1:	CALL DELAYMILI
 		RET
 		
-@LCD16_CLR:	LD A, LCD_CLEARDISPLAY 						;clear display, set cursor position to zero
+;-------------------------------------------------------------------------------
+; LCD16_CLR: Clears the LCD screen.
+;
+; This routine sends the `Clear Display` command and waits for the command to
+; complete.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_COMMD and LCDDELAY.
+;-------------------------------------------------------------------------------
+@LCD16_CLR:	LD A, LCD_CLEARDISPLAY
 		CALL LCD16_COMMD
 		CALL LCDDELAY
 		RET
 		
-;HL POINTS TO ZERO TERMINATED STRING
+;-------------------------------------------------------------------------------
+; LCD16_PRINT: Prints a null-terminated string.
+;
+; This recursive routine iterates through a string pointed to by HL and prints
+; each character to the LCD until a null terminator (0x00) is found.
+;
+; Parameters:
+;	HL: A pointer to the null-terminated string.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from the memory pointed to by HL.
+;	Calls LCD16_DATA.
+;-------------------------------------------------------------------------------
 @LCD16_PRINT:	LD A, (HL)
 		CP 0
 		RET Z
@@ -249,16 +430,60 @@ LCLR_AGN1:	CALL DELAYMILI
 		INC HL
 		JR LCD16_PRINT
 		
-;A HAS THE CHAR TO PRINT
+;-------------------------------------------------------------------------------
+; LCD16_PRCHR: Prints a single character.
+;
+; This routine sends a single character from register A to the LCD as data.
+;
+; Parameters:
+;	A: The ASCII character to print.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_DATA.
+;-------------------------------------------------------------------------------
 @LCD16_PRCHR:	CALL LCD16_DATA
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_HOME: Moves the cursor to the home position.
+;
+; This routine sends the `Return Home` command to move the cursor to column 0,
+; row 0 and waits for the command to execute.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_COMMD and LCDDELAY.
+;-------------------------------------------------------------------------------
 @LCD16_HOME:	LD A, LCD_RETURNHOME
 		CALL LCD16_COMMD
 		CALL LCDDELAY
 		RET
 		
-; D HAS THE COLUMN E HAS THE ROW
+;-------------------------------------------------------------------------------
+; LCD16_SETCURS: Sets the cursor position.
+;
+; This routine calculates the correct DDRAM address based on the given column
+; and row and sends the `Set DDRAM Address` command.
+;
+; Parameters:
+;	D: The desired column (0-15).
+;	E: The desired row (0-1).
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from ROWOFFSET.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 ROWOFFSET:	DB $00,$40,$14,$54
 @LCD16_SETCURS:	LD B, 0
 		LD C, E
@@ -270,6 +495,23 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_CURSOFF: Turns off the cursor.
+;
+; This routine updates the display control flag and sends the command to hide
+; the cursor.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from LCD_DSPCTRL.
+;	Writes to LCD_DSPCTRL.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_CURSOFF:	LD A, (LCD_DSPCTRL)
 		RES LCD_CURSORON, A
 		LD (LCD_DSPCTRL), A
@@ -277,7 +519,23 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		CALL LCD16_COMMD
 		RET
 		
-		
+;-------------------------------------------------------------------------------
+; LCD16_CURSON: Turns on the cursor.
+;
+; This routine updates the display control flag and sends the command to show
+; the cursor.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from LCD_DSPCTRL.
+;	Writes to LCD_DSPCTRL.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_CURSON:	LD A, (LCD_DSPCTRL)
 		SET LCD_CURSORON, A
 		LD (LCD_DSPCTRL), A
@@ -285,6 +543,23 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_BLINKOFF: Turns off the cursor blink.
+;
+; This routine updates the display control flag and sends the command to stop
+; the cursor from blinking.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from LCD_DSPCTRL.
+;	Writes to LCD_DSPCTRL.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_BLINKOFF:	LD A, (LCD_DSPCTRL)
 		RES LCD_BLINKON, A
 		LD (LCD_DSPCTRL), A
@@ -292,7 +567,23 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		CALL LCD16_COMMD
 		RET
 		
-		
+;-------------------------------------------------------------------------------
+; LCD16_BLINKON: Turns on the cursor blink.
+;
+; This routine updates the display control flag and sends the command to make
+; the cursor blink.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Reads from LCD_DSPCTRL.
+;	Writes to LCD_DSPCTRL.
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_BLINKON:	LD A, (LCD_DSPCTRL)
 		SET LCD_BLINKON, A
 		LD (LCD_DSPCTRL), A
@@ -300,30 +591,120 @@ ROWOFFSET:	DB $00,$40,$14,$54
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_SCRLEFT: Scrolls the display one position to the left.
+;
+; This routine sends the `Display/Cursor Shift` command with the appropriate
+; flags to scroll the entire display left without moving the cursor.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_SCRLEFT:	LD A, LCD_CURSORSHIFT OR LCD_DISPLAYMOVE OR LCD_MOVELEFT
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_SCRRIGHT: Scrolls the display one position to the right.
+;
+; This routine sends the `Display/Cursor Shift` command with the appropriate
+; flags to scroll the entire display right without moving the cursor.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_SCRRIGHT:	LD A, LCD_CURSORSHIFT OR LCD_DISPLAYMOVE OR LCD_MOVERIGHT
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_MOVLEFT: Moves the cursor one position to the left.
+;
+; This routine sends the `Display/Cursor Shift` command with the appropriate
+; flags to move the cursor left without shifting the display.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_MOVLEFT:	LD A, LCD_CURSORSHIFT OR LCD_CURSORMOVE OR LCD_MOVELEFT
 		CALL LCD16_COMMD
 		RET
 		
+;-------------------------------------------------------------------------------
+; LCD16_MOVRIGHT: Moves the cursor one position to the right.
+;
+; This routine sends the `Display/Cursor Shift` command with the appropriate
+; flags to move the cursor right without shifting the display.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Calls LCD16_COMMD.
+;-------------------------------------------------------------------------------
 @LCD16_MOVRIGHT:	LD A, LCD_CURSORSHIFT OR LCD_CURSORMOVE OR LCD_MOVERIGHT
 		CALL LCD16_COMMD
 		RET
-
-
-@LCD16_BKLTON:  LD A, BACKLIGHTPINMASK AND LCD_BACKLIGHT
-		LD (LCD_STSMASK),A
+		
+;-------------------------------------------------------------------------------
+; LCD16_BKLTON: Turns on the backlight.
+;
+; This routine sets the backlight pin in the status mask and sends the command
+; to the I2C expander.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Writes to LCD_STSMASK.
+;	Calls LCD16_I2CSEND.
+;-------------------------------------------------------------------------------
+@LCD16_BKLTON:	LD A, BACKLIGHTPINMASK AND LCD_BACKLIGHT
+		LD (LCD_STSMASK), A
 		CALL LCD16_I2CSEND
 		RET
-
-@LCD16_BKLTOFF: LD A, BACKLIGHTPINMASK AND LCD_NOBACKLIGHT
-		LD (LCD_STSMASK),A
+		
+;-------------------------------------------------------------------------------
+; LCD16_BKLTOFF: Turns off the backlight.
+;
+; This routine clears the backlight pin in the status mask and sends the
+; command to the I2C expander.
+;
+; Parameters:
+;	None.
+;
+; Returns:
+;	None.
+;
+; Memory Accessed:
+;	Writes to LCD_STSMASK.
+;	Calls LCD16_I2CSEND.
+;-------------------------------------------------------------------------------
+@LCD16_BKLTOFF:	LD A, BACKLIGHTPINMASK AND LCD_NOBACKLIGHT
+		LD (LCD_STSMASK), A
 		CALL LCD16_I2CSEND
 		RET
-

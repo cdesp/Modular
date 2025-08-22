@@ -1,32 +1,41 @@
-		NAME SERIAL
-		
-		
-		
-		GLOBAL RS_INI
-		GLOBAL RS_TX
-		GLOBAL RS_RX
-		GLOBAL RS_RXNW
-		GLOBAL RS_TXT
-		GLOBAL RS_MESG
-		GLOBAL RS_KEYRD
-		GLOBAL SERERR							;SET ON MAIN
-		GLOBAL RS_NEWLINE
-		
+;*******************************************************************************
+; Z80 SERIAL COMMUNICATION MODULE
+;
+; This module provides functions for initializing and controlling a serial
+; communication interface (UART) on a Z80-based system. It includes routines
+; for sending single characters, printing strings, and receiving characters.
+;
+; The addresses for the serial device ports (DEVSER) must be defined in the
+; main program.
+;*******************************************************************************
+                NAME SERIAL
+
+
+                GLOBAL RS_INI             ; Initializes the serial. Params: A = LSB of baud rate divisor.
+                GLOBAL RS_TX              ; Transmits a character. Params: A = character to transmit.
+                GLOBAL RS_RX              ; Receives a character. No params. Returns character in A.
+                GLOBAL RS_RXNW            ; Receives a character without waiting. No params. Returns character in A (if available).
+                GLOBAL RS_TXT             ; Transmits a null-terminated string. Params: HL = address of string.
+                GLOBAL RS_MESG            ; Transmits a string located after the CALL. No params.
+                GLOBAL RS_KEYRD           ; Checks if a character is available. No params. Sets ZF if no char is ready.
+                GLOBAL SERERR             ; A global memory location for storing serial errors.
+                GLOBAL RS_NEWLINE         ; Transmits a carriage return and line feed. No params.
+
 ;DEVSER EQU $20 ; SET ON MAIN
-		
-		RBR EQU DEVSER + 0						;RECEIVER BUFFER REGISTER (READ ONLY) (DLAB = 0)
-		THR EQU DEVSER + 0						;TRANSMITER HOLDING REGISTER (WRITE ONLY) (DLAB = 0)
-		IER EQU DEVSER + 1						;INTERRUPT ENABLE REGISTER (DLAB = 0)
+                
+                RBR EQU DEVSER + 0        ;RECEIVER BUFFER REGISTER (READ ONLY) (DLAB = 0)
+                THR EQU DEVSER + 0        ;TRANSMITER HOLDING REGISTER (WRITE ONLY) (DLAB = 0)
+                IER EQU DEVSER + 1        ;INTERRUPT ENABLE REGISTER (DLAB = 0)
 ;BIT 0= ENABLE RECEIVED DATA AVAILABLE INTERRUPT
 ;BIT 1= ENABLE TRANSMITTER HOLDING REGISTER EMPTY INTERRUPT
 ;BIT 2= ENABLE RECEIVER LINE STATUS INTERRUPT
 ;BIT 3= ENABLE MODEM STATUS INTERRUPT
-		IIR EQU DEVSER + 2						;INTERRUPT IDENT. REGISTER (READ ONLY)
+                IIR EQU DEVSER + 2        ;INTERRUPT IDENT. REGISTER (READ ONLY)
 ;BIT 0=0 IF INTERRUPT PENDING
 ;BIT 1-3 INTERRUPT ID
 ;BIT 4,5 =0
 ;BIT 6,7 FIFOS ENABLED
-		FCR EQU DEVSER + 2						;FIFO CONTROL REGISTER (WRITE ONLY)
+                FCR EQU DEVSER + 2        ;FIFO CONTROL REGISTER (WRITE ONLY)
 ;BIT 0 FIFO ENABLE
 ;BIT 1 RCVR FIFO RESET
 ;BIT 2 XMIT FIFO RESET
@@ -34,7 +43,7 @@
 ;BIT 4,5 RESERVED
 ;BIT 6 RCVR TRIGGER LSBIT
 ;BIT 7 RCVR TRIGGER MSBIT
-		LCR EQU DEVSER + 3						;LINE CONTROL REGISTER
+                LCR EQU DEVSER + 3        ;LINE CONTROL REGISTER
 ;BIT 0,1 WORD LENGTH SELECT
 ;BIT 2 NUMBER OF STOP BITS
 ;BIT 3 PARITY ENABLE
@@ -42,8 +51,8 @@
 ;BIT 5 STICK PARITY
 ;BIT 6 SET BREAK
 ;BIT 7 DIVISOR LATCH ACCESS BIT *** DLAB ****
-		MCR EQU DEVSER + 4						;MODEM CONTROL REGISTER
-		LSR EQU DEVSER + 5						;LINE STATUS REGISTER
+                MCR EQU DEVSER + 4        ;MODEM CONTROL REGISTER
+                LSR EQU DEVSER + 5        ;LINE STATUS REGISTER
 ;BIT 0 DATA READY
 ;BIT 1 OVERRUN ERROR
 ;BIT 2 PARITY ERROR
@@ -52,191 +61,290 @@
 ;BIT 5 TRANSMITTER HOLDING REGISTER
 ;BIT 6 TRANSMITTER EMPTY
 ;BIT 7 ERROR IN RCVR FIFO
-		MSR EQU DEVSER + 6						;MODEM STATUS REGISTER
-		SCR EQU DEVSER + 7						;SCRATCH REGISTER
-		DLL EQU DEVSER + 0						;DIVISOR LATCH (LEAST SIGNIFICANT BYTE) (DLAB = 1)
-		DLM EQU DEVSER + 1						;DIVISOR LATCH (MOST SIGNIFICANT BYTE) (DLAB = 1)
-		
-;	SERERR EQU RAMAD+2		;SERIAL ERROR
-		
-;A=5 RECEIVE INTERRUPTS ON
-;A IS THE BAUD RATE PARAM
-RS_INI:		PUSH AF
-		LD A, $80 							; Mask to set DLAB on
-		OUT (LCR), A 							; Send to LINe Control Register
-;LD      A,12           ; Divisor of 12 = 9600 bps with 1.8432 MHz clock
-;LD      A,96           ; Divisor of 96 = 1200 bps with 1.8432 MHz clock
-;LD      A,72            ; Divisor of 96 = 7200?? bps with 14.7456 MHz clock
-; 72=1600BPS WITH 1.8432
-;LD A,6			;19200BPS
-;LD A,3			;38400BPS
-;LD A,2			;56000BPS
-;LD A,1			;115200BPS
-		POP AF
-		OUT (DLL), A 							; Set LSB of divisor
-		LD A, 00 							; This will be the MSB of the divisior
-		OUT (DLM), A 							; Send to the MSB register
-		LD A, $03 							; 8 bits, 1 stop, no parity (and clear DLAB)
-		OUT (LCR), A 							; Write new value to LCR
-;LD A, 1+2+4+8							; set fifo mode and reset fifio counters		//was 0 and commented
-		LD A, 0
-		OUT (FCR), A 							;//was commented
-		LD A, $00 							; 5 A=0 Disable all INterrupts
-		OUT (IER), A 							; Send to INterrupt Enable Register
-		RET
-		
-; Sends byte IN A to the UART
-RS_TX:		CALL RSTXRD
-		OUT (THR), A
-;CALL CHKERR2 		;CHECK ERROR ON TRANSMITION
-		RET
-		
-; RETurns when UART is ready to receive		
-RSTXRD:		PUSH AF
-RSTXLP:		IN A, (LSR) 							; fetch the control register
-		BIT 5, A 							; bit will be set if UART is ready
-		JR Z, RSTXLP
-		POP AF
-		RET
-		
-;HL THE STRING TO PRINT
-;DESTROYS A		
-RS_TXT:		LD A, (HL)
-		INC HL
-		CP 0
-		RET Z
-		CALL RS_TX
-		JR RS_TXT
+                MSR EQU DEVSER + 6        ;MODEM STATUS REGISTER
+                SCR EQU DEVSER + 7        ;SCRATCH REGISTER
+                DLL EQU DEVSER + 0        ;DIVISOR LATCH (LEAST SIGNIFICANT BYTE) (DLAB = 1)
+                DLM EQU DEVSER + 1        ;DIVISOR LATCH (MOST SIGNIFICANT BYTE) (DLAB = 1)
+                
+;       SERERR EQU RAMAD+2       ;SERIAL ERROR
+                
+RS_INI:         PUSH AF
+                LD A, $80                 ; Mask to set DLAB on
+                OUT (LCR), A              ; Send to LINe Control Register
+                POP AF
+                OUT (DLL), A              ; Set LSB of divisor
+                LD A, 00                  ; This will be the MSB of the divisior
+                OUT (DLM), A              ; Send to the MSB register
+                LD A, $03                 ; 8 bits, 1 stop, no parity (and clear DLAB)
+                OUT (LCR), A              ; Write new value to LCR
+                LD A, 0
+                OUT (FCR), A
+                LD A, $00                 ; Disable all interrupts
+                OUT (IER), A              ; Send to INterrupt Enable Register
+                RET
+                
+;-------------------------------------------------------------------------------
+; RS_TX: Sends a byte in register A to the UART.
+;
+; Parameters:
+;   A: Contains the character to be transmitted.
+;
+; Preserved Registers:
+;   AF (via call to RSTXRD)
+;
+; Memory Accessed:
+;   I/O Port: THR (at base address DEVSER).
+;-------------------------------------------------------------------------------
+RS_TX:          CALL RSTXRD
+                OUT (THR), A
+                RET
+                
+;-------------------------------------------------------------------------------
+; RSTXRD: Waits for the UART's transmitter holding register to be ready.
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   AF (via PUSH/POP).
+;
+; Memory Accessed:
+;   I/O Port: LSR (at base address DEVSER).
+;-------------------------------------------------------------------------------
+RSTXRD:         PUSH AF
+RSTXLP:         IN A, (LSR)               ; fetch the control register
+                BIT 5, A                  ; bit will be set if UART is ready
+                JR Z, RSTXLP
+                POP AF
+                RET
+                
+;-------------------------------------------------------------------------------
+; RS_TXT: Prints a null-terminated string to the serial port.
+;
+; Parameters:
+;   HL: Points to the address of the string.
+;
+; Preserved Registers:
+;   None. A is destroyed, HL is incremented.
+;
+; Memory Accessed:
+;   Memory: Reads bytes from the address pointed to by HL.
+;   I/O Ports: THR (via call to RS_TX).
+;-------------------------------------------------------------------------------
+RS_TXT:         LD A, (HL)
+                INC HL
+                CP 0
+                RET Z
+                CALL RS_TX
+                JR RS_TXT
 
-;PRINTS A ZT MESSAGE FOLLOWING THIS CALL
-;PRESERVES ALL REGS
-RS_MESG:	PUSH HL
-		PUSH BC
-		PUSH DE
-		PUSH AF
-		LD HL,9	;POINTS TO RET ADDRESS +10 FROM SP = OUR STRING
-		ADD HL,SP
-		LD B,(HL)				
-		DEC HL
-		LD C,(HL)
-		LD H,B
-		LD L,C
-		CALL RS_TXT
-		POP AF
-		POP DE
-		LD B,H		;NEW RET ADDRESS
-		LD C,L
-		LD HL,5	;POINTS TO RET ADDRESS +6 FROM SP
-		ADD HL,SP		
-		LD (HL),B
-		DEC HL
-		LD (HL),C		
-		POP BC
-		POP HL
-		RET	
-		
-		
-		
-; Wait for a byte from the UART, and save it IN A
-;DESTROYS DE,A
-		
-RS_RX:		LD A,I								;SETS PV IF INTS ARE ENABLED
-		PUSH AF
-		POP DE
-		DI
-		LD A, 1 							;ready to receive SIGNAL DSR 1
-		OUT (MCR), A
-		CALL RSRXRD
-RS_GTCH:	XOR A 								;NOT ready to receive SIGNAL DSR 0
-		OUT (MCR), A
-;CALL CHKERR 		;CHECK ERROR ON RECEIVED CHAR
-		IN A, (RBR)		
-		PUSH DE
-		LD D,A
-		POP AF
-		LD A,D
-		RET PO		
-		EI
-		RET
-		
-RS_RXNW:	LD A, 1 							;ready to receive SIGNAL DSR 1
-		OUT (MCR), A
-		IN A, (LSR) 							; fetch the conrtol register
-		BIT 0, A
-		JR Z, RS_NOCHAR
-		DI
-		JR RS_GTCH
-RS_NOCHAR:	XOR A 								;RETURN ZERO
-		RET
-		
-		
-		
-; RETurns when UART has received data
-		
-		
-RSRXRD:		;DI		
-		PUSH AF
-		;PUSH BC
-		;LD BC,2000							;TIMEOUT 
-RSRXLP:		;LD A,B
-		;OR C
-		;JR Z,RSRXEX
-		IN A, (LSR) 							; fetch the control register
-		BIT 0, A 							; bit will be set if UART has data
-		JR Z, RSRXLP
-RSRXEX:		;POP BC
-		POP AF
-		;EI
-		RET
-		
-; ZF=1 IF NO CHAR SENT
-; ZF=0 IF CHAR WAITING T BE RECEIVED
-RS_KEYRD:	IN A, (LSR) 							; fetch the conrtol register
-		BIT 0, A 							; bit will be set if UART has data
-		RET
-		
-SHLCD:		PUSH AF
-;CALL LCDLN2
-		POP AF
-;CALL LCDCHR
-		RET
-		
-RS_NEWLINE: 	PUSH AF
-		LD A,13
-		CALL RS_TX
-		LD A,10
-		CALL RS_TX
-		POP AF
-		RET		
+;-------------------------------------------------------------------------------
+; RS_MESG: Prints a null-terminated string located immediately after the CALL
+;          to this function. It modifies the return address on the stack.
+;
+; Parameters:
+;   String: The string is placed immediately after the CALL instruction.
+;
+; Preserved Registers:
+;   All general-purpose registers (HL, BC, DE, AF).
+;
+; Memory Accessed:
+;   Memory: Reads the string from the code memory at the address stored on the
+;           stack and its offsets.
+;   Stack: Pushes and pops registers and manipulates the return address.
+;-------------------------------------------------------------------------------
+RS_MESG:        PUSH HL
+                PUSH BC
+                PUSH DE
+                PUSH AF
+                LD HL,9 ;POINTS TO RET ADDRESS +10 FROM SP = OUR STRING
+                ADD HL,SP
+                LD B,(HL)
+                DEC HL
+                LD C,(HL)
+                LD H,B
+                LD L,C
+                CALL RS_TXT
+                POP AF
+                POP DE
+                LD B,H        ;NEW RET ADDRESS
+                LD C,L
+                LD HL,5 ;POINTS TO RET ADDRESS +6 FROM SP
+                ADD HL,SP
+                LD (HL),B
+                DEC HL
+                LD (HL),C
+                POP BC
+                POP HL
+                RET
+                
+                
+                
+;-------------------------------------------------------------------------------
+; RS_RX: Waits for a byte from the UART, receives it, and returns it in A.
+;        Also controls the DTR signal via the MCR. Disables interrupts
+;        during the receive operation.
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   None. A, D, and E are destroyed.
+;
+; Memory Accessed:
+;   I/O Ports: MCR, RBR (at base address DEVSER).
+;-------------------------------------------------------------------------------
+RS_RX:          LD A,I                    ;SETS PV IF INTS ARE ENABLED
+                PUSH AF
+                POP DE
+                DI
+                LD A, 1                   ;ready to receive SIGNAL DSR 1
+                OUT (MCR), A
+                CALL RSRXRD
+RS_GTCH:        XOR A                     ;NOT ready to receive SIGNAL DSR 0
+                OUT (MCR), A
+                IN A, (RBR)
+                PUSH DE
+                LD D,A
+                POP AF
+                LD A,D
+                RET PO
+                EI
+                RET
+                
+;-------------------------------------------------------------------------------
+; RS_RXNW: Attempts to receive a byte without waiting.
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   None. A is used for the return value and destroyed.
+;
+; Memory Accessed:
+;   I/O Ports: MCR, LSR, and RBR (via call to RS_GTCH).
+;
+; Return Value:
+;   A: The received character if one is available, otherwise 0.
+;   ZF: Set if no character is received, cleared if a character is waiting.
+;-------------------------------------------------------------------------------
+RS_RXNW:        LD A, 1                   ;ready to receive SIGNAL DSR 1
+                OUT (MCR), A
+                IN A, (LSR)               ; fetch the conrtol register
+                BIT 0, A
+                JR Z, RS_NOCHAR
+                DI
+                JR RS_GTCH
+RS_NOCHAR:      XOR A                     ;RETURN ZERO
+                RET
+                
+                
+                
+;-------------------------------------------------------------------------------
+; RSRXRD: Waits for the UART to have received data. This is a blocking loop.
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   AF (via PUSH/POP).
+;
+; Memory Accessed:
+;   I/O Port: LSR (at base address DEVSER).
+;-------------------------------------------------------------------------------
+RSRXRD:         PUSH AF
+RSRXLP:         IN A, (LSR)               ; fetch the control register
+                BIT 0, A                  ; bit will be set if UART has data
+                JR Z, RSRXLP
+RSRXEX:         POP AF
+                RET
+                
+;-------------------------------------------------------------------------------
+; RS_KEYRD: Checks if a character is available to be received.
+;
+; Parameters:
+;   None.
+ 
+; Preserved Registers:
+;   None. A is destroyed.
+;
+; Memory Accessed:
+;   I/O Port: LSR (at base address DEVSER).
+;
+; Return Value:
+;   ZF: The Zero Flag is set (ZF=1) if no character is available.
+;       The Zero Flag is reset (ZF=0) if a character is available.
+;-------------------------------------------------------------------------------
+RS_KEYRD:       IN A, (LSR)               ; fetch the conrtol register
+                BIT 0, A                  ; bit will be set if UART has data
+                RET
+                
 
-		
-CHKERR:		PUSH AF
-		PUSH HL
-		PUSH BC
-		IN A, (LSR) 							;FETCH LINE STATUS REGISTER
-		BIT 4, A
-		JR Z, LBLPE
-		LD A, 'B'							;$20		;BREAK
-		JR EXIT
-LBLPE:		BIT 2, A
-		JR Z, LBLFE
-		LD A, 'P'							;$40		;PARITY
-		JR EXIT
-LBLFE:		BIT 3, A
-		JR Z, LBLOE
-		LD A, 'F'							;$60		;FRAME
-		JR EXIT
-LBLOE:		BIT 1, A
-		JR Z, LBLNE
-		LD A, 'O' 							;$80		;OVERRUN
-		JR EXIT
-LBLNE:		LD A, 'N' 							;NO ERROR
-EXIT:		LD HL, SERERR
-		LD (HL), A
-;	CALL SHLCD
-		POP BC
-		POP HL
-		POP AF
-		RET
-		
-		END
+SHLCD:  PUSH AF
+        POP AF
+        RET
+
+;-------------------------------------------------------------------------------
+; RS_NEWLINE: Transmits a carriage return (13) and a line feed (10).
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   AF (via PUSH/POP).
+;
+; Memory Accessed:
+;   I/O Ports: THR (via call to RS_TX).
+;-------------------------------------------------------------------------------
+RS_NEWLINE:     PUSH AF
+                LD A,13
+                CALL RS_TX
+                LD A,10
+                CALL RS_TX
+                POP AF
+                RET
+                
+                
+;-------------------------------------------------------------------------------
+; CHKERR: Checks for serial communication errors and stores a single character
+;         representing the error type in the global memory location SERERR.
+;
+; Parameters:
+;   None.
+;
+; Preserved Registers:
+;   All general-purpose registers (AF, HL, BC).
+;
+; Memory Accessed:
+;   I/O Ports: LSR (at base address DEVSER).
+;   Memory: Writes a character to the address SERERR.
+;-------------------------------------------------------------------------------
+CHKERR:         PUSH AF
+                PUSH HL
+                PUSH BC
+                IN A, (LSR)               ;FETCH LINE STATUS REGISTER
+                BIT 4, A
+                JR Z, LBLPE
+                LD A, 'B'                 ;BREAK
+                JR EXIT
+LBLPE:          BIT 2, A
+                JR Z, LBLFE
+                LD A, 'P'                 ;PARITY
+                JR EXIT
+LBLFE:          BIT 3, A
+                JR Z, LBLOE
+                LD A, 'F'                 ;FRAME
+                JR EXIT
+LBLOE:          BIT 1, A
+                JR Z, LBLNE
+                LD A, 'O'                 ;OVERRUN
+                JR EXIT
+LBLNE:          LD A, 'N'                 ;NO ERROR
+EXIT:           LD HL, SERERR
+                LD (HL), A
+                POP BC
+                POP HL
+                POP AF
+                RET
+                
+                END

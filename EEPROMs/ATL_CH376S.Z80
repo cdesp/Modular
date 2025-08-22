@@ -1,361 +1,503 @@
+;-------------------------------------------------------------------------------
+; CH376S Z80 ASSEMBLY LIBRARY
+; This library provides low-level functions for interacting with the CH376S
+; USB and SD Card storage controller using the Z80 microprocessor.
+;
+; Author: Gemini
+; Date:   August 2025
+;-------------------------------------------------------------------------------
+		
 ;CH376S USB & SDCARD STORAGE
-
-INT376CMD	EQU DEV376+1
-INT376DAT	EQU DEV376
-
-                GLOBAL CH376_INIT               ;DEVICE INIT CHECKS FOR DEVICE Z OK
-                GLOBAL CH376_SETUSB             ;SETS THE USB DEVICE A=3=SDCARD OR 6=FLASH DRIVE
-                GLOBAL CH376_MOUNTDEV           ;MOUNTS THE DEVICE A=3=SDCARD OR 6=FLASH DRIVE ALSO SETUSB IS CALLED NZ ERR_FDT_OVER
-		GLOBAL CH376_MOUNT		;MOUNT
-                GLOBAL CH376_VERSION            ;RETURNS ON A THE VERSION OF CH376
-                GLOBAL CH376_GETDATA            ;RECEIVES DATA FROM CH376
-                GLOBAL CH376_DATARD
-                GLOBAL CH376_DATAWR
-                GLOBAL CH376_GETSTAT            ;COMMD GET STATUS
-                GLOBAL CH376_WAITINT            ;WAIT FOR INTERRUPT ;Z INT OK ;NZ TIMEOUT
-                GLOBAL CH376_INSTAT             ;INPUT STATUS OF CH376
-                GLOBAL CH376_CHOK               ;CHECKS THE INPUT STATUS OF LAST COMMAND ;Z OK ;NZ CMD TIMEOUT
-                GLOBAL CH376_COMMD              ;SENDS A COMMAND TO CH376S
-                GLOBAL CH376_WTCMDEND           ;WAIT FOR A COMMAND TO END OR ERROR ;Z IF OK ;NZ IF ERROR		
-		GLOBAL CH376_WRSTRING		;WRITE A STRING TO CH376S
-		GLOBAL CH376_CONNECT		
-		;GLOBAL COPYFNAME  ;on atl_utils
-
-
-
-
-
+		
+		INT376CMD EQU DEV376 + 1
+		INT376DAT EQU DEV376
+		
+		GLOBAL CH376_INIT 						; DEVICE INIT. Checks for device Z=OK
+		GLOBAL CH376_SETUSB 						; SETS THE USB DEVICE, PARAMS: A=3=SDCARD OR 6=FLASH DRIVE
+		GLOBAL CH376_MOUNTDEV 						; MOUNTS the device, PARAMS: A=3=SDCard or 6=Flash Drive. Also calls SETUSB. NZ=ERR_FDT_OVER
+		GLOBAL CH376_MOUNT 						; MOUNT
+		GLOBAL CH376_VERSION 						; RETURNS the version of CH376, RETURNS: A=version
+		GLOBAL CH376_GETDATA 						; RECEIVES data from CH376
+		GLOBAL CH376_DATARD 						; Reads data from the CH376
+		GLOBAL CH376_DATAWR 						; Writes data to the CH376
+		GLOBAL CH376_GETSTAT 						; Command GET STATUS
+		GLOBAL CH376_WAITINT 						; WAIT for interrupt, RETURNS: Z=INT OK, NZ=TIMEOUT
+		GLOBAL CH376_INSTAT 						; INPUT status of CH376
+		GLOBAL CH376_CHOK 						; CHECKS the input status of the last command, RETURNS: Z=OK, NZ=CMD TIMEOUT
+		GLOBAL CH376_COMMD 						; SENDS a command to CH376
+		GLOBAL CH376_WTCMDEND 						; WAIT for a command to end or error, RETURNS: Z=OK, NZ=ERROR
+		GLOBAL CH376_WRSTRING 						; WRITE a string to CH376, PARAMS: string
+		GLOBAL CH376_CONNECT 						; Checks for CH376 device connection
+;GLOBAL COPYFNAME ;on atl_utils
+		
+		
 ;STATUS ERROR CODES
-DEF_DISK_UNKNOWN EQU $00	
-DEF_DISK_DISCONN EQU $01	
-DEF_DISK_CONNECT EQU $02	
-DEF_DISK_MOUNTED EQU $03	
-DEF_DISK_READY	EQU $10		
-DEF_DISK_OPEN_ROOT EQU $12	
-DEF_DISK_OPEN_DIR EQU $13	
-DEF_DISK_OPEN_FILE EQU $14	
-
-@USB_INT_EP0_OUT 	EQU $00
-@USB_INT_SUCCESS	EQU $14	
-@USB_INT_CONNECT	EQU $15	
-@USB_INT_DISCONNECT 	EQU $16
-@USB_INT_BUF_OVER 	EQU $17
-@USB_INT_USB_READY 	EQU $18
-@USB_INT_DISK_READ 	EQU $1D
-@USB_INT_DISK_WRITE 	EQU $1E
-@USB_INT_DISK_ERR 	EQU $1F
-
-@ERR_OPEN_DIR		EQU $41		;THIS IS NOT AN ERROR IT IS AN ACKNOWLEDGE
-@ERR_MISS_FILE		EQU $42
-@ERR_FOUND_NAME		EQU $43
-@ERR_DISK_DISCON	EQU $82
-@ERR_LARGE_SECTOR 	EQU $84
-@ERR_TYPE_ERROR 	EQU $92
-@ERR_DISK_FULL		EQU $B1	
-@ERR_FDT_OVER		EQU $B2	
-@ERR_FILE_CLOSE		EQU $B4	
-@ERR_MISS_DIR		EQU $B3	
-@ERR_LONG_BUF_OVER 	EQU $48	
-@ERR_LONG_NAME_ERR 	EQU $49	
-@ERR_NAME_EXIST		EQU $4A		
-
-
+		DEF_DISK_UNKNOWN EQU $00
+		DEF_DISK_DISCONN EQU $01
+		DEF_DISK_CONNECT EQU $02
+		DEF_DISK_MOUNTED EQU $03
+		DEF_DISK_READY EQU $10
+		DEF_DISK_OPEN_ROOT EQU $12
+		DEF_DISK_OPEN_DIR EQU $13
+		DEF_DISK_OPEN_FILE EQU $14
+		
+		@USB_INT_EP0_OUT EQU $00
+		@USB_INT_SUCCESS EQU $14
+		@USB_INT_CONNECT EQU $15
+		@USB_INT_DISCONNECT EQU $16
+		@USB_INT_BUF_OVER EQU $17
+		@USB_INT_USB_READY EQU $18
+		@USB_INT_DISK_READ EQU $1D
+		@USB_INT_DISK_WRITE EQU $1E
+		@USB_INT_DISK_ERR EQU $1F
+		
+		@ERR_OPEN_DIR EQU $41 						;THIS IS NOT AN ERROR IT IS AN ACKNOWLEDGE
+		@ERR_MISS_FILE EQU $42
+		@ERR_FOUND_NAME EQU $43
+		@ERR_DISK_DISCON EQU $82
+		@ERR_LARGE_SECTOR EQU $84
+		@ERR_TYPE_ERROR EQU $92
+		@ERR_DISK_FULL EQU $B1
+		@ERR_FDT_OVER EQU $B2
+		@ERR_FILE_CLOSE EQU $B4
+		@ERR_MISS_DIR EQU $B3
+		@ERR_LONG_BUF_OVER EQU $48
+		@ERR_LONG_NAME_ERR EQU $49
+		@ERR_NAME_EXIST EQU $4A
+		
 ;COMMANDS FOR CH376S
-@CMD_GET_IC_VER 	EQU $01
-@CMD_RESET_ALL		EQU $05
-@CMD_CHECK_EXIST	EQU $06
-@CMD_SETUSB_MODE 	EQU $15
-@CMD_GET_STATUS 	EQU $22
-@CMD_RDUSB_DATA0 	EQU $27
-@CMD_WR_REQ_DATA	EQU $2D
-@CMD_SETFILENAME	EQU $2F
-@CMD_DISK_CONNECT	EQU $30
-@CMD_DISK_MOUNT  	EQU $31
-@CMD_FILE_OPEN		EQU $32
-@CMD_FILEENUM_GO	EQU $33
-@CMD_FILE_CREATE 	EQU $34
-@CMD_FILE_CLOSE 	EQU $36
-@CMD_BYTE_LOCATE 	EQU $39
-@CMD_BYTE_READ		EQU $3A
-@CMD_BYTE_RD_GO		EQU $3B
-@CMD_BYTE_WRITE		EQU $3C
-@CMD_BYTE_WR_GO 	EQU $3D
-@CMD_DISK_QUERY  	EQU $3F
-
-@CMD_RET_SUCCESS 	EQU 51H
-@CMD_RET_ABORT   	EQU 5FH
-
-;ON RET A = BYTES READ TO USBBUF
-;USBBUF HAS THE BYTES
-CH376_GETDATA: 	CALL CH376_DATARD
+		@CMD_GET_IC_VER EQU $01
+		@CMD_RESET_ALL EQU $05
+		@CMD_CHECK_EXIST EQU $06
+		@CMD_SETUSB_MODE EQU $15
+		@CMD_GET_STATUS EQU $22
+		@CMD_RDUSB_DATA0 EQU $27
+		@CMD_WR_REQ_DATA EQU $2D
+		@CMD_SETFILENAME EQU $2F
+		@CMD_DISK_CONNECT EQU $30
+		@CMD_DISK_MOUNT EQU $31
+		@CMD_FILE_OPEN EQU $32
+		@CMD_FILEENUM_GO EQU $33
+		@CMD_FILE_CREATE EQU $34
+		@CMD_FILE_CLOSE EQU $36
+		@CMD_BYTE_LOCATE EQU $39
+		@CMD_BYTE_READ EQU $3A
+		@CMD_BYTE_RD_GO EQU $3B
+		@CMD_BYTE_WRITE EQU $3C
+		@CMD_BYTE_WR_GO EQU $3D
+		@CMD_DISK_QUERY EQU $3F
+		
+		@CMD_RET_SUCCESS EQU 51H
+		@CMD_RET_ABORT EQU 5FH
+		
+;-------------------------------------------------------------------------------
+; CH376_GETDATA: Reads data from the CH376S into a buffer.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   A: The number of bytes read.
+;   USBBUF: The memory buffer where the data is stored.
+;
+; Destroys:
+;   A, B, DE.
+;-------------------------------------------------------------------------------
+CH376_GETDATA:	CALL CH376_DATARD
 		CP 0
-		RET Z			;NO DATA AVAILABLE
-		;PUSH AF
-		;CALL PRINTNUM	
-		;CALL RS_MESG
-		;DEFM " BYTES TO READ"
-		;DB 10,13,0		
-		;POP AF
-                PUSH AF
-		LD DE,USBBUF
-		LD B,A
+		RET Z
+		PUSH AF
+		LD DE, USBBUF
+		LD B, A
 UDC_NXT1:	CALL CH376_DATARD
-		;CP 31
-		LD (DE),A
+		LD (DE), A
 		INC DE
-		;PUSH DE
-		;CALL PRINTNUM
-		;POP DE
-		DJNZ UDC_NXT1	
-                POP AF
+		DJNZ UDC_NXT1
+		POP AF
 		RET
-
-
+		
+;-------------------------------------------------------------------------------
+; DISKERROR: Prints a fatal error message.
+;
+; Parameters:
+;   A: The error code.
+;
+; Returns:
+;   None.
+;
+; Destroys:
+;   A, B, C, D, E, HL.
+;-------------------------------------------------------------------------------
 DISKERROR:	PUSH AF
 		CALL RS_MESG
-		DEFM "FATAL ERROR:"	
-		DB 0		
+		DEFM "FATAL ERROR:"
+		DB 0
 		POP AF
 		CALL PRINTNUM
-		LD HL,ERR_PART
+		LD HL, ERR_PART
 		CP ERR_TYPE_ERROR
-		JR Z,PRNMES
+		JR Z, PRNMES
 		RET
-PRNMES:		CALL RS_TXT	
+PRNMES:		CALL RS_TXT
 		RET
-
-ERR_PART	DEFM "PARTITION NOT SUPPORTED!!!"
+		
+		ERR_PART DEFM "PARTITION NOT SUPPORTED!!!"
 		DB 10,13,0
-
-
-;WAITS FOR THE INTERRUPT INDICATOR COMMAND END
-;Z IF USB_INT_SUCCESS
-;NZ IF ERROR OR ELSE
-;CF IF TIMEOUT
-;A THE RET STATUS
-;DESTROYS B
-;PRESERVES HL
+		
+;-------------------------------------------------------------------------------
+; CH376_WTCMDEND: Waits for a command to end or an error to occur.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   A: The status byte.
+;   ZF: Set if `USB_INT_SUCCESS`.
+;   NZF: Set if any other status or error.
+;   CF: Set if a timeout occurs.
+;
+; Preserved Registers:
+;   HL.
+;
+; Destroys:
+;   A, B.
+;-------------------------------------------------------------------------------
 CH376_WTCMDEND:	PUSH HL
 		CALL CH376_WAITINT
 		POP HL
-                RET NZ
+		RET NZ
 		RET C
 		XOR A
 		CALL CH376_GETSTAT
-		CP USB_INT_SUCCESS		
-		RET		;NZ FLAG MEANS ERROR USUALLY
-
-
-;WAIT FOR AN INT FROM CH376
-;Z INT OK
-;NZ TIMEOUT
+		CP USB_INT_SUCCESS
+		RET
+		
+;-------------------------------------------------------------------------------
+; CH376_WAITINT: Waits for an interrupt from the CH376S.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   ZF: Set if an interrupt was received.
+;   NZF: Set if a timeout occurred.
+;
+; Destroys:
+;   A, B, C, E.
+;-------------------------------------------------------------------------------
 CH376_WAITINT:	XOR A
-		LD BC,50
+		LD BC, 50
 C3AGN2:		CALL CH376_INSTAT
-		BIT 7,A
+		BIT 7, A
 		RET Z
 		PUSH AF
 		PUSH BC
-		LD B,20/5
+		LD B, 20 / 5
 		CALL DELAY5MICS
 		POP BC
 		POP AF
 		DEC BC
-		LD E,A
-		LD A,B
+		LD E, A
+		LD A, B
 		OR C
-		LD A,E
-		JR NZ, C3AGN2		
-		;CALL PRINTNUM 	
-		;CALL RS_MESG
-		;DEFM "***CMD WI TIMEOUT***"
-		;DB 10,13,0	 
-		SCF	;TIMEOUT		     
-		LD B,2
-		DEC B		;NZ FLAG
+		LD A, E
+		JR NZ, C3AGN2
+		SCF
+		LD B, 2
+		DEC B
 		RET
-
-CH376_GETSTAT:	LD A,CMD_GET_STATUS
+		
+;-------------------------------------------------------------------------------
+; CH376_GETSTAT: Gets the status byte from the CH376S.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   A: The status byte.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_GETSTAT:	LD A, CMD_GET_STATUS
 		CALL CH376_COMMD
 		CALL CH376_DATARD
 		RET
-
-
-;CHECKS THE STATUS OF LAST COMMAND
-;IF BIT 4 IS NOT SET THEN ITS OK
-;Z OK
-;NZ CMD TIMEOUT
-;DESTROYS DE,BC
-CH376_CHOK:	LD BC,2500
+		
+;-------------------------------------------------------------------------------
+; CH376_CHOK: Checks if the last command is finished.
+;
+; Parameters:
+;   None
+;
+; Returns:
+;   ZF: Set if the command is finished (not busy).
+;   NZF: Set if a timeout occurred.
+;
+; Destroys:
+;   A, B, C, D, E.
+;-------------------------------------------------------------------------------
+CH376_CHOK:	LD BC, 2500
 C3AGN:		CALL CH376_INSTAT
-		BIT 4,A			;CHECK BUSY
-		RET Z			
+		BIT 4, A
+		RET Z
 		PUSH BC
 		PUSH AF
-		LD B,50/5
+		LD B, 50 / 5
 		CALL DELAY5MICS
 		POP AF
 		POP BC
 		DEC BC
-		LD E,A
-		LD A,B
+		LD E, A
+		LD A, B
 		OR C
-		LD A,E
-		JR NZ,C3AGN
-		PUSH AF		
-		CALL PRINTNUM 	
+		LD A, E
+		JR NZ, C3AGN
+		PUSH AF
+		CALL PRINTNUM
 		POP AF
 		CALL RS_MESG
 		DEFM "***CMD TIMEOUT***"
-		DB 10,13,0	      
-		LD B,2
-		DEC B		;NZ FLAG
+		DB 10,13,0
+		LD B, 2
+		DEC B
 		RET
-
-
-;SENDS A COMMAND TO CH376S
-;A THE COMMAND
-;PRESERVES BC,DE,HL
-CH376_COMMD:	OUT (INT376CMD),A
+		
+;-------------------------------------------------------------------------------
+; CH376_COMMD: Sends a command to the CH376S.
+;
+; Parameters:
+;   A: The command byte to send.
+;
+; Returns:
+;   None.
+;
+; Preserved Registers:
+;   BC, DE, HL.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_COMMD:	OUT (INT376CMD), A
 		JR C3D_CONT
-;A DATA BYTE TO SEND
-;PRESERVES HL,BC,DE
-CH376_DATAWR:	OUT (INT376DAT),A	
+;-------------------------------------------------------------------------------
+; CH376_DATAWR: Sends a data byte to the CH376S.
+;
+; Parameters:
+;   A: The data byte to send.
+;
+; Returns:
+;   None.
+;
+; Preserved Registers:
+;   HL, BC, DE.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_DATAWR:	OUT (INT376DAT), A
 C3D_CONT:	PUSH BC
 		PUSH DE
 		PUSH HL
-		CALL CH376_CHOK		;CHECK NOT BUSY
+		CALL CH376_CHOK
 		POP HL
 		POP DE
 		POP BC
 		RET
-;A THE STATUS BYTYE
-CH376_INSTAT:	IN A,(INT376CMD)
-		;AND 10010000B		;ONLY BITS 7 AND 4 ARE VALID
+;-------------------------------------------------------------------------------
+; CH376_INSTAT: Reads the status byte from the CH376S.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   A: The status byte.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_INSTAT:	IN A, (INT376CMD)
 		RET
-
-;A DATA BYTE READ
-CH376_DATARD:	IN A,(INT376DAT)
-		;PUSH AF
-		;LD B,5
-		;CALL DELAYMILI	
-		;POP AF
+;-------------------------------------------------------------------------------
+; CH376_DATARD: Reads a data byte from the CH376S.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   A: The data byte.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_DATARD:	IN A, (INT376DAT)
 		RET
-
-;RETURN THE VERSION ON A
-CH376_VERSION:	LD A,CMD_GET_IC_VER 
+;-------------------------------------------------------------------------------
+; CH376_VERSION: Gets the CH376S version.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   A: The version number.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_VERSION:	LD A, CMD_GET_IC_VER
 		CALL CH376_COMMD
 		CALL CH376_DATARD
 		AND 00001111B
-                RET
-
-CH376_INIT:     LD A,CMD_RESET_ALL
-		CALL CH376_COMMD  
-		LD A,CMD_CHECK_EXIST	
+		RET
+		
+;-------------------------------------------------------------------------------
+; CH376_INIT: Resets and initializes the CH376S.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   ZF: Set if successful.
+;   NZF: Set if an error occurs or no device is present.
+;
+; Destroys:
+;   A, HL.
+;-------------------------------------------------------------------------------
+CH376_INIT:	LD A, CMD_RESET_ALL
 		CALL CH376_COMMD
-		LD A,87
+		LD A, CMD_CHECK_EXIST
+		CALL CH376_COMMD
+		LD A, 87
 		CALL CH376_DATAWR
 		CALL CH376_DATARD
-		CP 255 - 87	
-                RET               
-
-;A=3 FOR SDCARD ,6 FOR USB FLASH DRIVE
-;NZ ERROR
+		CP 255 - 87
+		RET
+		
+;-------------------------------------------------------------------------------
+; CH376_SETUSB: Sets the USB mode (SD card or flash drive).
+;
+; Parameters:
+;   A: The mode to set (3 for SD card, 6 for flash drive).
+;
+; Returns:
+;   ZF: Set if a connect interrupt was received.
+;   NZF: Set if an error occurred.
+;
+; Destroys:
+;   A, B.
+;-------------------------------------------------------------------------------
 CH376_SETUSB:	PUSH AF
-                LD A,CMD_SETUSB_MODE
+		LD A, CMD_SETUSB_MODE
 		CALL CH376_COMMD
-                POP AF
+		POP AF
 		CALL CH376_DATAWR
-		;WAIT 10US
-		LD B,20/5
-		CALL DELAY5MICS	    ;WAIT A BIT
-
-		;CALL CH376_DATARD
-                ;CP CMD_RET_SUCCESS
-                ;RET Z
+		LD B, 20 / 5
+		CALL DELAY5MICS
 		CALL CH376_GETSTAT
 		CP USB_INT_CONNECT
 		RET Z
-                ;CP USB_INT_EP0_OUT
 		PUSH AF
 		CALL CH376_ERROR
 		DEFM "ERR: SETUSBMODE"
 		DB 10,13,0
 		POP AF
 		CALL PRINTNUM
-                RET
-
-;CHECKS IF A DISK IS PRESENT
-;Z MEANS IT IS CONNECTED
-;CF MEANS TIMEOUT
-CH376_CONNECT:	LD A, CMD_DISK_CONNECT
-    		CALL CH376_COMMD
-		CALL CH376_WTCMDEND
-		;JR C,CC_TIMOUT
-		RET C	;TIMEOUT
-		RET Z	;CONNECT OK
-		;CP 0
-		;RET Z	
-		;HERE NZ =NO USB FLASH CONNECTED YET
-		;CP ERR_DISK_DISCON ;NOT NEEDED 
-		RET ;NZ HERE
-CC_TIMOUT:	;PUSH AF
-		;CALL PRINTNUM
-		;CALL CH376_ERROR
-		;DEFM "ERR: CONNECT TIMOUT"
-		;DB 10,13,0		
-		;POP AF
-                ;RET
-
-;Z IF USB MOUNTED OK
-CH376_MOUNT:   	LD A,CMD_DISK_MOUNT  
-		CALL CH376_COMMD
-		CALL CH376_WTCMDEND		
 		RET
-
-
-;A=3 FOR SDCARD ,6 FOR USB FLASH DRIVE
-;NZ ERROR MOUNTING 
-CH376_MOUNTDEV:    LD B,10  ;TRY TO MOUNT 10 TIMES
+		
+;-------------------------------------------------------------------------------
+; CH376_CONNECT: Checks if a disk is physically connected.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   ZF: Set if connected.
+;   NZF: Set if not connected.
+;   CF: Set if a timeout occurs.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_CONNECT:	LD A, CMD_DISK_CONNECT
+		CALL CH376_COMMD
+		CALL CH376_WTCMDEND
+		RET C
+		RET Z
+		RET
+		
+;-------------------------------------------------------------------------------
+; CH376_MOUNT: Mounts the file system on the connected disk.
+;
+; Parameters:
+;   None.
+;
+; Returns:
+;   ZF: Set if the disk was mounted successfully.
+;
+; Destroys:
+;   A.
+;-------------------------------------------------------------------------------
+CH376_MOUNT:	LD A, CMD_DISK_MOUNT
+		CALL CH376_COMMD
+		CALL CH376_WTCMDEND
+		RET
+		
+;-------------------------------------------------------------------------------
+; CH376_MOUNTDEV: Sets mode, connects, and mounts the device.
+;
+; Parameters:
+;   A: The mode to set (3 for SD card, 6 for flash drive).
+;
+; Returns:
+;   ZF: Set if the device was mounted.
+;   NZF: Set if an error occurred.
+;
+; Destroys:
+;   A, B, C, D, E, HL.
+;-------------------------------------------------------------------------------
+CH376_MOUNTDEV:	LD B, 10
 CM_AGN1:	PUSH BC
 		CALL CH376_SETUSB
-		JR NZ,CM_ERROR
+		JR NZ, CM_ERROR
 		CALL CH376_CONNECT
-		JR NZ,CM_ERROR
-	       	LD A,CMD_DISK_MOUNT  
+		JR NZ, CM_ERROR
+		LD A, CMD_DISK_MOUNT
 		CALL CH376_COMMD
 		CALL CH376_WTCMDEND
 		POP BC
 		RET Z
 		PUSH BC
-CM_ERROR:	LD B,100
-		CALL DELAYMILI	    ;WAIT A BIT
+CM_ERROR:	LD B, 100
+		CALL DELAYMILI
 		POP BC
-		DJNZ CM_AGN1		
-		LD B,2
-		DEC B		;NZ		
+		DJNZ CM_AGN1
+		LD B, 2
+		DEC B
 		PUSH AF
 		CALL CH376_ERROR
 		DEFM "ERR: MOUNT DISK"
 		DB 10,13,0
-    		POP AF
-                RET
-
-;HL THE ZT STRING TO SEND TO CH376
-CH376_WRSTRING:	LD A,(HL)
-		;PUSH AF
-		;PUSH HL
-		;CALL RS_TX
-		;POP HL
-		;POP AF
+		POP AF
+		RET
+		
+;-------------------------------------------------------------------------------
+; CH376_WRSTRING: Writes a null-terminated string to the CH376S.
+;
+; Parameters:
+;   HL: Pointer to the string.
+;
+; Returns:
+;   ZF: Set if successfully written.
+;   NZF: Set if an error occurs.
+;
+; Destroys:
+;   A, HL.
+;-------------------------------------------------------------------------------
+CH376_WRSTRING:	LD A, (HL)
 		CALL CH376_DATAWR
 		RET NZ
-		LD A,(HL)
+		LD A, (HL)
 		OR A
 		RET Z
 		INC HL
 		JR CH376_WRSTRING
-
- 
- 
- 
